@@ -29,8 +29,8 @@ namespace betaBarrelProgram
         static public void runPDBInfo()
         {
 
-            getPDBInfo(Global.MACMONODBDIR, Global.MONO_DB_DIR, Global.MONO_OUTPUT_DIR + "PDBinfo.txt");
-            getPDBInfo(Global.MACPOLYDBDIR, Global.POLY_DB_DIR, Global.POLY_OUTPUT_DIR + "PDBinfo.txt");
+            getPDBInfo(Global.MONO_DB_file, Global.MONO_DB_DIR, Global.MONO_OUTPUT_DIR + "PDBinfo.txt");
+            getPDBInfo(Global.POLY_DB_file, Global.POLY_DB_DIR, Global.POLY_OUTPUT_DIR + "PDBinfo.txt");
         }
         static public void getPDBInfo(string fileOfPDBs, string DB_dir, string Output_File)
         {

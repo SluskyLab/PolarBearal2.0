@@ -384,7 +384,7 @@ namespace betaBarrelProgram
         {
             string fileLocation3 = outputDirectory + "Tilts/StrandLength()s_" + pdbName + ".txt";
             double height; List<double> all_lengths = new List<double>();
-            string fileOfPDBs = Global.MACMONODBDIR;
+            string fileOfPDBs = Global.MONO_DB_file;
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation3))
             {
                 file.Write("{0}\t{1}\t{2}\n", "Chain", "Strand #", "Length()");
@@ -1991,7 +1991,7 @@ POLY REMOVE*/
                 output.Write("\n{0}\t{1}\t{2}\t{3}\t{4}\t{5}", "pdb", "StrandNum", "ThreeLetCode", "ResNum", "Cbeta2Axis", "Inward");
             }
 
-            string fileOfPDBs = Global.MACMONODBDIR; //input file with list of monomeric xml files
+            string fileOfPDBs = Global.MONO_DB_file; //input file with list of monomeric xml files
 
             if (File.Exists(fileOfPDBs))
             {
@@ -2060,7 +2060,7 @@ POLY REMOVE*/
                 output.Write("\n{0}\t{1}\t{2}\t{3}\t{4}\t{5}", "pdb", "StrandNum", "ThreeLetCode", "ResNum", "atom", "distance2Axis");
             }
 
-            string fileOfPDBs = Global.MACMONODBDIR; //input file with list of monomeric xml files
+            string fileOfPDBs = Global.MONO_DB_file; //input file with list of monomeric xml files
 
             if (File.Exists(fileOfPDBs))
             {
@@ -2116,7 +2116,7 @@ POLY REMOVE*/
                 output.Write("\n{0}\t{1}\t{2}\t{3}\t{4}", "pdb", "N/C", "X", "Y", "Z");
             }
 
-            string fileOfPDBs = Global.MACMONODBDIR; //input file with list of monomeric xml files
+            string fileOfPDBs = Global.MONO_DB_file; //input file with list of monomeric xml files
 
             if (File.Exists(fileOfPDBs))
             {

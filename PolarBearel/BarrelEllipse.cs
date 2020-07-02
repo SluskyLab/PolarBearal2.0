@@ -94,12 +94,12 @@ namespace betaBarrelProgram
 
             if (input == "m")
             {
-                DB_FILE = Global.MACMONODBDIR;
+                DB_FILE = Global.MONO_DB_file;
                 OUTPUT_PATH = Global.MONO_OUTPUT_DIR + "ellipse/";
             }
             else
             {
-                DB_FILE = Global.MACPOLYDBDIR;
+                DB_FILE = Global.POLY_DB_file;
                 OUTPUT_PATH = Global.POLY_OUTPUT_DIR + "ellipse/";
             }
 
@@ -225,7 +225,7 @@ namespace betaBarrelProgram
                 output.Write("\n{0}\t{1}\t{2}\t{3}\t{4}\t{5}", "pdb", "StrandNum", "ThreeLetCode", "ResNum", "Z", "high/low");
             }
 
-            string fileOfPDBs = Global.MACMONODBDIR; //input file with list of monomeric xml files
+            string fileOfPDBs = Global.MONO_DB_file; //input file with list of monomeric xml files
 
             if (File.Exists(fileOfPDBs))
             {
