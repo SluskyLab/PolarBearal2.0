@@ -26,19 +26,19 @@ namespace betaBarrelProgram
 {
     public static class Global
     {
-
-        public static string POLARBEARAL_DIR = System.IO.Directory.GetCurrentDirectory();//"/Users/r567f246/Desktop/gitLab/PolarBearal/";
+        
+        public static string POLARBEARAL_DIR = Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;//"/Users/r567f246/Desktop/gitLab/PolarBearal/";
         //public static string POLY_DB_DIR = @"\\psf\Home\Desktop\SluskyLab\betaBarrelProgram\betaBarrelOutput\PolyBarrelsDB\";
         //public static string MACPOLYDBDIR = @"\\psf\Home\Desktop\SluskyLab\betaBarrelProgram\betaBarrelOutput\PolyBarrelsDB\PolyDBList_v4.txt";
         //public static string POLY_OUTPUT_DIR = @"\\psf\Home\Desktop\SluskyLab\betaBarrelProgram\betaBarrelOutput\PolyBarrels\";
 
-        public static string MONO_DB_DIR = POLARBEARAL_DIR + "../DB/mono/";
-        public static string MONO_DB_file = POLARBEARAL_DIR + "../DB/MonoDB_v5.txt";
-        public static string MONO_OUTPUT_DIR = POLARBEARAL_DIR + "../Output/mono/";
+        public static string MONO_DB_DIR = POLARBEARAL_DIR + "/DB/mono/";
+        public static string MONO_DB_file = POLARBEARAL_DIR + "/DB/MonoDB_v5.txt";
+        public static string MONO_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/mono/";
 
-        public static string POLY_DB_DIR = POLARBEARAL_DIR + "../DB/poly/";
-        public static string POLY_DB_file = POLARBEARAL_DIR + "../DB/PolyDB.txt";
-        public static string POLY_OUTPUT_DIR = POLARBEARAL_DIR + "../Output/poly/";
+        public static string POLY_DB_DIR = POLARBEARAL_DIR + "/DB/poly/";
+        public static string POLY_DB_file = POLARBEARAL_DIR + "/DB/PolyDB.txt";
+        public static string POLY_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/poly/";
 
         //public static string SOL_OUTPUT_DIR = POLARBEARAL_DIR + "../Output/monomers_v5/";
 

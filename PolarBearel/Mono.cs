@@ -244,7 +244,7 @@ namespace betaBarrelProgram
 	            this.StrandLength = SharedFunctions.getStrandLengths(this.Strands, path, this.PdbName);
                 this.PrevTwists = SharedFunctions.writeTwists(this.Strands, Global.MONO_OUTPUT_DIR, this.PdbName);
 
-	            /*string fileLocation6 = path + "\\ZCoords\\XYZCoords_" + this.PdbName + ".txt";
+                /*string fileLocation6 = path + "\\ZCoords\\XYZCoords_" + this.PdbName + ".txt";
 	            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation6))
 	            {
 	                string newLine = "Res" + "\t" + "Num" + "\t" + "Chain" + "\t" + "XYZcoords";
@@ -257,8 +257,13 @@ namespace betaBarrelProgram
 	                    }
 	                }
 	            }*/
+                string use_dir = path + "ZCoords";
+                if (!System.IO.Directory.Exists(use_dir))
+                {
+                    System.IO.Directory.CreateDirectory(use_dir);
+                }
 
-	            string fileLocation15 = path + "ZCoords/AllZCoords_" + this.PdbName + ".txt";
+                string fileLocation15 = path + "ZCoords/AllZCoords_" + this.PdbName + ".txt";
 	            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation15))
 	            {
 	                string newLine = "Res" + "\t" + "Num" + "\t" + "Strand" + "\t" + "Z-coord";
@@ -280,7 +285,7 @@ namespace betaBarrelProgram
                 //SharedFunctions.writePymolScriptForLoops(Loops, Global.MONO_OUTPUT_DIR, Global.MACMONODBDIR, ref _myChain, this.PdbName);
                 //SharedFunctions.findLoopsHBondingPartnersGeomOnly(Loops, Global.MONO_OUTPUT_DIR, ref _myChain, this.PdbName, false);
 
-                SharedFunctions.writePymolScriptForStrands(this.Strands, Global.MONO_OUTPUT_DIR, Global.MONO_DB_file, this.PdbName);
+                SharedFunctions.writePymolScriptForStrands(this.Strands, Global.MONO_OUTPUT_DIR, Global.MONO_DB_DIR, this.PdbName);
 	            //writeAminoAcidsTypesToFile(ref _myChain, path);
 
 	            SharedFunctions.setInOut(this.Strands, path, this.PdbName, this.Axis, this.Ccentroid, this.Ncentroid);

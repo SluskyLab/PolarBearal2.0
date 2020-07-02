@@ -116,6 +116,11 @@ namespace betaBarrelProgram
 
         public static void writePymolScriptForStrands(List<Strand> strandlist, string outputDirectory, string DBdirectory, string pdbName)
         {
+     
+            if (!System.IO.Directory.Exists(outputDirectory + "PyMOL/ColorStrands/"))
+            {
+                System.IO.Directory.CreateDirectory(outputDirectory + "PyMOL/ColorStrands/");
+            }
             List<string> chain_names = new List<string>();
             string fileLocation = outputDirectory + "PyMOL/ColorStrands/strands_" + pdbName + ".py";
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation))
@@ -128,8 +133,9 @@ namespace betaBarrelProgram
                 //string[] colors = { "white", "red", "orange", "purple", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple" };
                 string[] colors = { "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta" };
                 string pdb_file = DBdirectory + pdbName + ".pdb";
-                file.WriteLine("cmd.hide(\"everything\", \"{0}\")", pdbName);
-                file.WriteLine("cmd.color(\"wheat\",\"{0}\")", pdbName);
+                file.WriteLine("cmd.load(\"{0}\")", pdb_file);
+                file.WriteLine("cmd.hide(\"everything\", \"all\")");
+                file.WriteLine("cmd.color(\"grey50\",\"all\")");
 
                 foreach (Strand strand in strandlist)
                 {
@@ -153,6 +159,10 @@ namespace betaBarrelProgram
         
         public static void writePymolScriptForLoops(Dictionary<string,string> looplist, string outputDirectory, string DBdirectory, ref Chain myChain, string pdbName)
         {
+            if (!System.IO.Directory.Exists(outputDirectory))
+            {
+                System.IO.Directory.CreateDirectory(outputDirectory);
+            }
             List<string> chain_names = new List<string>();
             string fileLocation = outputDirectory + "PyMOL/ColorLoops/Loops_" + pdbName + ".py";
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation, true))
@@ -326,6 +336,10 @@ namespace betaBarrelProgram
 
         public static void getInOut(List<Strand> strandlist, string outputDirectory, string pdbName, Vector3 axis, Vector3 CCentroid, Vector3 NCentroid)
         {
+            if (!System.IO.Directory.Exists(outputDirectory + "InOut"))
+            {
+                System.IO.Directory.CreateDirectory(outputDirectory + "InOut");
+            }
             string fileLocation3 = outputDirectory + "InOut/InOut_" + pdbName + ".txt";
             double direction; double angleUncertainty; double angle;
 
@@ -382,6 +396,10 @@ namespace betaBarrelProgram
 
         public static List<double> getStrandLengths(List<Strand> strandlist, string outputDirectory, string pdbName)
         {
+            if (!System.IO.Directory.Exists(outputDirectory + "Tilts"))
+            {
+                System.IO.Directory.CreateDirectory(outputDirectory + "Tilts");
+            }
             string fileLocation3 = outputDirectory + "Tilts/StrandLength()s_" + pdbName + ".txt";
             double height; List<double> all_lengths = new List<double>();
             string fileOfPDBs = Global.MONO_DB_file;
@@ -404,6 +422,10 @@ namespace betaBarrelProgram
         
         public static Dictionary<string, string> getLoopTurns(List<Strand> strandlist, ref Chain myChain, string outputDirectory, string pdbName)
         {
+            if (!System.IO.Directory.Exists(outputDirectory + "LoopData"))
+            {
+                System.IO.Directory.CreateDirectory(outputDirectory + "LoopData");
+            }
             //string fileLocation = outputDirectory + "RosettaLoops/Loops/" + pdbName + "_Loops_Test.txt";
             //string fileLocation2 = outputDirectory + "RosettaLoops/Turns/" + pdbName + "_Turns_Test.txt";
             string fileLocation = outputDirectory + "LoopData/v4Loops/" + pdbName + "_Loops_Hairpin.txt";
@@ -778,6 +800,10 @@ namespace betaBarrelProgram
         //This is the current implementation for partners
         public static void findHBondingPartnersGeomOnly(List<Strand> strandlist, string outputDirectory, string pdbName)
         {
+            if (!System.IO.Directory.Exists(outputDirectory+ "HBonding"))
+            {
+                System.IO.Directory.CreateDirectory(outputDirectory + "HBonding");
+            }
             string newLine; bool IFstatus;
             string fileLocation = outputDirectory + "HBonding/GeomSC" + pdbName + ".txt";
             string fileLocation2 = outputDirectory + "HBonding/GeomBBone" + pdbName + ".txt";
@@ -1002,6 +1028,10 @@ namespace betaBarrelProgram
 
         public static void findNearNeighDistOnly(List<Strand> strandlist, string outputDirectory, string pdbName)
         {
+            if (!System.IO.Directory.Exists(outputDirectory))
+            {
+                System.IO.Directory.CreateDirectory(outputDirectory);
+            }
             //Neighbor residues are added to Strand residues 
 
             string newLine;
@@ -1188,6 +1218,10 @@ namespace betaBarrelProgram
 
         public static void findHBondingPartnersEnergy(List<Strand> strandlist, string outputDirectory, string pdbName)
         {
+            if (!System.IO.Directory.Exists(outputDirectory))
+            {
+                System.IO.Directory.CreateDirectory(outputDirectory);
+            }
             //Neighbor residues are added to Strand residues 
             Dictionary<Tuple<string, string>, HAcceptor> HAcceptorList = new Dictionary<Tuple<string, string>, HAcceptor>();
             Dictionary<Tuple<string, string>, HDonor> HDonorList = new Dictionary<Tuple<string, string>, HDonor>();
@@ -1247,6 +1281,10 @@ namespace betaBarrelProgram
 
 
             string fileLocation = outputDirectory + "HBonding/SCIntEnergy" + pdbName + ".txt";
+            if (!System.IO.Directory.Exists(outputDirectory + "HBonding"))
+            {
+                System.IO.Directory.CreateDirectory(outputDirectory + "HBonding");
+            }
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation))
             {
                 newLine = "Atom" + "\t" + "Num" + "\t" + "Res" + "\t" + "Strand" + "\t" + "Chain" + "\t" + "Atom2" + "\t" + "Num" + "\t" + "Res2" + "\t" + "Strand" + "\t" + "Chain" + "\t" + "Energy or SB";
@@ -1557,6 +1595,10 @@ namespace betaBarrelProgram
 
         public static List<double> writeTwists(List<Strand> strandlist, string outputDirectory, string pdbName)//, ref Dictionary<string, AminoAcid> _aaDict)
         {
+            if (!System.IO.Directory.Exists(outputDirectory))
+            {
+                System.IO.Directory.CreateDirectory(outputDirectory);
+            }
             //returns theta as definied by Murzin 1994
             List<double> all_prev_twist = new List<double>();
             List<double> all_next_twist = new List<double>();
@@ -1625,7 +1667,10 @@ namespace betaBarrelProgram
             //then determine the dihedral angle
             string fileLocation3 = outputDirectory + "Twists/PrevTwist_" + pdbName + ".txt";
             string fileLocation4 = outputDirectory + "Twists/NextTwist_" + pdbName + ".txt";
-
+            if (!System.IO.Directory.Exists(outputDirectory + "Twists"))
+            {
+                System.IO.Directory.CreateDirectory(outputDirectory + "Twists");
+            }
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation3, true))
             {
                 using (System.IO.StreamWriter file2 = new System.IO.StreamWriter(fileLocation4, true))
@@ -1684,6 +1729,10 @@ namespace betaBarrelProgram
 
         public static double getTiltsByAA(List<Strand> strandlist, string outputDirectory, string PdbName, Vector3 axis, ref Dictionary<string, AminoAcid> _AADict)
         {
+            if (!System.IO.Directory.Exists(outputDirectory))
+            {
+                System.IO.Directory.CreateDirectory(outputDirectory);
+            }
             string[] AAarray = { "ALA", "ARG", "ASN", "ASP", "CYS", "GLN", "GLU", "GLY", "HIS", "ILE", "LEU", "LYS", "MET", "PHE", "PRO", "SER", "THR", "TRP", "TYR", "VAL" };
             int totalResidues = 0;
 
@@ -1778,6 +1827,10 @@ namespace betaBarrelProgram
 
         public static void getTiltsByAA_divided(List<Strand> strandlist, string outputDirectory, string PdbName, ref Dictionary<string, AminoAcid> _AADict, Vector3 axis, out double AvgTilt_even, out double AvgTilt_odd)
         {
+            if (!System.IO.Directory.Exists(outputDirectory))
+            {
+                System.IO.Directory.CreateDirectory(outputDirectory);
+            }
             string[] AAarray = { "ALA", "ARG", "ASN", "ASP", "CYS", "GLN", "GLU", "GLY", "HIS", "ILE", "LEU", "LYS", "MET", "PHE", "PRO", "SER", "THR", "TRP", "TYR", "VAL" };
             int totalResidues_odd = 0;
             int totalResidues_even = 0;
@@ -1869,57 +1922,40 @@ namespace betaBarrelProgram
 
         public static void runBetaBarrel_RYAN(string pdb, ref Protein m_Protein, ref Barrel m_Barrel)
         {
-            try
+            //Directory.SetCurrentDirectory(Global.MONO_DB_DIR);
+            string PDB = pdb.Substring(0, 4).ToUpper();
+            string pdbFileName = Global.MONO_DB_DIR + pdb + ".pdb";
+
+            if (File.Exists(pdbFileName))
             {
-                //Directory.SetCurrentDirectory(Global.MONO_DB_DIR);
-                string PDB = pdb.Substring(0, 4).ToUpper();
-                string pdbFileName = Global.MONO_DB_DIR + pdb + ".pdb";
+                AtomParser.AtomCategory myAtomCat = new AtomParser.AtomCategory();
+                Console.WriteLine("opened {0}", pdbFileName);
+                myAtomCat = Program.ReadPdbFile(pdbFileName, ref Global.partialChargesDict);
+                int chainNum = 0;
 
-                if (File.Exists(pdbFileName))
-                {
-                    AtomParser.AtomCategory myAtomCat = new AtomParser.AtomCategory();
-                    Console.WriteLine("opened {0}", pdbFileName);
-                    myAtomCat = Program.ReadPdbFile(pdbFileName, ref Global.partialChargesDict);
-                    int chainNum = 0;
+                int stop = myAtomCat.ChainAtomList.Count();
+                Console.Write("Protein Class {0}", chainNum);
+                m_Protein = new MonoProtein(ref myAtomCat, chainNum, pdb);
 
-                    int stop = myAtomCat.ChainAtomList.Count();
-                    Console.Write("Protein Class {0}", chainNum);
-                    m_Protein = new MonoProtein(ref myAtomCat, chainNum, PDB);
+                Console.Write("creating barrel class..");
+                m_Barrel = new MonoBarrel(m_Protein.Chains[0], m_Protein);
+            }
+            else
+            {
+                Console.WriteLine("could not find {0}", pdbFileName);
+            }
 
-                    Console.Write("creating barrel class..");
-                    m_Barrel = new MonoBarrel(m_Protein.Chains[0], m_Protein);
-                }
-                else
-                {
-                    Console.WriteLine("could not find {0}", pdbFileName);
-                }
-                /*POLY REMOVE
-                else
-                {
-                    Directory.SetCurrentDirectory(Global.POLY_DB_DIR);
-
-                    pdbFileName = pdb.Substring(0, 4).ToUpper() + ".pdb";
-                    if (File.Exists(pdbFileName))
-                    {
-                        AtomParser.AtomCategory myAtomCat = new AtomParser.AtomCategory();
-                        //Console.WriteLine("opened {0}", pdbFileName);
-                        myAtomCat = Program.readPdbFile(pdbFileName, ref Global.partialChargesDict);
-
-                        PolyProtein newProt = new PolyProtein(ref myAtomCat, pdb); //For considering all chains
-
-                        //Console.WriteLine("creating barrel class..");
-                        m_Protein = newProt;
-                        m_Barrel = new PolyBarrel(newProt, Global.POLY_OUTPUT_DIR, Global.POLY_DB_DIR);
-                    }
+                //try
+                //{
+                    /*POLY REMOVE
                     else
                     {
-                        pdbFileName = pdb.Substring(0, 4).ToLower() + ".pdb";
+                        Directory.SetCurrentDirectory(Global.POLY_DB_DIR);
+
+                        pdbFileName = pdb.Substring(0, 4).ToUpper() + ".pdb";
                         if (File.Exists(pdbFileName))
                         {
                             AtomParser.AtomCategory myAtomCat = new AtomParser.AtomCategory();
-                            //Console.WriteLine("opened {0}", pdbFileName);
-                            myAtomCat = Program.readPdbFile(pdbFileName, ref Global.partialChargesDict);
-
                             //Console.WriteLine("opened {0}", pdbFileName);
                             myAtomCat = Program.readPdbFile(pdbFileName, ref Global.partialChargesDict);
 
@@ -1931,18 +1967,36 @@ namespace betaBarrelProgram
                         }
                         else
                         {
+                            pdbFileName = pdb.Substring(0, 4).ToLower() + ".pdb";
+                            if (File.Exists(pdbFileName))
+                            {
+                                AtomParser.AtomCategory myAtomCat = new AtomParser.AtomCategory();
+                                //Console.WriteLine("opened {0}", pdbFileName);
+                                myAtomCat = Program.readPdbFile(pdbFileName, ref Global.partialChargesDict);
 
-                            //Console.WriteLine("could not find {0}", pdbFileName);
-                        }
-                        }
-                        }
+                                //Console.WriteLine("opened {0}", pdbFileName);
+                                myAtomCat = Program.readPdbFile(pdbFileName, ref Global.partialChargesDict);
 
-POLY REMOVE*/
-            }
-            catch
-            {
-                Console.WriteLine("could not run: " + pdb);
-            }
+                                PolyProtein newProt = new PolyProtein(ref myAtomCat, pdb); //For considering all chains
+
+                                //Console.WriteLine("creating barrel class..");
+                                m_Protein = newProt;
+                                m_Barrel = new PolyBarrel(newProt, Global.POLY_OUTPUT_DIR, Global.POLY_DB_DIR);
+                            }
+                            else
+                            {
+
+                                //Console.WriteLine("could not find {0}", pdbFileName);
+                            }
+                            }
+                            }
+
+    POLY REMOVE*/
+         //       }
+          //  catch
+          //  {
+           //     Console.WriteLine("could not run: " + pdb);
+            //}
         }
 
         public static void saveCbeta2AxisData(ref Barrel m_Barrel)
