@@ -27,16 +27,16 @@ namespace betaBarrelProgram
     public static class Global
     {
 
-        public static string POLARBEARAL_DIR = "/Users/r567f246/desktop/sluskylab/Research/PolarBearal/";
-        public static string POLY_DB_DIR = @"\\psf\Home\Desktop\SluskyLab\betaBarrelProgram\betaBarrelOutput\PolyBarrelsDB\";
-        public static string MACPOLYDBDIR = @"\\psf\Home\Desktop\SluskyLab\betaBarrelProgram\betaBarrelOutput\PolyBarrelsDB\PolyDBList_v4.txt";
-        public static string POLY_OUTPUT_DIR = @"\\psf\Home\Desktop\SluskyLab\betaBarrelProgram\betaBarrelOutput\PolyBarrels\";
+        public static string POLARBEARAL_DIR = "/Users/r567f246/Desktop/gitLab/PolarBearal/";
+        //public static string POLY_DB_DIR = @"\\psf\Home\Desktop\SluskyLab\betaBarrelProgram\betaBarrelOutput\PolyBarrelsDB\";
+        //public static string MACPOLYDBDIR = @"\\psf\Home\Desktop\SluskyLab\betaBarrelProgram\betaBarrelOutput\PolyBarrelsDB\PolyDBList_v4.txt";
+        //public static string POLY_OUTPUT_DIR = @"\\psf\Home\Desktop\SluskyLab\betaBarrelProgram\betaBarrelOutput\PolyBarrels\";
 
         public static string MONO_DB_DIR = POLARBEARAL_DIR + "../DB/monomers/";
-        public static string MACMONODBDIR = POLARBEARAL_DIR + "../DB/MonoDB_v5.txt";
-        public static string MONO_OUTPUT_DIR = POLARBEARAL_DIR + "../Output/monomers_v5/";
+        public static string MONO_DB_file = POLARBEARAL_DIR + "../DB/MonoDB_v5.txt";
+        public static string MONO_OUTPUT_DIR = POLARBEARAL_DIR + "../Output/mono/";
 
-        public static string SOL_OUTPUT_DIR = POLARBEARAL_DIR + "../Output/monomers_v5/";
+        //public static string SOL_OUTPUT_DIR = POLARBEARAL_DIR + "../Output/monomers_v5/";
 
         public static string parameterFile = POLARBEARAL_DIR + "PolarBearal/par_hbond_1.txt";
         public static Dictionary<string, AminoAcid> AADict = SharedFunctions.makeAADict();
@@ -148,7 +148,7 @@ namespace betaBarrelProgram
                         //AlignPDB testAlign = new AlignPDB();
                         break;
                     case "5":
-                        PolarBearal.RunPolarBearal();
+                        //PolarBearal.RunPolarBearal();
                         break;
                     case "6":
                         SharedFunctions.RunCbeta2Axis();
