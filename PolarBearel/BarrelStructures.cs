@@ -197,7 +197,7 @@ namespace betaBarrelProgram
                         }
                         else // beta or polyproII
                         {
-                            if (MonovsPoly == false && phiValue < -90) //Changed from -100 on 12/1/15; needs to be -90 for multi-chain barrels
+                            if (MonovsPoly == false && phiValue < -80) //Changed from -100 on 12/1/15; needs to be -90 for multi-chain barrels
                             {
                                 if (transPeptide) { geoSeq += "B"; }
                                 else { geoSeq += "b"; }
