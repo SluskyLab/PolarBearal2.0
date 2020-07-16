@@ -42,22 +42,24 @@ namespace betaBarrelProgram
                 {
 
                     bool IsItProtein = false;
-                    for (int atomNum = 0; atomNum < _myAtomCat.ChainAtomList[chainNum].cartnAtoms.Count; atomNum++)
+					
+					for (int atomNum = 0; atomNum < _myAtomCat.ChainAtomList[chainNum].cartnAtoms.Count; atomNum++)
                     {
                         if (_myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomNum].atomName == "CA") IsItProtein = true; //if there is a CA anywhere in chain, create new Chain
                     }
-                    if (IsItProtein == true)
+					if (chainNum != 0) { IsItProtein = false; }// added to try to get gfp on 7/15/2020
+					if (IsItProtein == true)
                     {
-                        //Console.WriteLine("Creating new chain");
+                        Console.WriteLine("Creating new chain");
                         Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, false, Global.POLY_DB_DIR);
                         this.Chains.Add(myChain);
                         this.ChainCount++;
                     }
                 }
                 this.Chains.Sort((x, y) => x.ChainName.CompareTo(y.ChainName)); //This sorts chains by letter - dimers don't necessarily add in order.
-                
-                for (int i = 0; i < this.ChainCount; i++)
-                {
+
+				for (int i = 0; i < this.ChainCount; i++)
+				{
                     this.Chains[i].ChainNum = i;
                     foreach (Res res in this.Chains[i].Residues) res.ChainNum = i;
                 }
@@ -113,9 +115,9 @@ namespace betaBarrelProgram
 	            List<string> outside_insertion = new List<string> { "7AHL", "1UUN", "3W9T", "4H56", "4TW1", "3B07", "3O44", "5GAQ", "3J9C" }; //These are the set of exterior inserted barrels for scaling Z-coords appropriately
 
 	            #region Use this to output any info about chains you need before starting to create strands and alter information
-	            /*string fileLocation2 = outputDirectory + "PhiPsiAngles\\" + this.PdbName + ".txt";
-
-	                using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation2))
+	            string fileLocation2 = outputDirectory + "PhiPsiAngles/" + this.PdbName + ".txt";
+				SharedFunctions.create_dir(outputDirectory + "PhiPsiAngles");
+				using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation2))
 	                {
 	                    file.WriteLine("the output is \n");
 	                    for (int chain = 0; chain < _myProtein.ChainCount; chain++ )
@@ -130,7 +132,7 @@ namespace betaBarrelProgram
                             
 	                        }
 	                    }
-	                }*/
+	                }
 	            #endregion
 
 	            createAllStrands(ref _myProtein, outputDirectory); //This also changes all SStypes to B for H-bond searching to be more effective; we can reference back to psi/phi angles for orig type if necessary
@@ -163,12 +165,12 @@ namespace betaBarrelProgram
 	            this.OriginalCcentroid = this.Ccentroid;
 	            this.OriginalNcentroid = this.Ncentroid;
                 this.NewCaxisPt = Vector3.Multiply(Vector3.Subtract(this.Ncentroid, this.Ccentroid), this.AxisVector) + this.Ncentroid;
-	            int axisDirection = 1.0;
+	            float axisDirection = 1;
 
-                if ((this.NewCaxisPt - this.OriginalCcentroid).Length() > ((((this.Ncentroid - this.Ccentroid).Length * -1.0 * this.AxisVector) + this.Ncentroid) - this.OriginalCcentroid).Length)
+                if ((this.NewCaxisPt - this.OriginalCcentroid).Length() > ((((this.Ncentroid - this.Ccentroid).Length() * -1 * this.AxisVector) + this.Ncentroid) - this.OriginalCcentroid).Length())
 	            {
-	                axisDirection = -1.0;
-                    this.NewCaxisPt = (((this.Ncentroid - this.Ccentroid).Length() * -1.0) * this.AxisVector) + this.Ncentroid);
+	                axisDirection = -1;
+                    this.NewCaxisPt = ((((this.Ncentroid - this.Ccentroid).Length() * -1) * this.AxisVector) + this.Ncentroid) ;
 	            }
 
 	            getEllipseCoords(outwardStrands);
@@ -222,7 +224,7 @@ namespace betaBarrelProgram
 	                }
 	            }*/
 	            //SharedFunctions.setInOut(this.Strands, outputDirectory, this.PdbName, this.Axis, this.Ccentroid, this.Ncentroid);
-	            //SharedFunctions.writePymolScriptForStrands(this.Strands, outputDirectory, Program.MacpolyDBDir, this.PdbName);
+	            SharedFunctions.writePymolScriptForStrands(this.Strands, outputDirectory, Global.POLY_DB_DIR, this.PdbName);
 	            //writeAminoAcidsTypesToFile(ref _myProtein, outputDirectory);
 	            //this.AvgTilt = SharedFunctions.getTiltsByAA(this.Strands, outputDirectory, this.PdbName, this.Axis, ref Program.AADict);
             
@@ -279,7 +281,8 @@ namespace betaBarrelProgram
 
 	        public void writeAminoAcidsTypesToFile(ref PolyProtein _myProtein, string outputDirectory)
 	        {
-	            string fileLocation3 = outputDirectory + "AminoAcids\\AminoAcidTypes" + this.PdbName + ".txt";
+				SharedFunctions.create_dir(outputDirectory + "AminoAcids");
+				string fileLocation3 = outputDirectory + "AminoAcids/AminoAcidTypes" + this.PdbName + ".txt";
 	            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation3))
 	            {
 	                file.WriteLine("Sl.No\t*PDB ID*\t*Strands Per Chain*\t*Chains Per Protein*\t*Residue Number*\t*AminoAcid*\t*Chain*\t*Strand Number*\t*Interface*");
@@ -371,8 +374,12 @@ namespace betaBarrelProgram
 	                                            if (d < minD && (Residue1.SSType == "B" && Residue2.SSType == "B"))
 	                                            {
 	                                                HbondedPrev = true;
-	                                                goto CheckNextChain;
-	                                            }
+													if (1 < protoBarrel.Count)
+													{
+														goto CheckNextChain;
+													}
+                                                    else { goto RemoveNonHBondedStrand; }
+												}
 	                                        }
 	                                    }
 	                                }
@@ -490,7 +497,9 @@ namespace betaBarrelProgram
 	                                //if there's a big bend in chain, definitely end the chain
 	                                if (SharedFunctions.AngleBetween(chain.Residues[CurrentResNum - 1].Direction, chain.Residues[CurrentResNum].Direction) >= 80)
 	                                {
-	                                    goto EndChain;
+										double test_ang = SharedFunctions.AngleBetween(chain.Residues[CurrentResNum - 1].Direction, chain.Residues[CurrentResNum].Direction);
+										double test_ang2 = 2.0;
+										goto EndChain;
 	                                }
 	                                //if no bend in chain, check next residue in line 
 	                                else
@@ -541,7 +550,7 @@ namespace betaBarrelProgram
 	                EndChain:
 	                    {
 	                        strandEndRes = CurrentResNum - 1;
-	                        if (strandEndRes - strandStartRes > 5)
+	                        if (strandEndRes - strandStartRes >= 5)
 	                        {
 	                            for (int j = strandStartRes; j <= strandEndRes; j++)
 	                            {
@@ -796,7 +805,7 @@ namespace betaBarrelProgram
 	            {
 	                if (Math.Abs(Res1.SeqID - Res2.SeqID) > 2)
 	                {
-	                    double d = (Res1.Atoms[0].Hydrogen - Res2.BackboneCoords["O"]).Length;
+	                    double d = (Res1.Atoms[0].Hydrogen - Res2.BackboneCoords["O"]).Length();
 	                    if (d < minD && (Res2.SSType == "B" || Res2.DSSP == "E"))
 	                    {
 	                        if (Res1.Neighbors.Contains(Res2.ResNum) == false) Res1.Neighbors.Add(Res2.ResNum);
@@ -835,7 +844,7 @@ namespace betaBarrelProgram
 	                        Ncentroid += firstCA;
 	                        myCEllipse.Add(lastCA);
 	                        Ccentroid += lastCA;
-	                        strand.CEllipseCoords = (Point3D) strand.Residues.Last().Atoms[lastCAIndex].Coords;
+	                        strand.CEllipseCoords = (Vector3) strand.Residues.Last().Atoms[lastCAIndex].Coords;
 	                    }
 	                    else
 	                    {
@@ -843,7 +852,7 @@ namespace betaBarrelProgram
 	                        myNEllipse.Add(lastCA);
 	                        Ncentroid += lastCA;
 	                        Ccentroid += firstCA;
-	                        strand.CEllipseCoords = (Point3D) strand.Residues[0].Atoms[firstCAIndex].Coords;
+	                        strand.CEllipseCoords = (Vector3) strand.Residues[0].Atoms[firstCAIndex].Coords;
 	                    }
 
 	                }
@@ -856,7 +865,7 @@ namespace betaBarrelProgram
 	                        myNEllipse.Add(lastCA);
 	                        Ncentroid += lastCA;
 	                        Ccentroid += firstCA;
-	                        strand.CEllipseCoords = (Point3D) strand.Residues[0].Atoms[firstCAIndex].Coords;
+	                        strand.CEllipseCoords = (Vector3) strand.Residues[0].Atoms[firstCAIndex].Coords;
 	                    }
 	                    else
 	                    {
@@ -864,7 +873,7 @@ namespace betaBarrelProgram
 	                        myCEllipse.Add(lastCA);
 	                        Ccentroid += lastCA;
 	                        Ncentroid += firstCA;
-	                        strand.CEllipseCoords = (Point3D) strand.Residues.Last().Atoms[lastCAIndex].Coords;
+	                        strand.CEllipseCoords = (Vector3) strand.Residues.Last().Atoms[lastCAIndex].Coords;
 	                    }
 	                }
 	            }
@@ -880,30 +889,31 @@ namespace betaBarrelProgram
 
 	        public void rotateToZ(List<String> outPDBs, PolyProtein _myProtein)
 	        {
-	            double length = this.Axis.Length;
+	            
+				double length = this.Axis.Length();
 
-	            double psi = Math.Atan(this.Axis.Y / this.Axis.X);
-	            Matrix3D rotationMatrixZT = new Matrix3D(Math.Cos(psi), Math.Sin(psi), 0, 0, -1 * Math.Sin(psi), Math.Cos(psi), 0, 0, 0, 0, 1, 0, 0, 0, 0, 0);
-	            Matrix3D rotationMatrixZ = new Matrix3D(Math.Cos(psi), -1 * Math.Sin(psi), 0, 0, Math.Sin(psi), Math.Cos(psi), 0, 0, 0, 0, 1, 0, 0, 0, 0, 0);
-	            Vector3 axis1 = new Vector3();
-	            axis1 = rotationMatrixZ.Transform(this.Axis);
+				double psi = Math.Atan(this.Axis.Y / this.Axis.X);
+				Matrix4x4 rotationMatrixZT = new Matrix4x4((float)Math.Cos(psi), (float)Math.Sin(psi), 0, 0, -1 * (float)Math.Sin(psi), (float)Math.Cos(psi), 0, 0, 0, 0, 1, 0, 0, 0, 0, 0);
+				Matrix4x4 rotationMatrixZ = new Matrix4x4((float)Math.Cos(psi), -1 * (float)Math.Sin(psi), 0, 0, (float)Math.Sin(psi), (float)Math.Cos(psi), 0, 0, 0, 0, 1, 0, 0, 0, 0, 0);
+				Vector3 axis1 = new Vector3();
+				axis1 = Vector3.Transform(this.Axis, rotationMatrixZ);
 
-	            double theta = Math.Atan(axis1.X / axis1.Z);
-	            Matrix3D rotationMatrixYT = new Matrix3D(Math.Cos(theta), 0, -1 * Math.Sin(theta), 0, 0, 1, 0, 0, Math.Sin(theta), 0, Math.Cos(theta), 0, 0, 0, 0, 0);
-	            Matrix3D rotationMatrixY = new Matrix3D(Math.Cos(theta), 0, Math.Sin(theta), 0, 0, 1, 0, 0, -1 * Math.Sin(theta), 0, Math.Cos(theta), 0, 0, 0, 0, 0);
+				double theta = Math.Atan(axis1.X / axis1.Z);
+				Matrix4x4 rotationMatrixYT = new Matrix4x4((float)Math.Cos(theta), 0, -1 * (float)Math.Sin(theta), 0, 0, 1, 0, 0, (float)Math.Sin(theta), 0, (float)Math.Cos(theta), 0, 0, 0, 0, 0);
+				Matrix4x4 rotationMatrixY = new Matrix4x4((float)Math.Cos(theta), 0, (float)Math.Sin(theta), 0, 0, 1, 0, 0, -1 * (float)Math.Sin(theta), 0, (float)Math.Cos(theta), 0, 0, 0, 0, 0);
 
-	            Vector3 axis2 = new Vector3();
-	            axis2 = rotationMatrixY.Transform(axis1);
+				Vector3 axis2 = new Vector3();
+				axis2 = Vector3.Transform(axis1, rotationMatrixY);
 
-	                for (int chain = 0; chain < _myProtein.Chains.Count; chain++)
+				for (int chain = 0; chain < _myProtein.Chains.Count; chain++)
 	                {
 	                    foreach (Res res in _myProtein.Chains[chain])
 	                    {
 	                        foreach (Atom atom in res)
 	                        {
-	                            atom.Coords = rotationMatrixZ.Transform(atom.Coords);
-	                            atom.Coords = rotationMatrixY.Transform(atom.Coords);
-	                            if (atom.AtomName == "CA" || atom.AtomName == "C" || atom.AtomName == "N" || atom.AtomName == "O")
+	                            atom.Coords = Vector3.Transform(atom.Coords, rotationMatrixZ);
+	                            atom.Coords = Vector3.Transform(atom.Coords, rotationMatrixY);
+							if (atom.AtomName == "CA" || atom.AtomName == "C" || atom.AtomName == "N" || atom.AtomName == "O")
 	                            {
 	                                res.BackboneCoords[atom.AtomName] = atom.Coords;
 	                            }
@@ -916,18 +926,18 @@ namespace betaBarrelProgram
 
 	            if (this.Ccentroid.Z < this.Ncentroid.Z) //The getEllipseCoords function handles directionality of strands already, so C ellipse is always the periplasmic edge, N ellipse is the cellular side.
 	            {
-	                double phi = Math.PI;
-	                Matrix3D rotationMatrixY2 = new Matrix3D(Math.Cos(phi), 0, Math.Sin(phi), 0, 0, 1, 0, 0, -1 * Math.Sin(phi), 0, Math.Cos(phi), 0, 0, 0, 0, 0);
-	                Vector3 axis3 = new Vector3();
-	                axis3 = rotationMatrixY2.Transform(axis2);
+					double phi = Math.PI;
+					Matrix4x4 rotationMatrixY2 = new Matrix4x4((float)Math.Cos(phi), 0, (float)Math.Sin(phi), 0, 0, 1, 0, 0, -1 * (float)Math.Sin(phi), 0, (float)Math.Cos(phi), 0, 0, 0, 0, 0);
+					Vector3 axis3 = new Vector3();
+					axis3 = Vector3.Transform(axis2, rotationMatrixY2);
 
-	                for (int chain = 0; chain < _myProtein.Chains.Count; chain++)
+					for (int chain = 0; chain < _myProtein.Chains.Count; chain++)
 	                {
 	                    foreach (Res res in _myProtein.Chains[chain])
 	                    {
 	                        foreach (Atom atom in res)
 	                        {
-	                            atom.Coords = rotationMatrixY2.Transform(atom.Coords);
+								atom.Coords = Vector3.Transform(atom.Coords, rotationMatrixY2);
 	                            if (atom.AtomName == "CA" || atom.AtomName == "C" || atom.AtomName == "N" || atom.AtomName == "O")
 	                            {
 	                                res.BackboneCoords[atom.AtomName] = atom.Coords;
@@ -990,11 +1000,11 @@ namespace betaBarrelProgram
 
 	        public void centerZ(List<string> out_ins, List<string> out_pdbs, PolyProtein _myProtein)
 	        {
-	            double factor;
+	            float factor;
 	            double avgZ = (this.Ncentroid.Z + this.Ccentroid.Z) / 2;
 	            getEllipseCoords(out_pdbs);
-	            if (out_ins.Contains(this.PdbName.ToUpper()) == true) factor = this.Ncentroid.Z + 12.5;
-	            else factor = this.Ccentroid.Z - 12.5;
+	            if (out_ins.Contains(this.PdbName.ToUpper()) == true) factor = this.Ncentroid.Z + (float)12.5;
+	            else factor = this.Ccentroid.Z - (float)12.5;
 
 	            for (int chain = 0; chain < _myProtein.Chains.Count; chain++)
 	            {
@@ -1037,14 +1047,14 @@ namespace betaBarrelProgram
 	            if (this.PdbName.ToUpper() == "1EK9") //This pdb needs to use the middle of the barrel for sorting
 	            {
 	                Vector3 axisLine = (this.Ccentroid - this.Ncentroid) / 2;
-	                Point3D midPoint = (Point3D)axisLine;
-	                Point3D midRes = (Point3D)this.Strands[0].Residues[(this.Strands[0].Residues.Count / 2)].BackboneCoords["CA"];
+					Vector3 midPoint = (Vector3)axisLine;
+					Vector3 midRes = (Vector3)this.Strands[0].Residues[(this.Strands[0].Residues.Count / 2)].BackboneCoords["CA"];
 	                Vector3 upaxis = midRes - midPoint;
 	                foreach (Strand strand in this.Strands)
 	                {
-	                    Point3D midCstrand = (Point3D)strand.Residues[(strand.Residues.Count / 2)].BackboneCoords["CA"];
+						Vector3 midCstrand = (Vector3)strand.Residues[(strand.Residues.Count / 2)].BackboneCoords["CA"];
 	                    strand.angle = SharedFunctions.AngleBetween(midCstrand - midPoint, upaxis);
-	                    Vector3 crossP = Vector3.CrossProduct(upaxis, midCstrand - midPoint);
+	                    Vector3 crossP = Vector3.Cross(upaxis, midCstrand - midPoint);
 	                    //Console.WriteLine("{0}{1}\t{2}\t{3}", strand.ChainName, strand.StrandNum, strand.angle, crossP);
 
 	                    if (crossP.Z > 0) strand.angle = 360 - strand.angle; //positive Z means more than halfway around circle from origin
@@ -1054,12 +1064,12 @@ namespace betaBarrelProgram
 	            else
 	            {
 	                //Console.WriteLine(upaxis);
-	                Vector3 upaxis = this.Strands[0].CEllipseCoords - (Point3D)this.Ccentroid;
+	                Vector3 upaxis = this.Strands[0].CEllipseCoords - (Vector3)this.Ccentroid;
 	                foreach (Strand strand in this.Strands)
 	                {
-	                    Point3D strandCE = strand.CEllipseCoords;
-	                    strand.angle = SharedFunctions.AngleBetween(strandCE - (Point3D)this.Ccentroid, upaxis);
-	                    Vector3 crossP = Vector3.CrossProduct(upaxis, strandCE - (Point3D)this.Ccentroid);
+	                    Vector3 strandCE = strand.CEllipseCoords;
+	                    strand.angle = SharedFunctions.AngleBetween(strandCE - (Vector3)this.Ccentroid, upaxis);
+	                    Vector3 crossP = Vector3.Cross(upaxis, strandCE - (Vector3)this.Ccentroid);
 	                    if (crossP.Z > 0) strand.angle = 360 - strand.angle; //positive Z means more than halfway around circle from origin
 	                }
 	            }
