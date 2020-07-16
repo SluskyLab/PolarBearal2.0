@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Poly.cs" />
     <Compile Remove="AlignPDB.cs" />
     <Compile Remove="PolarBearal.cs" />
   </ItemGroup>

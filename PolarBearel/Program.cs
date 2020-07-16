@@ -36,8 +36,8 @@ namespace betaBarrelProgram
         public static string MONO_DB_file = POLARBEARAL_DIR + "/DB/MonoDB_v5.txt";
         public static string MONO_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/mono/";
 
-        public static string POLY_DB_DIR = POLARBEARAL_DIR + "/DB/poly/";
-        public static string POLY_DB_file = POLARBEARAL_DIR + "/DB/PolyDB.txt";
+        public static string POLY_DB_DIR = POLARBEARAL_DIR + "/DB/mono/";
+        public static string POLY_DB_file = POLARBEARAL_DIR + "/DB/MonoDB_v5.txt";
         public static string POLY_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/poly/";
 
         //public static string SOL_OUTPUT_DIR = POLARBEARAL_DIR + "../Output/monomers_v5/";

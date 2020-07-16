@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using betaBarrelProgram.BarrelStructures;
 using betaBarrelProgram.Mono;
-//using betaBarrelProgram.Poly;
+using betaBarrelProgram.Poly;
 using System.IO;
 using System.Numerics;
 
@@ -27,6 +27,14 @@ namespace betaBarrelProgram
 {
     public class SharedFunctions
     {
+        public static void create_dir(string outputDirectory)
+        {
+            if (!System.IO.Directory.Exists(outputDirectory))
+            {
+                System.IO.Directory.CreateDirectory(outputDirectory);
+            }
+        }
+
         public static double AngleBetween(Vector3 v1, Vector3 v2)
         {
             float cos_angle = (Vector3.Dot(v1, v2) / (v1.Length()*v2.Length()));
@@ -116,11 +124,7 @@ namespace betaBarrelProgram
 
         public static void writePymolScriptForStrands(List<Strand> strandlist, string outputDirectory, string DBdirectory, string pdbName)
         {
-     
-            if (!System.IO.Directory.Exists(outputDirectory + "PyMOL/ColorStrands/"))
-            {
-                System.IO.Directory.CreateDirectory(outputDirectory + "PyMOL/ColorStrands/");
-            }
+            create_dir(outputDirectory + "PyMOL/ColorStrands/");
             List<string> chain_names = new List<string>();
             string fileLocation = outputDirectory + "PyMOL/ColorStrands/strands_" + pdbName + ".py";
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation))
@@ -156,13 +160,12 @@ namespace betaBarrelProgram
                 file.WriteLine("cmd.zoom(\"{0}_barrel\")", pdbName);
             }
         }
-        
+
+    
+
         public static void writePymolScriptForLoops(Dictionary<string,string> looplist, string outputDirectory, string DBdirectory, ref Chain myChain, string pdbName)
         {
-            if (!System.IO.Directory.Exists(outputDirectory))
-            {
-                System.IO.Directory.CreateDirectory(outputDirectory);
-            }
+            create_dir(outputDirectory + "PyMOL/ColorLoops");
             List<string> chain_names = new List<string>();
             string fileLocation = outputDirectory + "PyMOL/ColorLoops/Loops_" + pdbName + ".py";
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation, true))
@@ -336,10 +339,7 @@ namespace betaBarrelProgram
 
         public static void getInOut(List<Strand> strandlist, string outputDirectory, string pdbName, Vector3 axis, Vector3 CCentroid, Vector3 NCentroid)
         {
-            if (!System.IO.Directory.Exists(outputDirectory + "InOut"))
-            {
-                System.IO.Directory.CreateDirectory(outputDirectory + "InOut");
-            }
+            create_dir(outputDirectory + "InOut");
             string fileLocation3 = outputDirectory + "InOut/InOut_" + pdbName + ".txt";
             double direction; double angleUncertainty; double angle;
 
@@ -396,10 +396,7 @@ namespace betaBarrelProgram
 
         public static List<double> getStrandLengths(List<Strand> strandlist, string outputDirectory, string pdbName)
         {
-            if (!System.IO.Directory.Exists(outputDirectory + "Tilts"))
-            {
-                System.IO.Directory.CreateDirectory(outputDirectory + "Tilts");
-            }
+            create_dir(outputDirectory + "Tilts");
             string fileLocation3 = outputDirectory + "Tilts/StrandLength()s_" + pdbName + ".txt";
             double height; List<double> all_lengths = new List<double>();
             string fileOfPDBs = Global.MONO_DB_file;
@@ -422,10 +419,8 @@ namespace betaBarrelProgram
         
         public static Dictionary<string, string> getLoopTurns(List<Strand> strandlist, ref Chain myChain, string outputDirectory, string pdbName)
         {
-            if (!System.IO.Directory.Exists(outputDirectory + "LoopData"))
-            {
-                System.IO.Directory.CreateDirectory(outputDirectory + "LoopData");
-            }
+            create_dir(outputDirectory + "LoopData/v4Turns");
+            create_dir(outputDirectory + "TurnData/v4Loops");
             //string fileLocation = outputDirectory + "RosettaLoops/Loops/" + pdbName + "_Loops_Test.txt";
             //string fileLocation2 = outputDirectory + "RosettaLoops/Turns/" + pdbName + "_Turns_Test.txt";
             string fileLocation = outputDirectory + "LoopData/v4Loops/" + pdbName + "_Loops_Hairpin.txt";
@@ -435,7 +430,6 @@ namespace betaBarrelProgram
             int turn_count = 0; int loop_count = 0; bool is_turn; string loop_seq = ""; List<Tuple<double, double>> phipsi = new List<Tuple<double, double>>();
             string newline;
             Dictionary<string, string> all_loops = new Dictionary<string, string>();
-
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation, true))
             {
                 file.Write("PDB\tID\tLength()\tSequence\tRes\tDist\tStrand1\tStrand2\n");
@@ -524,7 +518,7 @@ namespace betaBarrelProgram
             string fileLocation2 = outputDirectory + "HBonding/GeomBBone" + pdbName + ".txt";
             string fileLocation3 = outputDirectory + "HBonding/GeomBBSC" + pdbName + ".txt";
             Char delimiter = '-';
-
+            create_dir(outputDirectory + "HBonding");
             using (System.IO.StreamWriter test_file = new System.IO.StreamWriter(outputDirectory + "HBonding/TestFile"+pdbName + ".txt"))
             {
                 using (System.IO.StreamWriter SCfile = new System.IO.StreamWriter(fileLocation))
@@ -769,6 +763,7 @@ namespace betaBarrelProgram
         public static void findNearestNeighbors(List<Strand> strandlist, string outputDirectory, string pdbName)
         {
             int next_strand; Res neighbor; double dist; double neighDist;
+            create_dir(outputDirectory + "NearestNeighMono/CANeighbors");
             string fileLocation = outputDirectory + "/NearestNeighMono/CANeighbors/NearestNeigh" + pdbName + ".txt";
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation))
             {
@@ -800,10 +795,7 @@ namespace betaBarrelProgram
         //This is the current implementation for partners
         public static void findHBondingPartnersGeomOnly(List<Strand> strandlist, string outputDirectory, string pdbName)
         {
-            if (!System.IO.Directory.Exists(outputDirectory+ "HBonding"))
-            {
-                System.IO.Directory.CreateDirectory(outputDirectory + "HBonding");
-            }
+            create_dir(outputDirectory + "HBonding");
             string newLine; bool IFstatus;
             string fileLocation = outputDirectory + "HBonding/GeomSC" + pdbName + ".txt";
             string fileLocation2 = outputDirectory + "HBonding/GeomBBone" + pdbName + ".txt";
@@ -1028,10 +1020,7 @@ namespace betaBarrelProgram
 
         public static void findNearNeighDistOnly(List<Strand> strandlist, string outputDirectory, string pdbName)
         {
-            if (!System.IO.Directory.Exists(outputDirectory))
-            {
-                System.IO.Directory.CreateDirectory(outputDirectory);
-            }
+            create_dir(outputDirectory);
             //Neighbor residues are added to Strand residues 
 
             string newLine;
@@ -1218,10 +1207,7 @@ namespace betaBarrelProgram
 
         public static void findHBondingPartnersEnergy(List<Strand> strandlist, string outputDirectory, string pdbName)
         {
-            if (!System.IO.Directory.Exists(outputDirectory))
-            {
-                System.IO.Directory.CreateDirectory(outputDirectory);
-            }
+            create_dir(outputDirectory);
             //Neighbor residues are added to Strand residues 
             Dictionary<Tuple<string, string>, HAcceptor> HAcceptorList = new Dictionary<Tuple<string, string>, HAcceptor>();
             Dictionary<Tuple<string, string>, HDonor> HDonorList = new Dictionary<Tuple<string, string>, HDonor>();
@@ -1281,10 +1267,7 @@ namespace betaBarrelProgram
 
 
             string fileLocation = outputDirectory + "HBonding/SCIntEnergy" + pdbName + ".txt";
-            if (!System.IO.Directory.Exists(outputDirectory + "HBonding"))
-            {
-                System.IO.Directory.CreateDirectory(outputDirectory + "HBonding");
-            }
+            create_dir(outputDirectory + "HBonding");
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation))
             {
                 newLine = "Atom" + "\t" + "Num" + "\t" + "Res" + "\t" + "Strand" + "\t" + "Chain" + "\t" + "Atom2" + "\t" + "Num" + "\t" + "Res2" + "\t" + "Strand" + "\t" + "Chain" + "\t" + "Energy or SB";
@@ -1935,10 +1918,12 @@ namespace betaBarrelProgram
 
                 int stop = myAtomCat.ChainAtomList.Count();
                 Console.Write("Protein Class {0}", chainNum);
-                m_Protein = new MonoProtein(ref myAtomCat, chainNum, pdb);
+                //m_Protein = new MonoProtein(ref myAtomCat, chainNum, pdb);
+                PolyProtein p_Protein = new PolyProtein(ref myAtomCat, pdb);
 
                 Console.Write("creating barrel class..");
-                m_Barrel = new MonoBarrel(m_Protein.Chains[0], m_Protein);
+                //m_Barrel = new MonoBarrel(m_Protein.Chains[0], m_Protein);
+                m_Barrel = new PolyBarrel(p_Protein, Global.POLY_OUTPUT_DIR, Global.MONO_DB_DIR);
             }
             else
             {
