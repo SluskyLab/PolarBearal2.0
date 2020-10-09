@@ -52,8 +52,9 @@ namespace betaBarrelProgram
         Vector3 OldCaxisPt { get; set; }
         int ShearNum { get; set; }
         List<double> PrevTwists { get; set; }
+        public bool Success { get; set; }
 
-    }
+        }
 
         public class Chain : IEnumerable<Res>
         {
@@ -122,24 +123,29 @@ namespace betaBarrelProgram
                         for (int atomCtr = 0; atomCtr < Residues[residueCtr].Atoms.Count; atomCtr++)
                         {
                             if (Residues[residueCtr].Atoms[atomCtr].AtomName == "N" && Residues[residueCtr].ThreeLetCode != "PRO")
-                            {// get H coords for NH 
-                                Vector3 COvec = new Vector3();
-                                COvec = Residues[residueCtr - 1].BackboneCoords["C"] - Residues[residueCtr - 1].BackboneCoords["O"];
-                                COvec = Vector3.Normalize(COvec);
-                                COvec = COvec * (float)0.9;
-                                COvec += Residues[residueCtr].Atoms[atomCtr].Coords;
-                                Residues[residueCtr].Atoms[atomCtr].Hydrogen = COvec;
+                            {// get H coords for NH
+                                // make sure backbone atoms exist (case in point: 4FSO_B ALA160)
+                                if (Residues[residueCtr - 1].BackboneCoords.ContainsKey("C") && Residues[residueCtr - 1].BackboneCoords.ContainsKey("O"))
+                                {
+                                    Vector3 COvec = new Vector3();
+                                    COvec = Residues[residueCtr - 1].BackboneCoords["C"] - Residues[residueCtr - 1].BackboneCoords["O"];
+                                    COvec = Vector3.Normalize(COvec);
+                                    COvec = COvec * (float)0.9;
+                                    COvec += Residues[residueCtr].Atoms[atomCtr].Coords;
+                                    Residues[residueCtr].Atoms[atomCtr].Hydrogen = COvec;
+                                }
                             }
-
-                            //get e2 vector for carbonyl
-                            Vector3 e2 = new Vector3();
-                            e2 = Residues[residueCtr - 1].BackboneCoords["C"] - Residues[residueCtr].BackboneCoords["N"];
-                            e2 = Vector3.Normalize(e2);
-                            for (int atomCtr2 = 0; atomCtr2 < Residues[residueCtr - 1].Atoms.Count; atomCtr2++)
+                            if (Residues[residueCtr - 1].BackboneCoords.ContainsKey("C") && Residues[residueCtr - 1].BackboneCoords.ContainsKey("O") && Residues[residueCtr].BackboneCoords.ContainsKey("N"))
                             {
-                                if (Residues[residueCtr - 1].Atoms[atomCtr2].AtomName == "O") Residues[residueCtr - 1].Atoms[atomCtr2].e2 = e2;
+                                //get e2 vector for carbonyl
+                                Vector3 e2 = new Vector3();
+                                e2 = Residues[residueCtr - 1].BackboneCoords["C"] - Residues[residueCtr].BackboneCoords["N"];
+                                e2 = Vector3.Normalize(e2);
+                                for (int atomCtr2 = 0; atomCtr2 < Residues[residueCtr - 1].Atoms.Count; atomCtr2++)
+                                {
+                                    if (Residues[residueCtr - 1].Atoms[atomCtr2].AtomName == "O") Residues[residueCtr - 1].Atoms[atomCtr2].e2 = e2;
+                                }
                             }
-
 
                         }
 
@@ -333,7 +339,8 @@ namespace betaBarrelProgram
             public List<Res> Residues { get; set; }//list of res
             public int ResNumStart { get; set; }//first res in strand
             public int ResNumEnd { get; set; }//last res in strand
-            public int StrandNum { get; set; }//strand num relative to ?
+            public int StrandNum { get; set; }//strand num relative to start of barrel
+            public int betaStrandNum { get; set; }//strand num relative to all beta strands in PDB
             public int NumOfRes { get; set; }//number of res in strand
             public double AvgTilt { get; set; }
             public double MinTilt { get; set; }
@@ -352,6 +359,30 @@ namespace betaBarrelProgram
                 this.ResNumStart = resNumStart;
                 this.ResNumEnd = resNumEnd;
                 this.StrandNum = strandNum;
+                this.betaStrandNum = -1; //not kept track of in poly or mono
+                this.NumOfRes = resNumEnd - resNumStart;
+                this.ChainName = chain.ChainName;
+                this.ChainNum = chain.ChainNum;
+
+                this.CEllipseCoords = new Vector3();
+                this.angle = 0;
+                for (int resCtr = this.ResNumStart; resCtr < this.ResNumEnd + 1; resCtr++)
+                {
+                    chain.Residues[resCtr].StrandNum = strandNum;
+                    chain.Residues[resCtr].ResStrandNum = resCtr - this.ResNumStart;
+
+                    this.Residues.Add(chain.Residues[resCtr]);
+                }
+
+            }
+            // overload constructor so that all method can have two different strand counters (barrel and all beta)
+            public Strand(Chain chain, int resNumStart, int resNumEnd, int strandNum, int betaStrandNum)
+            {
+                this.Residues = new List<Res>();
+                this.ResNumStart = resNumStart;
+                this.ResNumEnd = resNumEnd;
+                this.StrandNum = strandNum;
+                this.betaStrandNum = betaStrandNum;
                 this.NumOfRes = resNumEnd - resNumStart;
                 this.ChainName = chain.ChainName;
                 this.ChainNum = chain.ChainNum;

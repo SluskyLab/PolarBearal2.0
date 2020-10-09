@@ -47,11 +47,11 @@ namespace betaBarrelProgram
                     {
                         if (_myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomNum].atomName == "CA") IsItProtein = true; //if there is a CA anywhere in chain, create new Chain
                     }
-					if (chainNum != 0) { IsItProtein = false; }// added to try to get gfp on 7/15/2020
+					//if (chainNum != 0) { IsItProtein = false; }// added to try to get gfp on 7/15/2020
 					if (IsItProtein == true)
                     {
                         Console.WriteLine("Creating new chain");
-                        Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, false, Global.POLY_DB_DIR);
+                        Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, false, Global.DB_DIR);
                         this.Chains.Add(myChain);
                         this.ChainCount++;
                     }
@@ -68,7 +68,7 @@ namespace betaBarrelProgram
             public PolyProtein(ref AtomParser.AtomCategory _myAtomCat, int chainNum, string PdbName)
             {
                 this.Chains = new List<BarrelStructures.Chain>();
-                Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, false, Global.POLY_DB_DIR);
+                Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, false, Global.DB_DIR);
                 this.Chains.Add(myChain);
             }
 
@@ -105,13 +105,18 @@ namespace betaBarrelProgram
             public Vector3 OldCaxisPt { get; set; }
             public int ShearNum { get; set; }
             public List<double> PrevTwists { get; set; }
+			public bool Success { get; set; }
 
-	        public PolyBarrel(PolyProtein _myProtein, string outputDirectory, string databaseDirectory) // send a protein class instead of chains
+			public PolyBarrel(ref PolyProtein _myProtein) // send a protein class instead of chains
 	        {
-	            this.protoBarrel = new List<List<List<int>>>();
+				string outputDirectory = Global.OUTPUT_DIR;
+				string databaseDirectory = Global.DB_DIR;
+
+				this.protoBarrel = new List<List<List<int>>>();
 	            this.Strands = new List<Strand>();
 	            this.PdbName = _myProtein.PdbName;
-	            List<string> outwardStrands = new List<string> { "4MT4", "4K7R", "4MT0", "3D5K", "1EK9", "1YC9", "2LME", "3X2R", "2GR7", "5AZP", "5AZS" }; //This set of pdb ID's have Astrand0 that point outwards of the cell
+				this.Success = true;//need to actually check this at some point, but variable is currently only for all method
+				List<string> outwardStrands = new List<string> { "4MT4", "4K7R", "4MT0", "3D5K", "1EK9", "1YC9", "2LME", "3X2R", "2GR7", "5AZP", "5AZS" }; //This set of pdb ID's have Astrand0 that point outwards of the cell
 	            List<string> outside_insertion = new List<string> { "7AHL", "1UUN", "3W9T", "4H56", "4TW1", "3B07", "3O44", "5GAQ", "3J9C" }; //These are the set of exterior inserted barrels for scaling Z-coords appropriately
 
 	            #region Use this to output any info about chains you need before starting to create strands and alter information
@@ -224,7 +229,7 @@ namespace betaBarrelProgram
 	                }
 	            }*/
 	            //SharedFunctions.setInOut(this.Strands, outputDirectory, this.PdbName, this.Axis, this.Ccentroid, this.Ncentroid);
-	            SharedFunctions.writePymolScriptForStrands(this.Strands, outputDirectory, Global.POLY_DB_DIR, this.PdbName);
+	            SharedFunctions.writePymolScriptForStrands(this.Strands, outputDirectory, Global.DB_DIR, this.PdbName);
 	            //writeAminoAcidsTypesToFile(ref _myProtein, outputDirectory);
 	            //this.AvgTilt = SharedFunctions.getTiltsByAA(this.Strands, outputDirectory, this.PdbName, this.Axis, ref Program.AADict);
             
@@ -251,7 +256,7 @@ namespace betaBarrelProgram
 	                }
 	                else if (this_chain.ChainName == "A")
 	                {
-	                    Dictionary<string, string> Loops = SharedFunctions.getLoopTurns(this.Strands, ref this_chain, outputDirectory, this.PdbName);
+	                    //RYAN//Dictionary<string, string> Loops = SharedFunctions.getLoopTurns(this.Strands, ref this_chain, outputDirectory, this.PdbName);
 	                    //SharedFunctions.writePymolScriptForLoops(Loops, outputDirectory, Program.MacpolyDBDir, ref this_chain, this.PdbName);
 	                    //SharedFunctions.findLoopsHBondingPartnersGeomOnly(Loops, outputDirectory, ref this_chain, this.PdbName, true);
                         //this.PrevTwists = SharedFunctions.writeTwists(this.Strands, outputDirectory, this.PdbName);

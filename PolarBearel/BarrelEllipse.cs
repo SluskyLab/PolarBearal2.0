@@ -47,7 +47,8 @@ namespace betaBarrelProgram
             Console.WriteLine("Enter pdb:");
             string pdb = Console.ReadLine();
 
-            string IN_FILE = Global.MONO_DB_DIR + pdb + ".pdb";
+            /*updated with new input output methods below Oct 10, 2020
+             string IN_FILE = Global.MONO_DB_DIR + pdb + ".pdb";
             OUTPUT_PATH = Global.MONO_OUTPUT_DIR + "ellipse/";
 
             if (!File.Exists(IN_FILE))
@@ -55,6 +56,10 @@ namespace betaBarrelProgram
                 IN_FILE = Global.POLY_DB_DIR + pdb + ".pdb";
                 OUTPUT_PATH = Global.POLY_OUTPUT_DIR + "ellipse/";
             }
+            */
+            string IN_FILE = Global.DB_DIR + pdb + ".pdb";
+            OUTPUT_PATH = Global.OUTPUT_DIR + "ellipse/";
+            SharedFunctions.create_dir(Global.OUTPUT_DIR + "ellipse");
 
             stopWatch.Start();
             
@@ -89,78 +94,81 @@ namespace betaBarrelProgram
             TimeSpan ts;
             string file;
 
-            Console.WriteLine("Mono or Poly?(m/p)");
-            string input = Console.ReadLine();
+            /*updated with new input output methods below Oct 10, 2020
+           Console.WriteLine("Mono or Poly?(m/p)");
+           string input = Console.ReadLine();
 
-            if (input == "m")
-            {
-                DB_FILE = Global.MONO_DB_file;
-                OUTPUT_PATH = Global.MONO_OUTPUT_DIR + "ellipse/";
-            }
-            else
-            {
-                DB_FILE = Global.POLY_DB_file;
-                OUTPUT_PATH = Global.POLY_OUTPUT_DIR + "ellipse/";
-            }
+           if (input == "m")
+           {
+               DB_FILE = Global.MONO_DB_file;
+               OUTPUT_PATH = Global.MONO_OUTPUT_DIR + "ellipse/";
+           }
+           else
+           {
+               DB_FILE = Global.POLY_DB_file;
+               OUTPUT_PATH = Global.POLY_OUTPUT_DIR + "ellipse/";
+           }
+            */
+            DB_FILE = Global.MONO_DB_file;
+            OUTPUT_PATH = Global.OUTPUT_DIR + "ellipse/";
+            SharedFunctions.create_dir(Global.OUTPUT_DIR + "ellipse");
 
-            stopWatch.Start();
-            file = OUTPUT_PATH + "ELLIPSE_RESULTS.txt";
-            using (System.IO.StreamWriter output = new System.IO.StreamWriter(file))
-            {
-                output.Write("\tProtein:\tAngle Between Ellipsis\tTop Eccentricity:\tBottom Eccentricity:\tTop Deviation:\tBottom Deviation:");
-            }
-            
+           stopWatch.Start();
+           file = OUTPUT_PATH + "ELLIPSE_RESULTS.txt";
+           using (System.IO.StreamWriter output = new System.IO.StreamWriter(file))
+           {
+               output.Write("\tProtein:\tAngle Between Ellipsis\tTop Eccentricity:\tBottom Eccentricity:\tTop Deviation:\tBottom Deviation:");
+           }
 
-            if (File.Exists(DB_FILE))
-            {
-                using (StreamReader sr = new StreamReader(DB_FILE))
-                {
-                    String line;
 
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                        string[] splitLine = line.Split(new char[] { ' ', '\t', ',' });
-                        string pdb = splitLine[0];
-                        ts = stopWatch.Elapsed;
-                        elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
-                        Console.WriteLine("RunTime " + elapsedTime);
-                        BarrelEllipse newBarrel = new BarrelEllipse(pdb);
-                        newBarrel.EllipseResults(pdb);
+           if (File.Exists(DB_FILE))
+           {
+               using (StreamReader sr = new StreamReader(DB_FILE))
+               {
+                   String line;
 
-                    }
+                   while ((line = sr.ReadLine()) != null)
+                   {
+                       string[] splitLine = line.Split(new char[] { ' ', '\t', ',' });
+                       string pdb = splitLine[0];
+                       ts = stopWatch.Elapsed;
+                       elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
+                       Console.WriteLine("RunTime " + elapsedTime);
+                       BarrelEllipse newBarrel = new BarrelEllipse(pdb);
+                       newBarrel.EllipseResults(pdb);
 
-                }
-            }
-            else
-            {
-                Console.WriteLine("I am in {0}", System.IO.Directory.GetCurrentDirectory());
-                Console.WriteLine("could not open {0}", DB_FILE);
-                Console.ReadLine();
+                   }
 
-            }
+               }
+           }
+           else
+           {
+               Console.WriteLine("I am in {0}", System.IO.Directory.GetCurrentDirectory());
+               Console.WriteLine("could not open {0}", DB_FILE);
+               Console.ReadLine();
 
-            ts = stopWatch.Elapsed;
-            elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
-            Console.WriteLine("RunTime " + elapsedTime);
-        }
+           }
 
-        /*
-        ** Pre:     
-        ** Post:      
-        ** About:    
-        */
-        public BarrelEllipse(string PDBid)
+           ts = stopWatch.Elapsed;
+           elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
+           Console.WriteLine("RunTime " + elapsedTime);
+       }
+
+       /*
+       ** Pre:     
+       ** Post:      
+       ** About:    
+       */
+            public BarrelEllipse(string PDBid)
         {
 
             pdbDir = OUTPUT_PATH + PDBid + "/";
-            if (!System.IO.Directory.Exists(pdbDir))
-            {
-                System.IO.Directory.CreateDirectory(pdbDir);
-            }
+            SharedFunctions.create_dir(pdbDir);
             _protein = null;
             _barrel = null;
 
-            SharedFunctions.runBetaBarrel_RYAN(PDBid, ref _protein, ref _barrel);
+            //SharedFunctions.runBetaBarrel_RYAN(PDBid, ref _protein, ref _barrel);
+            Program.runThisBetaBarrel(PDBid, "mono", ref _barrel, ref _protein);
             strandlist = _barrel.Strands;
 
             BottomEllipse = new Ellipse(SharedFunctions.getBottomEllipseCoords(strandlist));

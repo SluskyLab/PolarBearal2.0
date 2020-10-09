@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <Compile Remove="AlignPDB.cs" />
-    <Compile Remove="PolarBearal.cs" />
+    <Compile Remove="PolarBearal %28copy%29.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MathNet.Numerics" Version="4.11.0" />

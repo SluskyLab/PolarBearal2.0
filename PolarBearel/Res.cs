@@ -44,6 +44,7 @@ namespace betaBarrelProgram
         public int ChainNum { get; set; }
         public string ChainName { get; set; }
         public int StrandNum { get; set; }
+        public int betaStrandNum { get; set; }
         public double Dihedral { get; set; }
         public double Twist_next { get; set; }
         public double Twist_prev { get; set; }
@@ -92,35 +93,31 @@ namespace betaBarrelProgram
             this.OneLetCode = threeToOne(ThreeLetCode);
             this.SeqID = Convert.ToInt32(_myAtomCat.ChainAtomList[chainNum].CartnAtoms[FirstAtomNum].authSeqId); //formerly authSeqID; resnum in the PDB
 
-            //for (int atomctr = FirstAtomNum; atomctr < _myAtomCat.ChainAtomList[chainNum].cartnAtoms.Count; atomctr++) //changed to a while loop on 6-14-16 - works EXPONENTIALLY faster
             int atomctr = FirstAtomNum;
             while (_myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].seqId == _myAtomCat.ChainAtomList[chainNum].CartnAtoms[FirstAtomNum].seqId)
             {
-                if (_myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].seqId == _myAtomCat.ChainAtomList[chainNum].CartnAtoms[FirstAtomNum].seqId)
+                Vector3 coords = new Vector3((float)_myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].xyz.X, (float)_myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].xyz.Y, (float)_myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].xyz.Z);
+                Atom myAtom = new Atom(this.ThreeLetCode, coords, atomctr, _myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].atomName, _myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].atomType);
+                Atoms.Add(myAtom); //collect info from myAtomCat
+
+                if (_myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].atomName == "CA" || _myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].atomName == "C" || _myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].atomName == "N" || _myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].atomName == "O")
                 {
-                    Vector3 coords = new Vector3((float)_myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].xyz.X, (float)_myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].xyz.Y, (float)_myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].xyz.Z);
-                    Atom myAtom = new Atom(this.ThreeLetCode, coords, atomctr, _myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].atomName, _myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].atomType);
-                    Atoms.Add(myAtom); //collect info from myAtomCat
-
-                    if (_myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].atomName == "CA" || _myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].atomName == "C" || _myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].atomName == "N" || _myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].atomName == "O")
+                    if (BackboneCoords.ContainsKey(_myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].atomName) != true)
                     {
-                        if (BackboneCoords.ContainsKey(_myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].atomName) != true)
-                        {
-                            this.BackboneCoords.Add(_myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].atomName, myAtom.Coords);
-                        }
-                        else
-                        {
-                            Console.WriteLine("IMPORTANT!!!!! Residue {0} has multiple ocupancy", this.SeqID);
-                        }
-
+                        this.BackboneCoords.Add(_myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].atomName, myAtom.Coords);
                     }
-                    //Added 6-2-17 for loop purposes
-                    if (_myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].atomName == "CA")
+                    else
                     {
-                        this.BFacCA = _myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].bFac;
+                        Console.WriteLine("IMPORTANT!!!!! Residue {0} atom {1} has multiple ocupancy", this.SeqID, _myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].atomName);
                     }
 
                 }
+                //Added 6-2-17 for loop purposes
+                if (_myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].atomName == "CA")
+                {
+                    this.BFacCA = _myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomctr].bFac;
+                }
+
                 atomctr++;
                 if (atomctr >= _myAtomCat.ChainAtomList[chainNum].cartnAtoms.Count) break;
             }
@@ -140,6 +137,11 @@ namespace betaBarrelProgram
                     //Console.WriteLine("{0}\t{1}", this.ThreeLetCode, this.SideChainDir);
                 }
 
+            }
+            //Added 10-8-2020 to warn about reading in partially resolved residues
+            if (this.Atoms.Count < 4)
+            {
+                Console.WriteLine("IMPORTANT!???! Residue {0} is partially resolved (missing at least C, O, N, or CA)", this.SeqID);
             }
 
         }

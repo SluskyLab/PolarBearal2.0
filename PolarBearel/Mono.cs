@@ -47,7 +47,8 @@ namespace betaBarrelProgram
                     }
                     if (IsItProtein == true)
                     {
-                        Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, true, Global.MONO_DB_DIR);
+                        //Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, true, Global.MONO_DB_DIR);
+                        Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, false, Global.MONO_DB_DIR); //changed mono status for SS for solubles
                         this.Chains.Add(myChain);
                         this.ChainCount++;
                     }
@@ -57,7 +58,8 @@ namespace betaBarrelProgram
             public MonoProtein(ref AtomParser.AtomCategory _myAtomCat, int chainNum, string PdbName)
             {
                 this.Chains = new List<BarrelStructures.Chain>();
-                BarrelStructures.Chain myChain = new BarrelStructures.Chain(ref _myAtomCat, chainNum, PdbName, true, Global.MONO_DB_DIR);
+                //BarrelStructures.Chain myChain = new BarrelStructures.Chain(ref _myAtomCat, chainNum, PdbName, true, Global.DB_DIR);
+                BarrelStructures.Chain myChain = new BarrelStructures.Chain(ref _myAtomCat, chainNum, PdbName, false, Global.DB_DIR); //changed mono status for SS for solubles
                 this.Chains.Add(myChain);
             }
 
@@ -96,8 +98,8 @@ namespace betaBarrelProgram
             public Vector3 OldCaxisPt { get; set; }
             public int ShearNum { get; set; }
             public List<double> PrevTwists { get; set; }
-
-            public static string path = Global.MONO_OUTPUT_DIR;
+            public bool Success { get; set; }
+            //public static string path = Global.OUTPUT_DIR;
 
             //barrel constructor 
             public MonoBarrel(Chain _myChain, Protein _myProtein)
@@ -106,9 +108,10 @@ namespace betaBarrelProgram
                 this.ChainName = _myChain.ChainName;
                 this.protoBarrel = new List<List<int>>();
                 this.PdbName = _myChain.PdbName;
-	            
-				//Writing info about residues
-				/*string fileLocation2 = path + "PhiPsiBBAngle/" + this.PdbName + ".txt";
+                this.Success = true;//need to actually check this at some point, but variable is currently only for all method
+                string path = Global.OUTPUT_DIR;
+                //Writing info about residues
+                /*string fileLocation2 = path + "PhiPsiBBAngle/" + this.PdbName + ".txt";
 	                using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation2))
 	                {
 	                        foreach (Res res in _myChain)
@@ -120,9 +123,9 @@ namespace betaBarrelProgram
 	                        }
 	                }*/
 
-	            #region makeBarrel
-	            //Pattern finding method of barrels
-	            /*createStrandsPattern(ref _myChain, ref _myProtein, path);
+                #region makeBarrel
+                //Pattern finding method of barrels
+                /*createStrandsPattern(ref _myChain, ref _myProtein, path);
 	            //for (int x = 0; x < this.protoBarrel.Count; x++) { Console.WriteLine(x + "\t" + _myChain.Residues[this.protoBarrel[x][0]].SeqID + "\t" + _myChain.Residues[this.protoBarrel[x].Last()].SeqID); }
 	            checkStrandPatt(ref _myChain);
 	            makeBarrelCircular(ref _myChain);
@@ -131,15 +134,15 @@ namespace betaBarrelProgram
 
 	            makeBarrelCircular(ref _myChain);
 	            removeNonBarrelRes(ref _myChain);*/
-	            //Reset to run diff way
-	            /*foreach (Res res1 in _myChain)
+                //Reset to run diff way
+                /*foreach (Res res1 in _myChain)
 	            {
 	                res1.Neighbors = new List<int>();
 	            }
 	            this.protoBarrel = new List<List<int>>();
 
 	            Console.WriteLine("Redefining strands");*/
-				//Current method of defining strands
+                //Current method of defining strands
                 createStrands(ref _myChain);
 				//If DSSP definitions are important
 	            /*foreach (Res Res1 in _myChain){
@@ -282,10 +285,10 @@ namespace betaBarrelProgram
 
 	            //DSSP has to be used to define strands before the strands are created; although I could clear and recreate them if necessary...
 	            //Dictionary<string, string> Loops = SharedFunctions.getLoopTurns(this.Strands, ref _myChain, path, this.PdbName);
-                //SharedFunctions.writePymolScriptForLoops(Loops, Global.MONO_OUTPUT_DIR, Global.MACMONODBDIR, ref _myChain, this.PdbName);
-                //SharedFunctions.findLoopsHBondingPartnersGeomOnly(Loops, Global.MONO_OUTPUT_DIR, ref _myChain, this.PdbName, false);
+                //SharedFunctions.writePymolScriptForLoops(Loops, Global.OUTPUT_DIR, Global.MACMONODBDIR, ref _myChain, this.PdbName);
+                //SharedFunctions.findLoopsHBondingPartnersGeomOnly(Loops, Global.OUTPUT_DIR, ref _myChain, this.PdbName, false);
 
-                SharedFunctions.writePymolScriptForStrands(this.Strands, Global.MONO_OUTPUT_DIR, Global.MONO_DB_DIR, this.PdbName);
+                SharedFunctions.writePymolScriptForStrands(this.Strands, Global.OUTPUT_DIR, Global.DB_DIR, this.PdbName);
 	            //writeAminoAcidsTypesToFile(ref _myChain, path);
 
 	            SharedFunctions.setInOut(this.Strands, path, this.PdbName, this.Axis, this.Ccentroid, this.Ncentroid);
@@ -890,7 +893,7 @@ namespace betaBarrelProgram
             // this will calculate the shear number of the beta barrel.  see murzin lesk and chothia 1994 http://www.mrc-lmb.cam.ac.uk/tcb/pdf/chc/97_jmb_236_1369_94.pdf
             public int shearNum(ref Chain _myChain)
             {
-                string filelocation = path + "ShearNum_" + PdbName + ".txt";
+                string filelocation = Global.OUTPUT_DIR + "ShearNum_" + PdbName + ".txt";
                 using (System.IO.StreamWriter file = new System.IO.StreamWriter(filelocation))
                 {
                     // first determine nearest hbonding neighbor with N coming from N-term  (arbitrary)           
@@ -963,7 +966,7 @@ namespace betaBarrelProgram
                 int shearNum = 0;
                 int k = 0; int l = 0; int j = 0; int m = 0;
                 int StrandNum1; int StrandNum2; int StrandNum0 = 0;
-                string filelocation = path + "ShearNum/ShearNum_" + PdbName + ".txt";
+                string filelocation = Global.OUTPUT_DIR + "ShearNum/ShearNum_" + PdbName + ".txt";
                 using (System.IO.StreamWriter file = new System.IO.StreamWriter(filelocation))
                 {
                     int res_num = 0;
@@ -1173,7 +1176,7 @@ namespace betaBarrelProgram
             public void listLoopRes(ref Chain _myChain)
             {
 
-                string fileLocation = Global.MONO_OUTPUT_DIR + "\\Loop_out_" + this.PdbName + ".py";
+                string fileLocation = Global.OUTPUT_DIR + "\\Loop_out_" + this.PdbName + ".py";
                 using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation))
                 {
 

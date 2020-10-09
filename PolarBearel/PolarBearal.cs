@@ -9,95 +9,117 @@ using betaBarrelProgram.BarrelStructures;
 
 namespace betaBarrelProgram
 {
+
     public class PolarBearal
     {
         //polarBearal Variable 
-        public static string path = Global.MONO_OUTPUT_DIR + "PolarBearal/";
+        public static string PolarBearal_OUTPUT_DIR = Global.OUTPUT_DIR + "PolarBearal/";
+        public static string PolarBearal_INPUT_DB_FILE = Global.DB_file; //Global.POLARBEARAL_DIR + "/DB/MonoDB_v5.txt"; //Global.MONO_DB_file;
+
         double zone = 13;
         static public void menu()
         {
-            Console.WriteLine("1. Create Protein Database");
-            Console.WriteLine("2. Run Protein Database");
-
-            Console.WriteLine("4. Quit");
+            Console.WriteLine("1. Generate empty result files");
+            Console.WriteLine("2. Create Protein Database");
+            Console.WriteLine("3. Run Protein Database");
+            Console.WriteLine("4. ?");
+            Console.WriteLine("10. Quit");
         }
 
         static public void RunPolarBearal()
         {
-            Console.WriteLine("I am in {0}", System.IO.Directory.GetCurrentDirectory());
-            string file = @"PolarBearalResults.txt";
-            using (StreamWriter output = new System.IO.StreamWriter(path + file))
-            { }
+            PolarBearal_OUTPUT_DIR = Global.OUTPUT_DIR + "PolarBearal/";
+            PolarBearal_INPUT_DB_FILE = Global.DB_file;
 
-            file = @"ExamineZ.txt";
-            using (System.IO.StreamWriter output = new System.IO.StreamWriter(path + file))
-            { }
-
-            file = @"PinNoutByProtein.txt";
-            using (System.IO.StreamWriter output = new System.IO.StreamWriter(path + file))
-            {
-                output.Write("\n {0} \t {1} \t {2} \t {3} \t {4} \t {5}", "proteinID", "AAs", "IN", "Pin", "OUT", "Nout");
-            }
-
-            file = @"DisplayAngles.txt";
-            using (System.IO.StreamWriter output = new System.IO.StreamWriter(path + file))
-            {
-                output.Write("{0}\t{1}\t{2}", "aa", "angle", "inward facing");
-				}
-
-            StartPolarBearal();
-        }
-
-        static public void StartPolarBearal()
-        {
             string choice = "";
-            while (choice != "4")
+            while (choice != "10")
             {
                 menu();
                 choice = Console.ReadLine();
                 switch (choice)
                 {
                     case "1":
-                        CreateBetaBarrelProteinDatabase();
+                        PrepResults();
                         break;
                     case "2":
+                        CreateBetaBarrelProteinDatabase();
+                        break;
+                    case "3":
                         RunBetaBarrelProteinDatabase();
                         Results();
                         break;
-                    default:
-                        choice = "4";
+                    case "4":
                         break;
-                    case "5":
-                        CreateBetaBarrelProtein();
+                    default:
+                        choice = "10";
                         break;
                 }
             }
         }
 
-        static public void CreateBetaBarrelProtein()
+        static public void PrepResults()
         {
-            Dictionary<string, int> pdbBeta = new Dictionary<string, int>();
-            Dictionary<string, AminoAcid> AADict = SharedFunctions.makeAADict();
+            string output_sub_dir;
 
-            Console.WriteLine("please give pdb:");
-            string insert = Console.ReadLine();
-            string fileName = insert + ".xml";
+            Console.WriteLine("Currently in {0}", System.IO.Directory.GetCurrentDirectory());
+            Console.WriteLine("Output will be in {0}", PolarBearal_OUTPUT_DIR);
 
+            Console.WriteLine("Would you like to delete all files currently in output dir (Y/N)?");
+            string response = Console.ReadLine();
+            if (response == "Y")
+            {
+                if (System.IO.Directory.Exists(PolarBearal_OUTPUT_DIR))
+                {
+                    System.IO.Directory.Delete(PolarBearal_OUTPUT_DIR, true);
+                }
+            }
 
-            //SharedFunctions.runBetaBarrel_RYAN();
+            // build any needed paths for output
+            if (!System.IO.Directory.Exists(PolarBearal_OUTPUT_DIR))
+            {
+                System.IO.Directory.CreateDirectory(PolarBearal_OUTPUT_DIR);
+            }
+            output_sub_dir = PolarBearal_OUTPUT_DIR + "betaBarrel_aaOnly";
+            if (!System.IO.Directory.Exists(output_sub_dir))
+            {
+                System.IO.Directory.CreateDirectory(output_sub_dir);
+            }
+            output_sub_dir = PolarBearal_OUTPUT_DIR + "betaBarrelRawData";
+            if (!System.IO.Directory.Exists(output_sub_dir))
+            {
+                System.IO.Directory.CreateDirectory(output_sub_dir);
+            }
+            output_sub_dir = PolarBearal_OUTPUT_DIR + "betaBarrelStrands";
+            if (!System.IO.Directory.Exists(output_sub_dir))
+            {
+                System.IO.Directory.CreateDirectory(output_sub_dir);
+            }
+
+            //create (or recreate) blank result files with headers
+            using (StreamWriter output = new System.IO.StreamWriter(PolarBearal_OUTPUT_DIR + "PolarBearalResults.txt")) { }
+            using (System.IO.StreamWriter output = new System.IO.StreamWriter(PolarBearal_OUTPUT_DIR + "ExamineZ.txt")) { }
+            using (System.IO.StreamWriter output = new System.IO.StreamWriter(PolarBearal_OUTPUT_DIR + "PinNoutByProtein.txt"))
+            {
+                output.Write("\n {0} \t {1} \t {2} \t {3} \t {4} \t {5}", "PDB", "AAs", "IN", "Pin", "OUT", "Nout");
+            }
+            using (System.IO.StreamWriter output = new System.IO.StreamWriter(PolarBearal_OUTPUT_DIR + "DisplayAngles.txt"))
+            {
+                output.Write("{0}\t{1}\t{2}", "aa", "angle", "inward facing");
+            }
         }
+
        
         static public void CreateBetaBarrelProteinDatabase()
         {
             Dictionary<string, int> pdbBeta = new Dictionary<string, int>();
 
-            string fileOfPDBs = Global.MACMONODBDIR;
+            string fileOfPDBs = PolarBearal_INPUT_DB_FILE;
             if (File.Exists(fileOfPDBs))
             {
                 using (StreamReader sr = new StreamReader(fileOfPDBs))
                 {
                     String line;
-                    string fileLocation2 = path + "AllBarrelChar.txt";
+                    string fileLocation2 = PolarBearal_OUTPUT_DIR + "AllBarrelChar.txt";
                     using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation2))
                     {
                         string newLine = "PDB" + "\t\t" + "Total Strands" +"\t" + "Length" + "\t" + "AvgLength" + "\t" + "MinLength" + "\t" + "MaxLength" + "\t" + "Radius" + "\t" + "Barrel Tilt";
@@ -112,23 +134,33 @@ namespace betaBarrelProgram
                             {
                                 string fileName = pdb;
                                 //string fileName = pdb + ".pdb";
-                                Barrel myBarrel = Program.runBetaBarrel(fileName, ref Global.AADict, ref Global.partialChargesDict);
-                                PolarBearal roar = new PolarBearal(ref myBarrel);
+                                Barrel myBarrel = Program.runThisBetaBarrel(pdb, "all");
+                                try
+                                {
+                                    if (myBarrel.Success)
+                                    {
+                                        PolarBearal roar = new PolarBearal(ref myBarrel);
 
+                                        string char1 = myBarrel.PdbName;
+                                        string char2 = myBarrel.Axis.Length().ToString();
+                                        string char7 = myBarrel.StrandLength.Average().ToString();
+                                        string char8 = myBarrel.StrandLength.Min().ToString();
+                                        string char9 = myBarrel.StrandLength.Max().ToString();
+                                        string char3 = myBarrel.AvgRadius.ToString();
+                                        string char4 = myBarrel.Strands.Count.ToString();
+                                        string char5 = myBarrel.AvgTilt.ToString();
+                                        string char6 = myBarrel.ShearNum.ToString();
+                                        string char10 = "-999";// myBarrel.PrevTwists.Average().ToString();
+                                        newLine = char1 + "\t" + char4 + "\t" + char2 + "\t" + char7 + "\t" + char8 + "\t" + char9 + "\t" + char3 + "\t" + char5 + "\t" + char6 + "\t" + char10;
+                                        file.WriteLine(newLine);
 
-                                string char1 = myBarrel.PdbName;
-                                string char2 = myBarrel.Axis.Length().ToString();
-                                string char7 = myBarrel.StrandLength.Average().ToString();
-                                string char8 = myBarrel.StrandLength.Min().ToString();
-                                string char9 = myBarrel.StrandLength.Max().ToString();
-                                string char3 = myBarrel.AvgRadius.ToString();
-                                string char4 = myBarrel.Strands.Count.ToString();
-                                string char5 = myBarrel.AvgTilt.ToString();
-                                string char6 = myBarrel.ShearNum.ToString();
-                                string char10 = myBarrel.PrevTwists.Average().ToString();
-                                newLine = char1 + "\t" + char4 + "\t" + char2 + "\t" + char7 + "\t" + char8 + "\t" + char9 + "\t" + char3 + "\t" + char5 + "\t" + char6 + "\t" + char10;
-                                file.WriteLine(newLine);
+                                    }
+                                }
                                 //Console.WriteLine("Number of Proteins: {0} \t AAs: {1} \t Double Checked Directions: {2}", totalProteins, totalAAs, numDoubleChecks);
+                                catch
+                                {
+                                    Console.WriteLine("Failed polarbearel creation for {0}", pdb);
+                                }
                             }
                         }
                     }
@@ -146,7 +178,7 @@ namespace betaBarrelProgram
 
         static public void RunBetaBarrelProteinDatabase()
         {
-            string fileOfPDBs = Global.MACMONODBDIR; //input file with list of monomeric xml files
+            string fileOfPDBs = PolarBearal_INPUT_DB_FILE;
 
             if (File.Exists(fileOfPDBs))
             {
@@ -161,7 +193,17 @@ namespace betaBarrelProgram
                         if (pdb != "IDs")
                         {
                             string fileName = pdb.Substring(0, 4).ToUpper();
+
                             PolarBearal polarRetest = new PolarBearal(fileName);
+                            try { 
+                            
+                            //PolarBearal polarRetest = new PolarBearal(fileName);
+                            }
+                            catch
+                            {
+
+                                Console.WriteLine("Failed to run polarbearal results for {0}", pdb);
+                            }
                         }
                     }
                 }
@@ -177,64 +219,64 @@ namespace betaBarrelProgram
         static public void Results()
         {
             string file = @"PolarBearalResults.txt";
-            using (StreamWriter output = File.AppendText(path + file))
+            using (StreamWriter output = File.AppendText(PolarBearal_OUTPUT_DIR + file))
             {
-                output.Write("\n\nProteins:\t{0} \t\t Chains:\t{1} \t\t AAs:\t{2}", PolarBearal.totalProteins, PolarBearal.totalChains, PolarBearal.totalAAs);
+                output.Write("\n\nProteins:\t{0} \t\t Chains:\t{1} \t\t AAs:\t{2}", PolarBearal._totalProteins, PolarBearal._totalChains, PolarBearal._totalAAs);
 
                 output.Write("\n\nSequence Length: \t\t 1 \t 2 \t 3 \t 4 \t 5 \t 6 \t 7 \t 8 \t 9 \t 10 \t 11 \t 12 \t 13 \t 14 \t 15 \t 16 \t 17 \t 18");
-                output.Write("\nTotals \t\t {0} \t {1} \t {2} \t {3} \t {4} \t {5} \t {6} \t {7} \t {8} \t {9} \t {10} \t {11} \t {12} \t {13} \t {14} \t {15} \t {16} \t {17}", PolarBearal.seqCount[1], PolarBearal.seqCount[2], PolarBearal.seqCount[3], PolarBearal.seqCount[4], PolarBearal.seqCount[5], PolarBearal.seqCount[6], PolarBearal.seqCount[7], PolarBearal.seqCount[8], PolarBearal.seqCount[9], PolarBearal.seqCount[10], PolarBearal.seqCount[11], PolarBearal.seqCount[12], PolarBearal.seqCount[13], PolarBearal.seqCount[14], PolarBearal.seqCount[15], PolarBearal.seqCount[16], PolarBearal.seqCount[17], PolarBearal.seqCount[18]);
+                output.Write("\nTotals \t\t {0} \t {1} \t {2} \t {3} \t {4} \t {5} \t {6} \t {7} \t {8} \t {9} \t {10} \t {11} \t {12} \t {13} \t {14} \t {15} \t {16} \t {17}", PolarBearal._seqCount[1], PolarBearal._seqCount[2], PolarBearal._seqCount[3], PolarBearal._seqCount[4], PolarBearal._seqCount[5], PolarBearal._seqCount[6], PolarBearal._seqCount[7], PolarBearal._seqCount[8], PolarBearal.seqCount[9], PolarBearal._seqCount[10], PolarBearal._seqCount[11], PolarBearal._seqCount[12], PolarBearal._seqCount[13], PolarBearal._seqCount[14], PolarBearal._seqCount[15], PolarBearal._seqCount[16], PolarBearal._seqCount[17], PolarBearal._seqCount[18]);
                 output.Write("\n\n\n");
 
                 int num = 0;
                 output.Write("Strand Sizes:\n");
-                foreach (int i in PolarBearal.strandSizes) output.Write("{0}\t", num++);
+                foreach (int i in PolarBearal._strandSizes) output.Write("{0}\t", num++);
                 output.Write("\n");
-                foreach (int i in PolarBearal.strandSizes) output.Write("{0}\t", i);
+                foreach (int i in PolarBearal._strandSizes) output.Write("{0}\t", i);
                 output.Write("\n\n\n");
 
                 num = 0;
                 output.Write("Alternating Sequence Sizes:\n");
-                foreach (int i in PolarBearal.AlternatingInOutSeqLengths) output.Write("{0}\t", num++);
+                foreach (int i in PolarBearal._AlternatingInOutSeqLengths) output.Write("{0}\t", num++);
                 output.Write("\n");
-                foreach (int i in PolarBearal.AlternatingInOutSeqLengths) output.Write("{0}\t", i);
+                foreach (int i in PolarBearal._AlternatingInOutSeqLengths) output.Write("{0}\t", i);
 
                 output.Write("\n\n");
                 output.Write("\n\t\tL \tW \tP \tV \tI \tF \tY \tH \tA \tM \tG \tT \tQ \tD \tN \tK \tS \tR \tE \tC");
                 output.Write("\n\t");
-                foreach (int i in _aa) output.Write("{0}\t", i);
+                foreach (int i in __aa) output.Write("{0}\t", i);
                 output.Write("\n\t");
-                foreach (int i in aaInward) output.Write("{0}\t", i);
+                foreach (int i in _aaInward) output.Write("{0}\t", i);
                 output.Write("\n\t");
-                foreach (int i in aaOutward) output.Write("{0}\t", i);
+                foreach (int i in _aaOutward) output.Write("{0}\t", i);
                 output.Write("\n\n\t");
-                foreach (int i in aaDevInward) output.Write("{0}\t", i);
+                foreach (int i in _aaDevInward) output.Write("{0}\t", i);
                 output.Write("\n\t");
-                foreach (int i in aaDevOutward) output.Write("{0}\t", i);
+                foreach (int i in _aaDevOutward) output.Write("{0}\t", i);
 
 
                 output.Write("\n\n");
                 output.Write("\n\t\tL \tW \tP \tV \tI \tF \tY \tH \tA \tM \tG \tT \tQ \tD \tN \tK \tS \tR \tE \tC");
                 output.Write("\n");
                 output.Write("aa\t");
-                foreach (int i in _aa) output.Write("{0}\t", i);
+                foreach (int i in __aa) output.Write("{0}\t", i);
                 output.Write("\n\n");
                 output.Write("aap1\t");
-                foreach (int i in aap1) output.Write("{0}\t", i);
+                foreach (int i in _aap1) output.Write("{0}\t", i);
                 output.Write("\n");
                 output.Write("aap2\t");
-                foreach (int i in aap2) output.Write("{0}\t", i);
+                foreach (int i in _aap2) output.Write("{0}\t", i);
                 output.Write("\n");
                 output.Write("aax3\t");
-                foreach (int i in aan3) output.Write("{0}\t", i);
+                foreach (int i in _aan3) output.Write("{0}\t", i);
                 output.Write("\n\n");
                 output.Write("aan1\t");
-                foreach (int i in aan1) output.Write("{0}\t", i);
+                foreach (int i in _aan1) output.Write("{0}\t", i);
                 output.Write("\n");
                 output.Write("aan2\t");
-                foreach (int i in aan2) output.Write("{0}\t", i);
+                foreach (int i in _aan2) output.Write("{0}\t", i);
                 output.Write("\n");
                 output.Write("aax3\t");
-                foreach (int i in aap3) output.Write("{0}\t", i);
+                foreach (int i in _aap3) output.Write("{0}\t", i);
                 output.Write("\n");
 
 
@@ -242,10 +284,10 @@ namespace betaBarrelProgram
             }
 
             file = @"ExamineZ.txt";
-            using (StreamWriter output = File.AppendText(path + file))
+            using (StreamWriter output = File.AppendText(PolarBearal_OUTPUT_DIR + file))
             {
                 for (int i = 0; i < examineZP.Length; i++)
-                    output.Write("\n{0}\t{1}\t{2}\t{3}", ZP[i], ZN[i], examineZP[i], examineZN[i]);
+                    output.Write("\n{0}\t{1}\t{2}\t{3}", _ZP[i], _ZN[i], _examineZP[i], _examineZN[i]);
             }
 
 
@@ -257,69 +299,119 @@ namespace betaBarrelProgram
         //uses a previously extracted barrel data to create a quick model of a barrel
         public PolarBearal(string PDBid)
         {
-            largestAltSeq = 0;
-            proteinID = PDBid;
-            totalProteins++;
+            try
+            { 
+                largestAltSeq = 0;
+                proteinID = PDBid;
+                totalProteins++;
 
-            string file = @"betaBarrel_aaOnly/" + PDBid + ".txt";
-            string[] FindChains = File.ReadAllLines(path + file);
-            numChains = FindChains.Length;
+                string file = @"betaBarrel_aaOnly/" + PDBid + ".txt";
+                string[] FindChains = File.ReadAllLines(PolarBearal_OUTPUT_DIR + file);
+                numChains = FindChains.Length;
 
-            simpleBarrel = new aa[numChains][];
-            Queue<aa> chain = new Queue<aa>();
-            file = @"betaBarrel/2" + PDBid + ".txt";
-            string[] BarrelChains = File.ReadAllLines(path + file);
+                simpleBarrel = new aa[numChains][];
+                Queue<aa> chain = new Queue<aa>();
+                file = @"betaBarrelRawData/" + PDBid + ".txt";
+                string[] BarrelChains = File.ReadAllLines(PolarBearal_OUTPUT_DIR + file);
 
-            int curChain = 0;
-            char[] delPunc = { ':', ',' };
-            foreach (string amino in BarrelChains)
-            {
-                string[] preaa = amino.Split(delPunc);
-
-                if (preaa[0] != curChain.ToString())
+                int curChain = 0;
+                char[] delPunc = { ':', ',' };
+                foreach (string amino in BarrelChains)
                 {
-                    simpleBarrel[curChain] = chain.ToArray();
-                    chain.Clear();
-                    curChain++;
-                }
+                    string[] preaa = amino.Split(delPunc);
 
-                aa tempaa = new aa(preaa[1]);
-
-                if (preaa[2] == "True")
-                {
-                    tempaa.Inward = true;
-                }
-                else
-                {
-                    tempaa.Inward = false;
-                }
-
-                tempaa.ResNum = Convert.ToInt16(preaa[3]);
-
-                tempaa.height = Double.Parse(preaa[4]);
-
-                tempaa.angle = Double.Parse(preaa[5]);
-                //Console.Write(preaa[0] + ":" + preaa[1] + "," + preaa[2] + "," + preaa[3] + "," + preaa[4] + "\n");
-
-                if (tempaa.height > -zone && tempaa.height < zone)
-                {
-                    chain.Enqueue(tempaa);
-                    file = @"DisplayAngles.txt";
-                    using (StreamWriter output = File.AppendText(path + file))
+                    if (preaa[0] != curChain.ToString())
                     {
-                        output.Write("\n{0}\t{1}\t{2}", tempaa.m_aa_ID, tempaa.angle, tempaa.Inward);
+                        simpleBarrel[curChain] = chain.ToArray();
+                        chain.Clear();
+                        curChain++;
+                    }
+
+                    aa tempaa = new aa(preaa[1]);
+
+                    if (preaa[2] == "True")
+                    {
+                        tempaa.Inward = true;
+                    }
+                    else
+                    {
+                        tempaa.Inward = false;
+                    }
+
+                    tempaa.ResNum = Convert.ToInt16(preaa[3]);
+                    tempaa.SeqID = Convert.ToInt16(preaa[4]);
+                    tempaa.height = Double.Parse(preaa[5]);
+
+                    tempaa.angle = Double.Parse(preaa[6]);
+                    //Console.Write(preaa[0] + ":" + preaa[1] + "," + preaa[2] + "," + preaa[3] + "," + preaa[4] + "\n");
+
+                    if (tempaa.height > -zone && tempaa.height < zone)
+                    {
+                        chain.Enqueue(tempaa);
+                        file = @"DisplayAngles.txt";
+                        using (StreamWriter output = File.AppendText(PolarBearal_OUTPUT_DIR + file))
+                        {
+                            output.Write("\n{0}\t{1}\t{2}", tempaa.m_aa_ID, tempaa.angle, tempaa.Inward);
+                        }
                     }
                 }
+
+                simpleBarrel[curChain] = chain.ToArray();
+                seperatedBarrel = new Queue<aa[][]>();
+                SeperateBarrel();
+
+                printZ();
+                PolarBearalCalculations();
+                PinNoutByProtein();
+                //update all db counts since attempt has successfullly completed
+                _totalProteins = totalProteins;
+                _totalChains = totalChains;
+                _totalAAs = totalAAs;
+                _seqCount = seqCount;
+                _strandSizes = strandSizes;
+                _AlternatingInOutSeqLengths = AlternatingInOutSeqLengths;
+                __aa = _aa;
+                _aaInward = aaInward;
+                _aaDevInward = aaDevInward;
+                _aaOutward = aaOutward;
+                _aaDevOutward = aaDevOutward;
+                _aap1 = aap1;
+                _aap2 = aap2;
+                _aap3 = aap3;
+                _aan1 = aan1;
+                _aan2 = aan2;
+                _aan3 = aan3;
+                _ZP = ZP;
+                _ZN = ZN;
+                _examineZP = examineZP;
+                _examineZN = examineZN;
+
             }
-
-            simpleBarrel[curChain] = chain.ToArray();
-            seperatedBarrel = new Queue<aa[][]>();
-            SeperateBarrel();
-
-            printZ();
-            PolarBearalCalculations();
-            PinNoutByProtein();
-
+            catch
+            {
+                //revert all db counts to what they were at the end of last successful attempt
+                totalProteins = _totalProteins;
+                totalChains = _totalChains;
+                totalAAs = _totalAAs;
+                seqCount = _seqCount;
+                strandSizes = _strandSizes;
+                AlternatingInOutSeqLengths = _AlternatingInOutSeqLengths;
+                _aa = __aa;
+                aaInward = _aaInward;
+                aaDevInward = _aaDevInward;
+                aaOutward = _aaOutward;
+                aaDevOutward = _aaDevOutward;
+                aap1 = _aap1;
+                aap2 = _aap2;
+                aap3 = _aap3;
+                aan1 = _aan1;
+                aan2 = _aan2;
+                aan3 = _aan3;
+                ZP = _ZP;
+                ZN = _ZN;
+                examineZP = _examineZP;
+                examineZN = _examineZN;
+            }
 
         }
 
@@ -347,9 +439,10 @@ namespace betaBarrelProgram
                     simpleBarrel[curChain][cur_aa] = new aa(myBarrel.Strands[curChain].Residues[cur_aa].OneLetCode);
                     simpleBarrel[curChain][cur_aa].Inward = myBarrel.Strands[curChain].Residues[cur_aa].Inward;
                     simpleBarrel[curChain][cur_aa].ResNum = myBarrel.Strands[curChain].Residues[cur_aa].ResNum;
+                    simpleBarrel[curChain][cur_aa].SeqID = myBarrel.Strands[curChain].Residues[cur_aa].SeqID;
                     simpleBarrel[curChain][cur_aa].X = myBarrel.Strands[curChain].Residues[cur_aa].BackboneCoords["CA"].X;
                     simpleBarrel[curChain][cur_aa].Y = myBarrel.Strands[curChain].Residues[cur_aa].BackboneCoords["CA"].Y;
-                    simpleBarrel[curChain][cur_aa].height = myBarrel.Strands[curChain].Residues[cur_aa].Z;
+                    simpleBarrel[curChain][cur_aa].height = myBarrel.Strands[curChain].Residues[cur_aa].BackboneCoords["CA"].Z;
 
                     simpleBarrel[curChain][cur_aa].angle = SharedFunctions.AngleBetween(myBarrel.Strands[curChain].Residues[cur_aa].BackboneCoords["CA"] - ((myBarrel.Strands[curChain].Residues[cur_aa].BackboneCoords["N"] + myBarrel.Strands[curChain].Residues[cur_aa].BackboneCoords["C"]) / 2), myBarrel.Axis);
 
@@ -357,7 +450,7 @@ namespace betaBarrelProgram
             }
 
             string file = @"betaBarrel_aaOnly/" + proteinID + ".txt";
-            using (System.IO.StreamWriter output = new System.IO.StreamWriter(path + file))
+            using (System.IO.StreamWriter output = new System.IO.StreamWriter(PolarBearal_OUTPUT_DIR + file))
             {
                 for (int curChain = 0; curChain < simpleBarrel.GetLength(0); curChain++)
                 {
@@ -370,15 +463,15 @@ namespace betaBarrelProgram
                 }
             }
 
-            file = @"betaBarrel/2" + proteinID + ".txt";
-            using (System.IO.StreamWriter output = new System.IO.StreamWriter(path + file))
+            file = @"betaBarrelRawData/" + proteinID + ".txt";
+            using (System.IO.StreamWriter output = new System.IO.StreamWriter(PolarBearal_OUTPUT_DIR + file))
             {
                 for (int curChain = 0; curChain < simpleBarrel.GetLength(0); curChain++)
                 {
                     //add aa
                     for (int cur_aa = 0; cur_aa < simpleBarrel[curChain].Length; cur_aa++)
                     {
-                        output.WriteLine("{3}:{0},{1},{2},{4},{5}", simpleBarrel[curChain][cur_aa].m_aa_ID, simpleBarrel[curChain][cur_aa].Inward, simpleBarrel[curChain][cur_aa].ResNum, curChain, simpleBarrel[curChain][cur_aa].height, simpleBarrel[curChain][cur_aa].angle);
+                        output.WriteLine("{0}:{1},{2},{3},{4},{5},{6}", curChain, simpleBarrel[curChain][cur_aa].m_aa_ID, simpleBarrel[curChain][cur_aa].Inward, simpleBarrel[curChain][cur_aa].ResNum, simpleBarrel[curChain][cur_aa].SeqID, simpleBarrel[curChain][cur_aa].height, simpleBarrel[curChain][cur_aa].angle);
                     }
                 }
             }
@@ -387,7 +480,7 @@ namespace betaBarrelProgram
             string _pdb;
             int _pdb_strands;
             string _res;
-            int _res_num;
+            int _res_num, _seqID;
             int _res_strand;
             double _res_ca_x;
             double _res_ca_y;
@@ -396,9 +489,9 @@ namespace betaBarrelProgram
             double _angle;
 
             file = @"betaBarrelStrands/" + proteinID + ".txt";
-            using (System.IO.StreamWriter output = new System.IO.StreamWriter(path + file))
+            using (System.IO.StreamWriter output = new System.IO.StreamWriter(PolarBearal_OUTPUT_DIR + file))
             {
-                output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}", "_pdb", "_pdb_strands", "_res", "_res_num", "_res_strand", "_res_ca_x", "_res_ca_y", "_res_ca_z", "_inward", "_angle");
+                output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}", "_pdb", "_pdb_strands", "_res", "_res_num", "_seqID", "_res_strand", "_res_ca_x", "_res_ca_y", "_res_ca_z", "_inward", "_angle");
                 for (int curChain = 0; curChain < simpleBarrel.GetLength(0); curChain++)
                 {
                     //add aa
@@ -408,6 +501,7 @@ namespace betaBarrelProgram
                         _pdb_strands = simpleBarrel.GetLength(0);
                         _res = simpleBarrel[curChain][cur_aa].m_aa_ID;
                         _res_num = simpleBarrel[curChain][cur_aa].ResNum + 1;
+                        _seqID = simpleBarrel[curChain][cur_aa].SeqID;
                         _res_strand = curChain + 1;
                         _res_ca_x = simpleBarrel[curChain][cur_aa].X;
                         _res_ca_y = simpleBarrel[curChain][cur_aa].Y;
@@ -415,7 +509,7 @@ namespace betaBarrelProgram
                         _inward = simpleBarrel[curChain][cur_aa].Inward;
                         _angle = simpleBarrel[curChain][cur_aa].angle;
 
-                        output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}", _pdb, _pdb_strands, _res, _res_num, _res_strand, _res_ca_x, _res_ca_y, _res_ca_z, _inward, _angle);
+                        output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}", _pdb, _pdb_strands, _res, _res_num, _seqID, _res_strand, _res_ca_x, _res_ca_y, _res_ca_z, _inward, _angle);
                     }
                 }
             }
@@ -539,7 +633,7 @@ namespace betaBarrelProgram
             }
 
             string file = @"PinNoutByProtein.txt";
-            using (System.IO.StreamWriter output = File.AppendText(path + file))
+            using (System.IO.StreamWriter output = File.AppendText(PolarBearal_OUTPUT_DIR + file))
             {
                 output.Write("\n {0} \t {1} \t {2} \t {3} \t {4} \t {5}", proteinID, AAs, IN, Pin, OUT, Nout);
             }
@@ -582,7 +676,7 @@ namespace betaBarrelProgram
             }
 
             string file = @"PolarBearalGraphOccurances.txt";
-            using (StreamWriter sw = File.AppendText(path + file))
+            using (StreamWriter sw = File.AppendText(PolarBearal_OUTPUT_DIR + file))
             {
                 sw.Write("{0} \t", proteinID);
                 foreach (int occurances in OcurrancesPerLengthOfAltSeq)
@@ -802,6 +896,7 @@ namespace betaBarrelProgram
                 assignPolarity();
                 Inward = false;
                 ResNum = -100;
+                SeqID = -100;
                 height = -100;
             }
 
@@ -829,6 +924,7 @@ namespace betaBarrelProgram
             public char mPolarity;//should be P,N, or U(represent unassigned polarity}
             public bool Inward;//is true if amino acid is facing inward, false if facing outward
             public int ResNum;//residue number in protein
+            public int SeqID;//residue sequence position (includes unresolved residues and may not start at 1)
             public double X;//height along z axis
             public double Y;//height along z axis
             public double height;//height along z axis
@@ -841,25 +937,42 @@ namespace betaBarrelProgram
         aa[][] simpleBarrel;
         Queue<aa[][]> seperatedBarrel;
         int numChains, largestAltSeq;
+        // probably a better way to do this, but i duplicated all the following variables so that they
+        // can be reverted to previous successful attempt should current attempt fail (so only working barrels in db are counted)
         public static int totalProteins = 0, totalChains = 0, totalAAs = 0;
+        public static int _totalProteins = 0, _totalChains = 0, _totalAAs = 0;
 
         public static int[] seqCount = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
+        public static int[] _seqCount = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         public static string P = "DEKNQRSTCH", N = "AFILVWYMP", Q = "G";
 
         public static int[] _aa = new int[21];
+        public static int[] __aa = new int[21];
+
         public static int[] aaInward = new int[21];
+        public static int[] _aaInward = new int[21];
+
         public static int[] aaOutward = new int[21];
+        public static int[] _aaOutward = new int[21];
 
         public static int[] aaDevInward = new int[21];
+        public static int[] _aaDevInward = new int[21];
+
         public static int[] aaDevOutward = new int[21];
+        public static int[] _aaDevOutward = new int[21];
 
         public static int[] strandSizes = new int[50];
+        public static int[] _strandSizes = new int[50];
         public static int[] ZP = new int[150];
+        public static int[] _ZP = new int[150];
         public static int[] ZN = new int[150];
+        public static int[] _ZN = new int[150];
         public static int[] AlternatingInOutSeqLengths = new int[100];
+        public static int[] _AlternatingInOutSeqLengths = new int[100];
         public static int[] examineZP = new int[125];
+        public static int[] _examineZP = new int[125];
         public static int[] examineZN = new int[125];
+        public static int[] _examineZN = new int[125];
         public static int numDoubleChecks = 0;
 
         //new data 10-3-15 Ryan
@@ -869,5 +982,12 @@ namespace betaBarrelProgram
         public static int[] aan2 = new int[21];
         public static int[] aap3 = new int[22];
         public static int[] aan3 = new int[22];
+
+        public static int[] _aap1 = new int[21];
+        public static int[] _aan1 = new int[21];
+        public static int[] _aap2 = new int[21];
+        public static int[] _aan2 = new int[21];
+        public static int[] _aap3 = new int[22];
+        public static int[] _aan3 = new int[22];
     }
 }

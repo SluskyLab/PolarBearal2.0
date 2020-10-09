@@ -135,7 +135,7 @@ namespace betaBarrelProgram
                 //file.WriteLine("from pymol import stored"); //For PC
                 file.WriteLine("from pymol import cmd, stored"); //For MacPyMOL
                 //string[] colors = { "white", "red", "orange", "purple", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple" };
-                string[] colors = { "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta" };
+                string[] colors = { "red", "yellow", "green", "cyan", "blue", "magenta" };//, "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta" };
                 string pdb_file = DBdirectory + pdbName + ".pdb";
                 file.WriteLine("cmd.load(\"{0}\")", pdb_file);
                 file.WriteLine("cmd.hide(\"everything\", \"all\")");
@@ -144,7 +144,7 @@ namespace betaBarrelProgram
                 foreach (Strand strand in strandlist)
                 {
                     file.WriteLine("cmd.select(\"{0}_{1}_S{2}\", \"resi {3}-{4} & chain {1} & {0} \")", pdbName, strand.ChainName, strand.StrandNum, strand.Residues[0].SeqID, strand.Residues.Last().SeqID);
-                    file.WriteLine("cmd.color (\"{3}\", \"{0}_{1}_S{2}\")", pdbName, strand.ChainName, strand.StrandNum, colors[strand.StrandNum]);
+                    file.WriteLine("cmd.color (\"{3}\", \"{0}_{1}_S{2}\")", pdbName, strand.ChainName, strand.StrandNum, colors[(strand.StrandNum % 6)]);
                     if (chain_names.Contains(strand.ChainName) == false) chain_names.Add(strand.ChainName);
                     file.WriteLine("\n");
                 }
@@ -397,7 +397,7 @@ namespace betaBarrelProgram
         public static List<double> getStrandLengths(List<Strand> strandlist, string outputDirectory, string pdbName)
         {
             create_dir(outputDirectory + "Tilts");
-            string fileLocation3 = outputDirectory + "Tilts/StrandLength()s_" + pdbName + ".txt";
+            string fileLocation3 = outputDirectory + "Tilts/StrandLengths_" + pdbName + ".txt";
             double height; List<double> all_lengths = new List<double>();
             string fileOfPDBs = Global.MONO_DB_file;
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation3))
@@ -419,7 +419,9 @@ namespace betaBarrelProgram
         
         public static Dictionary<string, string> getLoopTurns(List<Strand> strandlist, ref Chain myChain, string outputDirectory, string pdbName)
         {
+            create_dir(outputDirectory + "LoopData");
             create_dir(outputDirectory + "LoopData/v4Turns");
+            create_dir(outputDirectory + "TurnData");
             create_dir(outputDirectory + "TurnData/v4Loops");
             //string fileLocation = outputDirectory + "RosettaLoops/Loops/" + pdbName + "_Loops_Test.txt";
             //string fileLocation2 = outputDirectory + "RosettaLoops/Turns/" + pdbName + "_Turns_Test.txt";
@@ -1903,86 +1905,6 @@ namespace betaBarrelProgram
             }
         }
 
-        public static void runBetaBarrel_RYAN(string pdb, ref Protein m_Protein, ref Barrel m_Barrel)
-        {
-            //Directory.SetCurrentDirectory(Global.MONO_DB_DIR);
-            string PDB = pdb.Substring(0, 4).ToUpper();
-            string pdbFileName = Global.MONO_DB_DIR + pdb + ".pdb";
-
-            if (File.Exists(pdbFileName))
-            {
-                AtomParser.AtomCategory myAtomCat = new AtomParser.AtomCategory();
-                Console.WriteLine("opened {0}", pdbFileName);
-                myAtomCat = Program.ReadPdbFile(pdbFileName, ref Global.partialChargesDict);
-                int chainNum = 0;
-
-                int stop = myAtomCat.ChainAtomList.Count();
-                Console.Write("Protein Class {0}", chainNum);
-                //m_Protein = new MonoProtein(ref myAtomCat, chainNum, pdb);
-                PolyProtein p_Protein = new PolyProtein(ref myAtomCat, pdb);
-
-                Console.Write("creating barrel class..");
-                //m_Barrel = new MonoBarrel(m_Protein.Chains[0], m_Protein);
-                m_Barrel = new PolyBarrel(p_Protein, Global.POLY_OUTPUT_DIR, Global.MONO_DB_DIR);
-            }
-            else
-            {
-                Console.WriteLine("could not find {0}", pdbFileName);
-            }
-
-                //try
-                //{
-                    /*POLY REMOVE
-                    else
-                    {
-                        Directory.SetCurrentDirectory(Global.POLY_DB_DIR);
-
-                        pdbFileName = pdb.Substring(0, 4).ToUpper() + ".pdb";
-                        if (File.Exists(pdbFileName))
-                        {
-                            AtomParser.AtomCategory myAtomCat = new AtomParser.AtomCategory();
-                            //Console.WriteLine("opened {0}", pdbFileName);
-                            myAtomCat = Program.readPdbFile(pdbFileName, ref Global.partialChargesDict);
-
-                            PolyProtein newProt = new PolyProtein(ref myAtomCat, pdb); //For considering all chains
-
-                            //Console.WriteLine("creating barrel class..");
-                            m_Protein = newProt;
-                            m_Barrel = new PolyBarrel(newProt, Global.POLY_OUTPUT_DIR, Global.POLY_DB_DIR);
-                        }
-                        else
-                        {
-                            pdbFileName = pdb.Substring(0, 4).ToLower() + ".pdb";
-                            if (File.Exists(pdbFileName))
-                            {
-                                AtomParser.AtomCategory myAtomCat = new AtomParser.AtomCategory();
-                                //Console.WriteLine("opened {0}", pdbFileName);
-                                myAtomCat = Program.readPdbFile(pdbFileName, ref Global.partialChargesDict);
-
-                                //Console.WriteLine("opened {0}", pdbFileName);
-                                myAtomCat = Program.readPdbFile(pdbFileName, ref Global.partialChargesDict);
-
-                                PolyProtein newProt = new PolyProtein(ref myAtomCat, pdb); //For considering all chains
-
-                                //Console.WriteLine("creating barrel class..");
-                                m_Protein = newProt;
-                                m_Barrel = new PolyBarrel(newProt, Global.POLY_OUTPUT_DIR, Global.POLY_DB_DIR);
-                            }
-                            else
-                            {
-
-                                //Console.WriteLine("could not find {0}", pdbFileName);
-                            }
-                            }
-                            }
-
-    POLY REMOVE*/
-         //       }
-          //  catch
-          //  {
-           //     Console.WriteLine("could not run: " + pdb);
-            //}
-        }
 
         public static void saveCbeta2AxisData(ref Barrel m_Barrel)
         {
@@ -1994,7 +1916,7 @@ namespace betaBarrelProgram
 
             Vector3 curAtomCoords = new Vector3();
             string file = @"Cbeta2AxisData.txt";
-            using (StreamWriter output = File.AppendText(Global.MONO_OUTPUT_DIR + file))
+            using (StreamWriter output = File.AppendText(Global.OUTPUT_DIR + file))
             {
                 foreach (Strand strand in strandlist)
                 {
@@ -2025,7 +1947,7 @@ namespace betaBarrelProgram
         {
             Console.WriteLine("Starting RunCbeta2Axis");
             string file = @"Cbeta2AxisData.txt";
-            using (System.IO.StreamWriter output = new System.IO.StreamWriter(Global.MONO_OUTPUT_DIR + file))
+            using (System.IO.StreamWriter output = new System.IO.StreamWriter(Global.OUTPUT_DIR + file))
             {
                 output.Write("\n{0}\t{1}\t{2}\t{3}\t{4}\t{5}", "pdb", "StrandNum", "ThreeLetCode", "ResNum", "Cbeta2Axis", "Inward");
             }
@@ -2070,7 +1992,7 @@ namespace betaBarrelProgram
 
             Vector3 curAtomCoords = new Vector3();
             string file = @"C_DistanceData.txt";
-            using (StreamWriter output = File.AppendText(Global.MONO_OUTPUT_DIR + file))
+            using (StreamWriter output = File.AppendText(Global.OUTPUT_DIR + file))
             {
                 foreach (Strand strand in strandlist)
                 {
@@ -2094,7 +2016,7 @@ namespace betaBarrelProgram
         {
             Console.WriteLine("Starting C_DistanceData");
             string file = @"C_DistanceData.txt";
-            using (System.IO.StreamWriter output = new System.IO.StreamWriter(Global.MONO_OUTPUT_DIR + file))
+            using (System.IO.StreamWriter output = new System.IO.StreamWriter(Global.OUTPUT_DIR + file))
             {
                 output.Write("\n{0}\t{1}\t{2}\t{3}\t{4}\t{5}", "pdb", "StrandNum", "ThreeLetCode", "ResNum", "atom", "distance2Axis");
             }
@@ -2139,7 +2061,7 @@ namespace betaBarrelProgram
 
             Vector3 curAtomCoords = new Vector3();
             string file = @"centroids.txt";
-            using (StreamWriter output = File.AppendText(Global.MONO_OUTPUT_DIR + file))
+            using (StreamWriter output = File.AppendText(Global.OUTPUT_DIR + file))
             { 
                 output.Write("\n{0}\t{1}\t{2}\t{3}\t{4}", pdb, "C", m_Barrel.Ccentroid.X, m_Barrel.Ccentroid.Y, m_Barrel.Ccentroid.Z);
                 output.Write("\n{0}\t{1}\t{2}\t{3}\t{4}", pdb, "N", m_Barrel.Ncentroid.X, m_Barrel.Ncentroid.Y, m_Barrel.Ncentroid.Z);
@@ -2150,7 +2072,7 @@ namespace betaBarrelProgram
         {
             Console.WriteLine("Starting centroids");
             string file = @"centroids.txt";
-            using (System.IO.StreamWriter output = new System.IO.StreamWriter(Global.MONO_OUTPUT_DIR + file))
+            using (System.IO.StreamWriter output = new System.IO.StreamWriter(Global.OUTPUT_DIR + file))
             {
                 output.Write("\n{0}\t{1}\t{2}\t{3}\t{4}", "pdb", "N/C", "X", "Y", "Z");
             }
@@ -2593,6 +2515,434 @@ namespace betaBarrelProgram
 
             }
             return averagePosition;
+        }
+
+        /* Riks output functions*/
+        public static void writePymolScriptCylinder(GroupOfStrands group, Cylinder cylinder, string outputDirectory, string DBdirectory, string pdbName)
+        {
+            create_dir(outputDirectory + "Pymol/cylinder");
+            string fileLocation = outputDirectory + "Pymol/cylinder/cylinder_" + pdbName + ".py";
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation))
+            {
+                file.WriteLine("from pymol import cmd, stored"); //For MacPyMOL
+                string pdb_file = DBdirectory + pdbName + ".pdb";
+                file.WriteLine("x = r\"{0}\"", pdb_file); //For PC
+                file.WriteLine("cmd.load(x)"); //For PC
+                //file.WriteLine("cmd.load(\"{0}\")", pdb_file); for Mac
+                file.WriteLine("cmd.hide(\"everything\", \"all\")");
+                file.WriteLine("cmd.color(\"wheat\",\"all\")");
+
+                file.Write($"cmd.select(\"group\", \"");
+                var ChainNameList = group.StrandSet.SelectMany(oneStrand => oneStrand.StrandInTheGroup.Select(residue => residue.ChainName)).Distinct().ToList(); //Make a list of all chains
+
+                for (int i = 0; i < ChainNameList.Count; i++)
+                {
+                    var chain = ChainNameList[i];
+                    var resSeqID = group.StrandSet.SelectMany(oneStrand => oneStrand.StrandInTheGroup.Where(res => res.ChainName == chain).Select(res => res.SeqID)).ToList(); //make a string of residues in that chain
+                    string resList = $"{resSeqID[0]}";
+                    foreach (var seqID in resSeqID)
+                    {
+                        resList += $"+{seqID}";
+                    }
+                    file.Write($"resi {resList} & chain {chain}");
+
+                    if ((ChainNameList.Count != 1) & (i != ChainNameList.Count - 1))
+                    {
+                        file.Write($" or ");
+                    }
+                }
+                file.Write($"\")\n");
+
+                file.WriteLine($"cmd.load_cgo( [9.0, {cylinder.pointOne.X},{cylinder.pointOne.Y},{cylinder.pointOne.Z}," +
+                    $" {cylinder.pointTwo.X}, {cylinder.pointTwo.Y}, {cylinder.pointTwo.Z}, {cylinder.radius}," +
+                    $" 1,1,0,1,1,0], \"cylinder2\" )");
+
+                file.WriteLine($"cmd.color (\"red\", \"Group\")\n\n");
+                file.WriteLine("cmd.show(\"cartoon\", \"group\")");
+                //file.WriteLine("cmd.zoom(\"group\")");
+            }
+        }
+
+
+        public static void writePymolScriptForStrandGroups(List<GroupOfStrands> groupList, string outputDirectory, string DBdirectory, string pdbName)
+        {
+            List<string> chain_names = new List<string>();
+            create_dir(outputDirectory + "Pymol/group");
+            string fileLocation = outputDirectory + "Pymol/group/group_" + pdbName + ".py";
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation))
+            {
+                file.WriteLine("from pymol import cmd, stored"); //For MacPyMOL
+                string[] colors = { "white", "red", "orange", "purple", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple" };
+                string pdb_file = DBdirectory + pdbName + ".pdb";
+                file.WriteLine("x = r\"{0}\"", pdb_file); //For PC
+                file.WriteLine("cmd.load(x)"); //For PC
+                //file.WriteLine("cmd.load(\"{0}\")", pdb_file); for Mac
+                file.WriteLine("cmd.hide(\"everything\", \"all\")");
+                file.WriteLine("cmd.color(\"wheat\",\"all\")");
+                int j = 0;
+                foreach (GroupOfStrands Groupofstrand in groupList)
+                {
+                    file.Write($"cmd.select(\"Group{j}\", \"(");
+                    foreach (OneStrand oneStrand in Groupofstrand.StrandSet)
+                    {
+                        file.Write($"resi {oneStrand.StrandInTheGroup.Residues[0].SeqID}-{oneStrand.StrandInTheGroup.Residues.Last().SeqID} & chain { oneStrand.StrandInTheGroup.ChainName}, ");
+                    }
+                    file.Write($")\")\n");
+                    file.WriteLine($"cmd.color (\"{colors[j]}\", \"Group{j}\")\n\n");
+                    file.WriteLine($"cmd.pseudoatom (\"Centroid{j}\", pos=[{Groupofstrand.Centroid.X},{Groupofstrand.Centroid.Y},{Groupofstrand.Centroid.Z}])");
+                    file.WriteLine($"cmd.color (\"{colors[j]}\", \"Centroid{j}\")\n\n");
+                    j++;
+                }
+                file.WriteLine("cmd.select(\"barrel\", \"Group*\")");
+                file.WriteLine("cmd.show(\"cartoon\", \"barrel\")");
+                file.WriteLine("cmd.show(\"sphere\", \"Centroid*\")");
+                file.WriteLine("cmd.zoom(\"barrel\")");
+            }
+        }
+        public static void writePymolScriptForStrandsRik(List<Strand> strandlist, string outputDirectory, string DBdirectory, string pdbName)
+        {
+            List<string> chain_names = new List<string>();
+            create_dir(outputDirectory + "Pymol/strands");
+            string fileLocation = outputDirectory + "Pymol/strands/strands_" + pdbName + ".py";
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation))
+            {
+                //If you do NOT use MacPymol, uncomment several lines below
+                //file.WriteLine("import pymol"); //For PC
+                //file.WriteLine("import cmd"); //For PC
+                //file.WriteLine("from pymol import stored"); //For PC
+                file.WriteLine("from pymol import cmd, stored"); //For MacPyMOL
+                //string[] colors = { "white", "red", "orange", "purple", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple" };
+
+                string[] primaryColors = { "red", "green", "orange", "teal", "yellow", "blue" };
+                int n = primaryColors.Length;
+                var colors = new List<string>();
+                for (int i = 0; i < strandlist.Count; i++)
+                {
+                    colors.Add(primaryColors[i % n]); //create a recursive list of colors for the total number of strands
+                }
+
+
+                string pdb_file = DBdirectory + pdbName + ".pdb";
+                file.WriteLine("x = r\"{0}\"", pdb_file); //For PC
+                file.WriteLine("cmd.load(x)"); //For PC
+                //file.WriteLine("cmd.load(\"{0}\")", pdb_file); for Mac
+                file.WriteLine("cmd.hide(\"everything\", \"all\")");
+                file.WriteLine("cmd.color(\"wheat\",\"all\")");
+
+                foreach (Strand strand in strandlist)
+                {
+                    file.WriteLine("cmd.select(\"{0}strand{1}\", \"resi {2}-{3} & chain {0} \")", strand.ChainName, strand.StrandNum, strand.Residues[0].SeqID, strand.Residues.Last().SeqID);
+                    file.WriteLine("cmd.color (\"{0}\", \"{1}strand{2}\")", colors[strand.StrandNum], strand.ChainName, strand.StrandNum);
+                    if (chain_names.Contains(strand.ChainName) == false) chain_names.Add(strand.ChainName);
+                    file.WriteLine("\n");
+                }
+
+                file.Write("cmd.select(\"barrel\", \"");
+                for (int i = 0; i < chain_names.Count; i++)
+                {
+                    if (i < chain_names.Count - 1) file.Write("{0}strand* or ", chain_names[i]);
+                    else file.WriteLine("{0}strand*\")", chain_names[i]);
+
+                }
+                file.WriteLine("cmd.show(\"cartoon\", \"barrel\")");
+                file.WriteLine("cmd.zoom(\"barrel\")");
+            }
+        }
+
+        public static void writePymolScriptForBarrelStrands(List<Strand> strandlist, string outputDirectory, string DBdirectory, string pdbName)
+        {
+            List<string> chain_names = new List<string>();
+            create_dir(outputDirectory + "Pymol/B_strands");
+            string fileLocation = outputDirectory + "Pymol/B_strands/B_strands_" + pdbName + ".py";
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation))
+            {
+                //If you do NOT use MacPymol, uncomment several lines below
+                //file.WriteLine("import pymol"); //For PC
+                //file.WriteLine("import cmd"); //For PC
+                //file.WriteLine("from pymol import stored"); //For PC
+                file.WriteLine("from pymol import cmd, stored"); //For MacPyMOL
+                //string[] colors = { "white", "red", "orange", "purple", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple" };
+
+                string[] primaryColors = { "red", "green", "orange", "teal", "yellow", "blue" };
+                int n = primaryColors.Length;
+                var colors = new List<string>();
+                for (int i = 0; i < strandlist.Count; i++)
+                {
+                    colors.Add(primaryColors[i % n]); //create a recursive list of colors for the total number of strands
+                }
+
+
+                string pdb_file = DBdirectory + pdbName + ".pdb";
+                file.WriteLine("x = r\"{0}\"", pdb_file); //For PC
+                file.WriteLine("cmd.load(x)"); //For PC
+                //file.WriteLine("cmd.load(\"{0}\")", pdb_file); for Mac
+                file.WriteLine("cmd.hide(\"everything\", \"all\")");
+                file.WriteLine("cmd.color(\"wheat\",\"all\")");
+
+                var ColorCtr = 0;
+                foreach (Strand strand in strandlist)
+                {
+                    string listOfResidue = $"{strand.Residues[0].SeqID}"; //creating a string of all the residues in this strand
+                    for (int i = 1; i < strand.Residues.Count; i++)
+                    {
+                        var residue = strand.Residues[i];
+                        listOfResidue += $"+{residue.SeqID}";
+                    }
+
+                    file.WriteLine($"cmd.select(\"{strand.ChainName}strand{strand.StrandNum}\", \"resi {listOfResidue} & chain {strand.ChainName} \")");
+                    file.WriteLine("cmd.color (\"{0}\", \"{1}strand{2}\")", colors[ColorCtr], strand.ChainName, strand.StrandNum);
+                    if (chain_names.Contains(strand.ChainName) == false) chain_names.Add(strand.ChainName);
+                    file.WriteLine("\n");
+                    ColorCtr++;
+                }
+
+                file.Write("cmd.select(\"barrel\", \"");
+                for (int i = 0; i < chain_names.Count; i++)
+                {
+                    if (i < chain_names.Count - 1) file.Write("{0}strand* or ", chain_names[i]);
+                    else file.WriteLine("{0}strand*\")", chain_names[i]);
+
+                }
+                file.WriteLine("cmd.show(\"cartoon\", \"barrel\")");
+                file.WriteLine("cmd.zoom(\"barrel\")");
+            }
+        }
+
+        public static void WritePymolScriptForSSType(List<Res> SSTypeList, string outputDirectory, string DBdirectory, string pdbName) // Added 06/29/2020 by Rik
+        {
+
+            //foreach (Res eachRes in SSTypeList)
+            //{
+            //    Console.WriteLine($"SeqID : {eachRes.SeqID}, Chain name: {eachRes.ChainName}, Amino Acid: {eachRes.ThreeLetCode}, SSType : {eachRes.SSType}");
+
+            //} //Show SSType for each amino acid
+            var chain_names = new List<string>();
+            create_dir(outputDirectory + "Pymol/SSType");
+            string fileLocation = outputDirectory + "Pymol/SSType/SSType_" + pdbName + ".py";
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation))
+            {
+                file.WriteLine("from pymol import cmd, stored");
+                string pdb_file = DBdirectory + pdbName + ".pdb";
+                file.WriteLine("x = r\"{0}\"", pdb_file); //For PC
+                file.WriteLine("cmd.load(x)"); //For PC
+                file.WriteLine("cmd.hide(\"everything\", \"all\")");
+                file.WriteLine("cmd.color(\"wheat\",\"all\")");
+
+                foreach (Res eachRes in SSTypeList)
+                {
+                    if (eachRes.SSType == "B")
+                    {
+                        file.WriteLine($"cmd.color (\"Red\", \"resi {eachRes.SeqID}\")\n");
+                    }
+
+                }
+                file.WriteLine($"cmd.show(\"cartoon\", \"chain A\")");
+            }
+        }
+
+        public static void WritePymolScriptForSSType2(List<Res> SSTypeList, string outputDirectory, string DBdirectory, string pdbName) // Added 06/29/2020 by Rik
+        {
+            create_dir(outputDirectory + "Pymol/SSType");
+            string fileLocation = outputDirectory + "Pymol/SSType/SSType_" + pdbName + ".py";
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation))
+            {
+                file.WriteLine("from pymol import cmd, stored");
+                string pdb_file = DBdirectory + pdbName + ".pdb";
+                file.WriteLine("x = r\"{0}\"", pdb_file); //For PC
+                file.WriteLine("cmd.load(x)"); //For PC
+                file.WriteLine("cmd.hide(\"everything\", \"all\")");
+                file.WriteLine("cmd.color(\"wheat\",\"all\")");
+
+                foreach (Res eachRes in SSTypeList)
+                {
+                    if (eachRes.SSType == "E")
+                    {
+                        file.WriteLine($"cmd.color (\"red\", \"resi {eachRes.SeqID}\")\n");
+                    }
+                    else if (eachRes.SSType == "B")
+                    {
+                        file.WriteLine($"cmd.color (\"magenta\", \"resi {eachRes.SeqID}\")\n");
+                    }
+                    else if (eachRes.SSType == "T")
+                    {
+                        file.WriteLine($"cmd.color (\"blue\", \"resi {eachRes.SeqID}\")\n");
+                    }
+                    else if (eachRes.SSType == "S")
+                    {
+                        file.WriteLine($"cmd.color (\"cyan\", \"resi {eachRes.SeqID}\")\n");
+                    }
+                    else if (eachRes.SSType == "C")
+                    {
+                        file.WriteLine($"cmd.color (\"purpleblue\", \"resi {eachRes.SeqID}\")\n");
+                    }
+                    else if (eachRes.SSType == "G")
+                    {
+                        file.WriteLine($"cmd.color (\"olive\", \"resi {eachRes.SeqID}\")\n");
+                    }
+                    else if (eachRes.SSType == "H")
+                    {
+                        file.WriteLine($"cmd.color (\"yellow\", \"resi {eachRes.SeqID}\")\n");
+                    }
+                    else if (eachRes.SSType == "I")
+                    {
+                        file.WriteLine($"cmd.color (\"orange\", \"resi {eachRes.SeqID}\")\n");
+                    }
+                }
+                file.WriteLine($"cmd.show(\"cartoon\", \"chain A\")");
+            }
+        }
+
+        public static void WritePymolScriptForDSSP(List<Res> DsspList, string outputDirectory, string DBdirectory, string pdbName) // Added 06/29/2020 by Rik
+        {
+            create_dir(outputDirectory + "Pymol/DSSP");
+            string fileLocation = outputDirectory + "Pymol/DSSP/DSSP_" + pdbName + ".py";
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation))
+            {
+                file.WriteLine("from pymol import cmd, stored");
+                string pdb_file = DBdirectory + pdbName + ".pdb";
+                file.WriteLine("x = r\"{0}\"", pdb_file); //For PC
+                file.WriteLine("cmd.load(x)"); //For PC
+                file.WriteLine("cmd.hide(\"everything\", \"all\")");
+                file.WriteLine("cmd.color(\"wheat\",\"all\")");
+
+                foreach (Res eachRes in DsspList)
+                {
+                    if (eachRes.DSSP == "E")
+                    {
+                        file.WriteLine($"cmd.color (\"red\", \"resi {eachRes.SeqID} & chain {eachRes.ChainName}\")\n");
+                    }
+                    else if (eachRes.DSSP == "B")
+                    {
+                        file.WriteLine($"cmd.color (\"magenta\", \"resi {eachRes.SeqID} & chain {eachRes.ChainName}\")\n");
+                    }
+                    else if (eachRes.DSSP == "T")
+                    {
+                        file.WriteLine($"cmd.color (\"blue\", \"resi {eachRes.SeqID} & chain {eachRes.ChainName}\")\n");
+                    }
+                    else if (eachRes.DSSP == "S")
+                    {
+                        file.WriteLine($"cmd.color (\"cyan\", \"resi {eachRes.SeqID} & chain {eachRes.ChainName}\")\n");
+                    }
+                    else if (eachRes.DSSP == "C")
+                    {
+                        file.WriteLine($"cmd.color (\"purpleblue\", \"resi {eachRes.SeqID} & chain {eachRes.ChainName}\")\n");
+                    }
+                    else if (eachRes.DSSP == "G")
+                    {
+                        file.WriteLine($"cmd.color (\"olive\", \"resi {eachRes.SeqID} & chain {eachRes.ChainName}\")\n");
+                    }
+                    else if (eachRes.DSSP == "H")
+                    {
+                        file.WriteLine($"cmd.color (\"yellow\", \"resi {eachRes.SeqID} & chain {eachRes.ChainName}\")\n");
+                    }
+                    else if (eachRes.DSSP == "I")
+                    {
+                        file.WriteLine($"cmd.color (\"orange\", \"resi {eachRes.SeqID} & chain {eachRes.ChainName}\")\n");
+                    }
+                }
+                //file.WriteLine($"cmd.show(\"cartoon\", \"chain A\")");
+                file.WriteLine($"cmd.show(\"cartoon\")");
+            }
+        }
+
+        public static void WritePymolScriptForInOut(GroupOfStrands group, string outputDirectory, string DBdirectory, string pdbName) // Added 06/29/2020 by Rik
+        {
+            create_dir(outputDirectory + "Pymol/InOut");
+            List<string> chain_names = new List<string>();
+            string fileLocation = outputDirectory + "Pymol/InOut/InOut_" + pdbName + ".py";
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation))
+            {
+                file.WriteLine("from pymol import cmd, stored"); //For MacPyMOL
+                string[] colors = { "white", "red", "orange", "purple", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple" };
+                string pdb_file = DBdirectory + pdbName + ".pdb";
+                file.WriteLine("x = r\"{0}\"", pdb_file); //For PC
+                file.WriteLine("cmd.load(x)"); //For PC
+                //file.WriteLine("cmd.load(\"{0}\")", pdb_file); for Mac
+                file.WriteLine("cmd.hide(\"everything\", \"all\")");
+                file.WriteLine("cmd.color(\"wheat\",\"all\")");
+
+                foreach (OneStrand strand in group.StrandSet)
+                {
+                    foreach (Res res in strand.StrandInTheGroup)
+                    {
+                        if (res.Inward)
+                        {
+                            file.WriteLine($"cmd.color (\"red\", \"resi {res.SeqID} & chain {res.ChainName}\")\n");
+                        }
+                        else
+                        {
+                            file.WriteLine($"cmd.color (\"blue\", \"resi {res.SeqID} & chain {res.ChainName}\")\n");
+                        }
+                    }
+                }
+                file.WriteLine($"cmd.show(\"cartoon\")");
+
+            }
+        }
+        public static void WritePymolScriptForInOutStrands(List<Strand> Strands, string outputDirectory, string DBdirectory, string pdbName, Vector3 CCentroid, Vector3 NCentroid) // Added 06/29/2020 by Rik
+        {
+            create_dir(outputDirectory + "Pymol/InOutStrands");
+            List<string> chain_names = new List<string>();
+            string fileLocation = outputDirectory + "Pymol/InOutStrands/InOut_" + pdbName + ".py";
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation))
+            {
+                file.WriteLine("from pymol import cmd, stored"); //For MacPyMOL
+                string pdb_file = DBdirectory + pdbName + ".pdb";
+                file.WriteLine("x = r\"{0}\"", pdb_file); //For PC
+                file.WriteLine("cmd.load(x)"); //For PC
+                file.WriteLine("cmd.hide(\"everything\", \"all\")");
+                file.WriteLine("cmd.color(\"wheat\",\"all\")");
+
+
+                foreach (Strand strand in Strands)
+                {
+                    string listOfResidue = $"{strand.Residues[0].SeqID}"; //creating a string of all the residues in this strand
+                    for (int i = 1; i < strand.Residues.Count; i++)
+                    {
+                        var residue = strand.Residues[i];
+                        listOfResidue += $"+{residue.SeqID}";
+                    }
+                    file.WriteLine($"cmd.select(\"{strand.ChainName}strand{strand.StrandNum}\", \"resi {listOfResidue} & chain {strand.ChainName} \")");
+                    if (chain_names.Contains(strand.ChainName) == false) chain_names.Add(strand.ChainName);
+                    file.WriteLine("\n");
+                }
+
+                file.Write("cmd.select(\"barrel\", \"");
+                for (int i = 0; i < chain_names.Count; i++)
+                {
+                    if (i < chain_names.Count - 1) file.Write("{0}strand* or ", chain_names[i]);
+                    else file.WriteLine("{0}strand*\")", chain_names[i]);
+
+                }
+                file.WriteLine("cmd.show(\"sticks\", \"barrel\")");
+                file.WriteLine("cmd.show(\"cartoon\", \"barrel\")");
+                file.WriteLine("cmd.set(\"cartoon_side_chain_helper\", \"on\")");
+                file.WriteLine("cmd.zoom(\"barrel\")");
+
+
+
+
+                foreach (Strand strand in Strands)
+                {
+                    foreach (Res res in strand)
+                    {
+                        if (res.Inward)
+                        {
+                            file.WriteLine($"cmd.color (\"red\", \"resi {res.SeqID} & chain {res.ChainName}\")\n");
+                            file.WriteLine($"cmd.select (\"Inward\", \"resi {res.SeqID} & chain {res.ChainName}\", merge=1)\n");
+                        }
+                        else
+                        {
+                            file.WriteLine($"cmd.color (\"blue\", \"resi {res.SeqID} & chain {res.ChainName}\")\n");
+                            file.WriteLine($"cmd.select (\"Outward\", \"resi {res.SeqID} & chain {res.ChainName}\", merge=1)\n");
+                        }
+                    }
+                }
+                //file.WriteLine($"cmd.show(\"cartoon\")");
+                file.WriteLine($"cmd.load_cgo( [9.0, {CCentroid.X},{CCentroid.Y},{CCentroid.Z}," +
+                $" {NCentroid.X}, {NCentroid.Y}, {NCentroid.Z}, 1," +
+                $" 1,1,0,0,0,1], \"axis\" )");
+            }
         }
 
 
