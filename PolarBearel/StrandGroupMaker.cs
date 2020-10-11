@@ -544,7 +544,7 @@ namespace betaBarrelProgram
                         {
                             ListOfStrand.Add(oneStrand.StrandInTheGroup);
                         }
-                        SharedFunctions.writePymolScriptForBarrelStrands(ListOfStrand, Global.OUTPUT_DIR, Global.DB_DIR, PdbName);
+                        //SharedFunctions.writePymolScriptForBarrelStrands(ListOfStrand, Global.OUTPUT_DIR, Global.DB_DIR, PdbName);
                         #endregion
                         Concatenate(groupOfStrands);
                         i = -1;

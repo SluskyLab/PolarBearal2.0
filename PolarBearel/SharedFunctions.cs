@@ -2631,8 +2631,8 @@ namespace betaBarrelProgram
 
                 foreach (Strand strand in strandlist)
                 {
-                    file.WriteLine("cmd.select(\"{0}strand{1}\", \"resi {2}-{3} & chain {0} \")", strand.ChainName, strand.StrandNum, strand.Residues[0].SeqID, strand.Residues.Last().SeqID);
-                    file.WriteLine("cmd.color (\"{0}\", \"{1}strand{2}\")", colors[strand.StrandNum], strand.ChainName, strand.StrandNum);
+                    file.WriteLine("cmd.select(\"{0}strand{1}\", \"resi {2}-{3} & chain {0} \")", strand.ChainName, strand.betaStrandNum, strand.Residues[0].SeqID, strand.Residues.Last().SeqID);
+                    file.WriteLine("cmd.color (\"{0}\", \"{1}strand{2}\")", colors[strand.betaStrandNum], strand.ChainName, strand.betaStrandNum);
                     if (chain_names.Contains(strand.ChainName) == false) chain_names.Add(strand.ChainName);
                     file.WriteLine("\n");
                 }
@@ -2902,7 +2902,7 @@ namespace betaBarrelProgram
                         var residue = strand.Residues[i];
                         listOfResidue += $"+{residue.SeqID}";
                     }
-                    file.WriteLine($"cmd.select(\"{strand.ChainName}strand{strand.StrandNum}\", \"resi {listOfResidue} & chain {strand.ChainName} \")");
+                    file.WriteLine($"cmd.select(\"{strand.ChainName}strand{strand.betaStrandNum}\", \"resi {listOfResidue} & chain {strand.ChainName} \")");
                     if (chain_names.Contains(strand.ChainName) == false) chain_names.Add(strand.ChainName);
                     file.WriteLine("\n");
                 }

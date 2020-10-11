@@ -103,7 +103,7 @@ namespace betaBarrelProgram
 
             CreateStrandList(ref newProt);
 
-            //SharedFunctions.writePymolScriptForStrandsRik(Strands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName);
+            SharedFunctions.writePymolScriptForStrandsRik(Strands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName);
 
             foreach (var chain in newProt.Chains)
             {
@@ -218,8 +218,8 @@ namespace betaBarrelProgram
                         }
                     }
                 }
-                SharedFunctions.writePymolScriptForStrandsRik(this.Strands, Global.OUTPUT_DIR, Global.DB_DIR, this.PdbName);
-        }
+                SharedFunctions.writePymolScriptForBarrelStrands(this.Strands, Global.OUTPUT_DIR, Global.DB_DIR, this.PdbName);
+            }
         }
 
         private void LogBarrel(StrandGroupMaker myStrandGroup)
