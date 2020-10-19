@@ -192,8 +192,12 @@ namespace betaBarrelProgram
         static void Main(string[] args)
         {
             DateTime startTime = DateTime.Now;
-            using (StreamWriter log = File.AppendText(Global.OUTPUT_DIR + "log.txt")) log.WriteLine("working with db ({0})", DateTime.Now);
-
+            using (StreamWriter log = File.AppendText(Global.OUTPUT_DIR + "log.txt"))
+            {
+                log.WriteLine("working with db ({0})", DateTime.Now);
+                //log.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", "PdbName", "Success", "barrelType", "chainID", "numberOfStrands");
+            }
+            
             string choice = "";
             while (choice != "10")
             {
@@ -241,6 +245,10 @@ namespace betaBarrelProgram
                         PDBInfo testInfo = new PDBInfo();
                         break;
                     default:
+                        using (StreamWriter log = File.AppendText(Global.OUTPUT_DIR + "log.txt"))
+                        {
+                            log.WriteLine("ended program at {0} \n\n", DateTime.Now);
+                        }
                         //10. Quit
                         choice = "10";
                         break;

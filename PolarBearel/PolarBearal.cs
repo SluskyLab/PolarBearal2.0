@@ -42,7 +42,16 @@ namespace betaBarrelProgram
                         PrepResults();
                         break;
                     case "2":
+                        using (StreamWriter log = File.AppendText(Global.OUTPUT_DIR + "log.txt"))
+                        {
+                            log.WriteLine("starting create betabarrel ProteinDB at {0}", DateTime.Now);
+                            log.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", "PdbName", "Success", "barrelType", "chainID", "numberOfStrands");
+                        }
                         CreateBetaBarrelProteinDatabase();
+                        using (StreamWriter log = File.AppendText(Global.OUTPUT_DIR + "log.txt"))
+                        {
+                            log.WriteLine("ending create betabarrel ProteinDB at {0}", DateTime.Now);
+                        }
                         break;
                     case "3":
                         RunBetaBarrelProteinDatabase();

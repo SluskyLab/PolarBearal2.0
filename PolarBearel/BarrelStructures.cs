@@ -172,6 +172,9 @@ namespace betaBarrelProgram
                     //  phiPsiAndOmega[0] = CalculateTorsion(atom1, atom2, atom3, atom4);
                     //  phiPsiAndOmega[1] = CalculateTorsion(atom2, atom3, atom4, atom5);
                 }
+                //8-10-2020 - Rik - Added a new method to read SSType from PDB File
+                var PDB_SS_dict = getSSfromPDB(this.PdbName, this.ChainName);
+
                 // set SecondaryStructure
                 for (int residueCtr = 1; residueCtr < ResidueCount - 1; residueCtr++)
                 {
@@ -244,7 +247,73 @@ namespace betaBarrelProgram
 
                     Residues[residueCtr].SSType = geoSeq;
 
+                    if (PDB_SS_dict.ContainsKey(Residues[residueCtr].SeqID))
+                    {
+                        Residues[residueCtr].DSSP = "E";
+                    }
+                    else
+                    {
+                        Residues[residueCtr].DSSP = "*";
+                    }
+
                 }
+
+                //RYAN// trying to see if this is a big slor down 98 seconds w/o, 494 seconds with all, 120 s w/o loop
+
+                //8-10-2020 - Rik - Added a new method to read SSType from PDB File
+                //var DSSP_values2 = getSSfromPDB(this.PdbName, this.ChainName);
+                /*foreach (Res Res1 in Residues)
+                {
+                    try
+                    {
+                        if (DSSP_values2[Res1.SeqID] == "E")
+                        {
+                            Res1.DSSP = DSSP_values2[Res1.SeqID];
+                        }
+                    }
+                    catch (KeyNotFoundException)
+                    {
+                        Res1.DSSP = "*";
+                    }
+                }*/
+            }
+
+            //8-10-2020 - Rik - Get_DSSP from PDB
+            public static Dictionary<int, string> getSSfromPDB(string pdbName, string ChainName)
+            {
+
+                Dictionary<int, string> PDB_SS_values = new Dictionary<int, string>();
+                string PDB_file = Global.DB_DIR + pdbName + ".pdb";
+
+                if (File.Exists(PDB_file))
+                {
+                    using (StreamReader sr = new StreamReader(PDB_file))
+                    {
+                        String line;
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            if (line.Substring(21, 1) == ChainName && line.Substring(0, 5) == "SHEET")
+                            {
+                                //Console.WriteLine(line.Substring(21, 1));
+                                int ResStart = Convert.ToInt32(line.Substring(22, 4));
+                                int ResEnd = Convert.ToInt32(line.Substring(33, 4));
+
+                                for (int i = ResStart; i <= ResEnd; i++)
+                                {
+                                    if (!PDB_SS_values.ContainsKey(i))
+                                    {
+                                        PDB_SS_values.Add(i, "E");
+                                    }
+
+                                }
+
+                            }
+
+                        }
+                    }
+                }
+                if (PDB_SS_values.Count == 0) { Console.WriteLine("NO SS VALUES ADDED FROM PDB"); }
+                return PDB_SS_values;
             }
 
             public static Dictionary<int, string> getDSSP(string pdbName, string DBpath, string ChainName)

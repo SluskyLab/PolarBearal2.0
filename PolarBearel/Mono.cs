@@ -47,8 +47,8 @@ namespace betaBarrelProgram
                     }
                     if (IsItProtein == true)
                     {
-                        //Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, true, Global.MONO_DB_DIR);
-                        Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, false, Global.MONO_DB_DIR); //changed mono status for SS for solubles
+                        Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, true, Global.MONO_DB_DIR);
+                        //Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, false, Global.MONO_DB_DIR); //changed mono status for SS for solubles
                         this.Chains.Add(myChain);
                         this.ChainCount++;
                     }
@@ -57,9 +57,9 @@ namespace betaBarrelProgram
 
             public MonoProtein(ref AtomParser.AtomCategory _myAtomCat, int chainNum, string PdbName)
             {
-                this.Chains = new List<BarrelStructures.Chain>();
-                //BarrelStructures.Chain myChain = new BarrelStructures.Chain(ref _myAtomCat, chainNum, PdbName, true, Global.DB_DIR);
-                BarrelStructures.Chain myChain = new BarrelStructures.Chain(ref _myAtomCat, chainNum, PdbName, false, Global.DB_DIR); //changed mono status for SS for solubles
+                //this.Chains = new List<BarrelStructures.Chain>();
+                BarrelStructures.Chain myChain = new BarrelStructures.Chain(ref _myAtomCat, chainNum, PdbName, true, Global.DB_DIR);
+                //BarrelStructures.Chain myChain = new BarrelStructures.Chain(ref _myAtomCat, chainNum, PdbName, false, Global.DB_DIR); //changed mono status for SS for solubles
                 this.Chains.Add(myChain);
             }
 
