@@ -8,7 +8,7 @@ using System.Numerics;
 
 namespace betaBarrelProgram
 {
-    public class StrandGroupMaker
+    public class StrandGroupMaker //Rik
     {
         public string PdbName { get; set; }
         public List<GroupOfStrands> GroupOfGroup { get; set; }
