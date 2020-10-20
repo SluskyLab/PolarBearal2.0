@@ -1943,7 +1943,7 @@ namespace betaBarrelProgram
             }
         }
 
-        static public void RunCbeta2Axis()
+        static public void RunCbeta2Axis(string method)
         {
             Console.WriteLine("Starting RunCbeta2Axis");
             string file = @"Cbeta2AxisData.txt";
@@ -1968,7 +1968,7 @@ namespace betaBarrelProgram
                         {
                             Console.WriteLine("running {0}", pdb);
                             string fileName = pdb.Substring(0, 4).ToUpper();
-                            Barrel myBarrel = Program.runBetaBarrel(pdb, ref Global.AADict, ref Global.partialChargesDict);
+                            Barrel myBarrel = Program.runThisBetaBarrel(pdb, method);
                             saveCbeta2AxisData(ref myBarrel);
                         }
                     }
@@ -2012,7 +2012,7 @@ namespace betaBarrelProgram
             }
         }
 
-        static public void runC_DistanceData()
+        static public void runC_DistanceData(string method)
         {
             Console.WriteLine("Starting C_DistanceData");
             string file = @"C_DistanceData.txt";
@@ -2037,7 +2037,7 @@ namespace betaBarrelProgram
                         {
                             Console.WriteLine("running {0}", pdb);
                             string fileName = pdb.Substring(0, 4).ToUpper();
-                            Barrel myBarrel = Program.runBetaBarrel(pdb, ref Global.AADict, ref Global.partialChargesDict);
+                            Barrel myBarrel = Program.runThisBetaBarrel(pdb, method);
                             saveC_DistanceData(ref myBarrel);
                         }
                     }
@@ -2068,7 +2068,7 @@ namespace betaBarrelProgram
             }
         }
 
-        static public void run_Centroids()
+        static public void run_Centroids(string method)
         {
             Console.WriteLine("Starting centroids");
             string file = @"centroids.txt";
@@ -2093,7 +2093,7 @@ namespace betaBarrelProgram
                         {
                             Console.WriteLine("running {0}", pdb);
                             string fileName = pdb.Substring(0, 4).ToUpper();
-                            Barrel myBarrel = Program.runBetaBarrel(pdb, ref Global.AADict, ref Global.partialChargesDict);
+                            Barrel myBarrel = Program.runThisBetaBarrel(pdb, method);
                             save_Centroids(ref myBarrel);
                         }
                     }
