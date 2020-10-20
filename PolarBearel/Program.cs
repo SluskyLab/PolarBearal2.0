@@ -27,7 +27,6 @@ namespace betaBarrelProgram
 {
     public static class Global
     {
-        
         public static string POLARBEARAL_DIR = Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;//"/Users/r567f246/Desktop/gitLab/PolarBearal/";
         //public static string POLY_DB_DIR = @"\\psf\Home\Desktop\SluskyLab\betaBarrelProgram\betaBarrelOutput\PolyBarrelsDB\";
         //public static string MACPOLYDBDIR = @"\\psf\Home\Desktop\SluskyLab\betaBarrelProgram\betaBarrelOutput\PolyBarrelsDB\PolyDBList_v4.txt";
@@ -49,7 +48,7 @@ namespace betaBarrelProgram
         public static string SOLUBLE_DB_file = POLARBEARAL_DIR + "/DB/Riks_soluble_barrels.txt";
         public static string SOLUBLE_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/soluble/";
 
-        // default to comprensive input and output
+        // default to comprensive input and outputt
         public static string DB_DIR = POLARBEARAL_DIR + "/DB/PDBs/";
         public static string OUTPUT_DIR = POLARBEARAL_DIR + "/Output/all/";
         public static string DB_file = POLARBEARAL_DIR + "/DB/dataset.txt";
