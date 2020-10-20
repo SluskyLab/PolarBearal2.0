@@ -1,7 +1,7 @@
 ﻿/*
 **  File: BarrelStructures.cs
 **  Started: 
-**  Contributors: Meghan Franklin, Ryan Feehan
+**  Contributors: Meghan Franklin, Ryan Feehan, Rik Dhar
 **  Overview: 
 **
 **  About: 
@@ -158,19 +158,7 @@ namespace betaBarrelProgram
                             Residues[residueCtr].Psi = SharedFunctions.CalculateTorsion(Residues[residueCtr].BackboneCoords["N"], Residues[residueCtr].BackboneCoords["CA"], Residues[residueCtr].BackboneCoords["C"], Residues[residueCtr + 1].BackboneCoords["N"]);
                         }
                     }
-                    // I only left this because who is Ben? - Ryan
-                    //ben's code moved from peptide analytics
-                    //order: 
-                    // [0] CA (index-1)
-                    // [1] C' (index-1)
-                    // [2] N
-                    // [3] CA
-                    // [4] C'
-                    // [5] N (index+1)
-
-                    //phiPsiAndOmega[2] = CalculateTorsion(atom0, atom1, atom2, atom3);
-                    //  phiPsiAndOmega[0] = CalculateTorsion(atom1, atom2, atom3, atom4);
-                    //  phiPsiAndOmega[1] = CalculateTorsion(atom2, atom3, atom4, atom5);
+                    
                 }
                 //8-10-2020 - Rik - Added a new method to read SSType from PDB File
                 var PDB_SS_dict = getSSfromPDB(this.PdbName, this.ChainName);
@@ -257,25 +245,6 @@ namespace betaBarrelProgram
                     }
 
                 }
-
-                //RYAN// trying to see if this is a big slor down 98 seconds w/o, 494 seconds with all, 120 s w/o loop
-
-                //8-10-2020 - Rik - Added a new method to read SSType from PDB File
-                //var DSSP_values2 = getSSfromPDB(this.PdbName, this.ChainName);
-                /*foreach (Res Res1 in Residues)
-                {
-                    try
-                    {
-                        if (DSSP_values2[Res1.SeqID] == "E")
-                        {
-                            Res1.DSSP = DSSP_values2[Res1.SeqID];
-                        }
-                    }
-                    catch (KeyNotFoundException)
-                    {
-                        Res1.DSSP = "*";
-                    }
-                }*/
             }
 
             //8-10-2020 - Rik - Get_DSSP from PDB
