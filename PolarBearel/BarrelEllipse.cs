@@ -167,8 +167,8 @@ namespace betaBarrelProgram
             _protein = null;
             _barrel = null;
 
-            //SharedFunctions.runBetaBarrel_RYAN(PDBid, ref _protein, ref _barrel);
-            Program.runThisBetaBarrel(PDBid, "mono", ref _barrel, ref _protein);
+            // testing all
+            Program.runThisBetaBarrel(PDBid, "all", ref _barrel, ref _protein);
             strandlist = _barrel.Strands;
 
             BottomEllipse = new Ellipse(SharedFunctions.getBottomEllipseCoords(strandlist));
