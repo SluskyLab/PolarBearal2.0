@@ -29,26 +29,26 @@ namespace betaBarrelProgram
     {
         public static string POLARBEARAL_DIR = Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
 
-        public static string MONO_DB_DIR = POLARBEARAL_DIR + "/DB/mono/";
-        public static string MONO_DB_file = POLARBEARAL_DIR + "/DB/MonoDB_v5.txt";
-        public static string MONO_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/mono_v5/";
+        public static string MONO_DB_DIR = POLARBEARAL_DIR + "/DB/PDBs/";
+        public static string MONO_DB_file = POLARBEARAL_DIR + "/DB/MonoDBList.txt";
+        public static string MONO_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/mono/";
 
-        public static string POLY_DB_DIR = POLARBEARAL_DIR + "/DB/mono/";
-        public static string POLY_DB_file = POLARBEARAL_DIR + "/DB/poly.txt";
+        public static string POLY_DB_DIR = POLARBEARAL_DIR + "/DB/PDBs/";
+        public static string POLY_DB_file = POLARBEARAL_DIR + "/DB/PolyDBList.txt";
         public static string POLY_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/poly/";
 
         public static string MEMB_DB_DIR = POLARBEARAL_DIR + "/DB/PDBs/";
-        public static string MEMB_DB_file = POLARBEARAL_DIR + "/DB/Riks_membrane_barrels.txt";
+        public static string MEMB_DB_file = POLARBEARAL_DIR + "/DB/MembDBList.txt";
         public static string MEMB_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/membrane/";
 
         public static string SOLUBLE_DB_DIR = POLARBEARAL_DIR + "/DB/PDBs/";
-        public static string SOLUBLE_DB_file = POLARBEARAL_DIR + "/DB/Riks_soluble_barrels.txt";
+        public static string SOLUBLE_DB_file = POLARBEARAL_DIR + "/DB/SolubleDBList.txt";
         public static string SOLUBLE_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/soluble/";
 
         // default to comprensive input and outputt
         public static string DB_DIR = POLARBEARAL_DIR + "/DB/PDBs/";
         public static string OUTPUT_DIR = POLARBEARAL_DIR + "/Output/all/";
-        public static string DB_file = POLARBEARAL_DIR + "/DB/dataset.txt";
+        public static string DB_file = POLARBEARAL_DIR + "/DB/AllDBList.txt";
 
         public static void change_to_mono_data()
         {
