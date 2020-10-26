@@ -232,6 +232,7 @@ namespace betaBarrelProgram
 
             //SharedFunctions.setInOut(strandList, Global.OUTPUT_DIR, this.PdbName, Axis, Ccentroid, Ncentroid);
             //RYAN//SharedFunctions.setInOutMin(strandList, Global.OUTPUT_DIR, this.PdbName, Ccentroid, Ncentroid);
+            SharedFunctions.setInOutMin(strandList, Global.MONO_OUTPUT_DIR, this.PdbName, Ccentroid, Ncentroid);
             SharedFunctions.WritePymolScriptForInOutStrands(strandList, Global.OUTPUT_DIR, Global.DB_DIR, PdbName, Ccentroid, Ncentroid);
             //SharedFunctions.setInOutMin(strandList, Global.OUTPUT_DIR, this.PdbName, Ccentroid, Ncentroid);
             #endregion

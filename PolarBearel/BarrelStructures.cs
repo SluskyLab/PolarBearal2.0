@@ -234,7 +234,7 @@ namespace betaBarrelProgram
                     }
 
                     Residues[residueCtr].SSType = geoSeq;
-
+                    
                     if (PDB_SS_dict.ContainsKey(Residues[residueCtr].SeqID))
                     {
                         Residues[residueCtr].DSSP = "E";

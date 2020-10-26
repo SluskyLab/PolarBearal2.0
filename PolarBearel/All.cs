@@ -261,7 +261,7 @@ private void CreateStrandList(ref Protein newProt)
             #region HardCoding
             var PDBList = new List<string>(){ "1E5P","1R0U","3PDF","3FHH","4E1T","6TZK","3QQ2","1QTT","4ALO","4WFU","1LFO","3A2S","4Q35", "1GL4" };//#Hard Coding# Use SSType for these
             bool useSSType = PDBList.Contains(PdbName);
-            //useSSType = true;//RYAN//trying to see if Rik's SS is taking forever
+            //useSSType = true;//RYAN//just cleaned PDB files, removing all PDB SS!! :(
             if (PdbName == "1GL4")
             {
                 //manually remove few SSTypes
