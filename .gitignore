@@ -11,6 +11,9 @@ autom4te.cache/
 tarballs/
 test-results/
 
+## ignore large, uneeded for version control directories 
+DB/
+Output/
 # Mac bundle stuff
 *.dmg
 *.app
