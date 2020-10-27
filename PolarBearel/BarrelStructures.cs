@@ -65,7 +65,7 @@ namespace betaBarrelProgram
             public string ChainName { get; set; }
             public bool MonovsPoly { get; set; }
 
-            public Chain(ref AtomParser.AtomCategory _myAtomCat, int chainNum, string pdbName, bool mono_status, string dssp_dir)
+            public Chain(ref AtomParser.AtomCategory _myAtomCat, int chainNum, string pdbName, bool mono_status, string dssp_dir, bool getPDBSS)
             {
                 this.ChainName = _myAtomCat.ChainAtomList[chainNum].AuthAsymChain;
                 this.ChainNum = chainNum;
@@ -160,8 +160,9 @@ namespace betaBarrelProgram
                     }
                     
                 }
+                Dictionary<int, string> PDB_SS_dict=null;
                 //8-10-2020 - Rik - Added a new method to read SSType from PDB File
-                var PDB_SS_dict = getSSfromPDB(this.PdbName, this.ChainName);
+                if (true == getPDBSS) { PDB_SS_dict = getSSfromPDB(this.PdbName, this.ChainName); }
 
                 // set SecondaryStructure
                 for (int residueCtr = 1; residueCtr < ResidueCount - 1; residueCtr++)
@@ -194,7 +195,7 @@ namespace betaBarrelProgram
                         }
                         else // beta or polyproII
                         {
-                            if (MonovsPoly == false && phiValue < -80) //Changed from -100 on 12/1/15; needs to be -90 for multi-chain barrels
+                            if (MonovsPoly == false && phiValue < -90) //Changed from -100 on 12/1/15; needs to be -90 for multi-chain barrels
                             {
                                 if (transPeptide) { geoSeq += "B"; }
                                 else { geoSeq += "b"; }
@@ -234,14 +235,15 @@ namespace betaBarrelProgram
                     }
 
                     Residues[residueCtr].SSType = geoSeq;
-                    
-                    if (PDB_SS_dict.ContainsKey(Residues[residueCtr].SeqID))
-                    {
-                        Residues[residueCtr].DSSP = "E";
-                    }
-                    else
-                    {
-                        Residues[residueCtr].DSSP = "*";
+                    if(true == getPDBSS){
+                        if (PDB_SS_dict.ContainsKey(Residues[residueCtr].SeqID))
+                        {
+                            Residues[residueCtr].DSSP = "E";
+                        }
+                        else
+                        {
+                            Residues[residueCtr].DSSP = "*";
+                        }
                     }
 
                 }

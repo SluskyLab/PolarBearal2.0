@@ -33,7 +33,7 @@ namespace betaBarrelProgram
         public static string MONO_DB_file = POLARBEARAL_DIR + "/DB/MonoDBList.txt";
         public static string MONO_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/mono/";
 
-        public static string POLY_DB_DIR = POLARBEARAL_DIR + "/DB/PDBs/";
+        public static string POLY_DB_DIR = POLARBEARAL_DIR + "/DB/PolyBarrelsDB/";
         public static string POLY_DB_file = POLARBEARAL_DIR + "/DB/PolyDBList.txt";
         public static string POLY_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/poly/";
 
@@ -311,13 +311,13 @@ namespace betaBarrelProgram
                     }
                     catch
                     {
-                        Console.WriteLine("Failed to run {0} using the poly methods\n", pdb);
+                       Console.WriteLine("Failed to run {0} using the poly methods\n", pdb);
                     }
                 }
                 // use all method 
                 else if ("all" == method)
                 {
-                    try //if (File.Exists(pdbFileName))
+                    try//if (File.Exists(pdbFileName))
                     {
                         Console.WriteLine("all method for protein...");
                         Protein newProt = new AllProtein(ref myAtomCat, PDB);
@@ -332,7 +332,7 @@ namespace betaBarrelProgram
                 // default to mono method
                 else //if ("mono" == method)
                 {
-                    try
+                    try//if(File.Exists(pdbFileName))
                     {
                         Console.WriteLine("Generating mono protein");
                         Protein newProt = new MonoProtein(ref myAtomCat, 0, PDB);

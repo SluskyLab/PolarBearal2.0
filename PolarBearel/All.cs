@@ -35,7 +35,7 @@ namespace betaBarrelProgram
                 }
                 if (IsItProtein == true)
                 {
-                    BarrelStructures.Chain myChain = new BarrelStructures.Chain(ref myAtomCat, chainNum, PdbName, false, Global.DB_DIR);
+                    BarrelStructures.Chain myChain = new BarrelStructures.Chain(ref myAtomCat, chainNum, PdbName, false, Global.DB_DIR, true);
                     this.Chains.Add(myChain);
                     chainNumList.Add(ChainCount, chainNum);
                     this.ChainCount++;
@@ -147,7 +147,7 @@ namespace betaBarrelProgram
                             Console.WriteLine($"Protein {PdbName} Chain {chain.ChainName} has a Mono barrel with {myStrandGroup.BarrelStrands.Count} strands");
                             this.barrelType = "mono";
                             this.Success = true;
-                            LogBarrel(myStrandGroup);
+                            //LogBarrel(myStrandGroup);
                             break;
                         }
                     }
@@ -168,14 +168,14 @@ namespace betaBarrelProgram
                     Console.WriteLine($"Protein {PdbName} has a Poly barrel with {myStrandGroup.BarrelStrands.Count} strands");
                     this.barrelType = "poly";
                     this.Success = true;
-                    LogBarrel(myStrandGroup);
+                    //LogBarrel(myStrandGroup);
                 }
             }
             #endregion
 
             if (!isMonoFlag && !isPolyFlag)
             {
-                LogBarrel(null);
+                //LogBarrel(null);
                 
             }
             else

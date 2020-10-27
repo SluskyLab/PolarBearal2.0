@@ -339,8 +339,9 @@ namespace betaBarrelProgram
 
         public static void setInOutMin(List<Strand> strandlist, string outputDirectory, string pdbName, Vector3 CCentroid, Vector3 NCentroid) //10-07-20 - RD - Use the reference point on axis
         {
-            string fileLocation3 = outputDirectory + "InOut\\InOut_" + pdbName + ".txt";
-            Dictionary<Vector3, Vector3> nearestPoint = new Dictionary<Vector3, Vector3>();
+            string fileLocation3 = outputDirectory + "InOut/InOut_" + pdbName + ".txt";
+            create_dir(outputDirectory + "InOut");
+            Dictionary <Vector3, Vector3> nearestPoint = new Dictionary<Vector3, Vector3>();
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation3))
             {
                 file.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\n", "Res", "ResNum", "SeqID", "Strand", "Chain", "Inward", "ZCoord");
@@ -473,13 +474,27 @@ namespace betaBarrelProgram
             
             return all_lengths;
         }
-        
+
+        public static void LogBarrel(ref Barrel myBarrel, string method)
+        {
+            var numberOfStrands = 0;
+            if (myBarrel.Success) numberOfStrands = myBarrel.Strands.Count;
+
+            var chainID = myBarrel.Strands[0].ChainName;
+           
+            string logFileLoc = Global.OUTPUT_DIR + "Log.txt";
+            using (StreamWriter log = File.AppendText(logFileLoc))
+            {
+                log.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", myBarrel.PdbName, myBarrel.Success, method, chainID, numberOfStrands);
+            }
+        }
+
         public static Dictionary<string, string> getLoopTurns(List<Strand> strandlist, ref Chain myChain, string outputDirectory, string pdbName)
         {
             create_dir(outputDirectory + "LoopData");
-            create_dir(outputDirectory + "LoopData/v4Turns");
+            create_dir(outputDirectory + "LoopData/v4Loops");
             create_dir(outputDirectory + "TurnData");
-            create_dir(outputDirectory + "TurnData/v4Loops");
+            create_dir(outputDirectory + "TurnData/v4Turns");
             //string fileLocation = outputDirectory + "RosettaLoops/Loops/" + pdbName + "_Loops_Test.txt";
             //string fileLocation2 = outputDirectory + "RosettaLoops/Turns/" + pdbName + "_Turns_Test.txt";
             string fileLocation = outputDirectory + "LoopData/v4Loops/" + pdbName + "_Loops_Hairpin.txt";
