@@ -57,7 +57,7 @@ namespace betaBarrelProgram
 
             public MonoProtein(ref AtomParser.AtomCategory _myAtomCat, int chainNum, string PdbName)
             {
-                //this.Chains = new List<BarrelStructures.Chain>();
+                this.Chains = new List<BarrelStructures.Chain>();
                 BarrelStructures.Chain myChain = new BarrelStructures.Chain(ref _myAtomCat, chainNum, PdbName, true, Global.DB_DIR);
                 //BarrelStructures.Chain myChain = new BarrelStructures.Chain(ref _myAtomCat, chainNum, PdbName, false, Global.DB_DIR); //changed mono status for SS for solubles
                 this.Chains.Add(myChain);

@@ -91,10 +91,11 @@ namespace betaBarrelProgram
                         //Add direction assignment
                         BarrelAxis(group);
                         LogStrandData(group);
-                        foreach (var strand in group.StrandSet)
-                        {
-                            BarrelStrands.Add(strand.StrandInTheGroup);
-                        }
+                        BarrelStrands = rearrangeBarrel(group);
+                        //foreach (var strand in group.StrandSet)
+                        //{
+                        //    BarrelStrands.Add(strand.StrandInTheGroup);
+                        //}
                         SharedFunctions.writePymolScriptForBarrelStrands(this.BarrelStrands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName);
                         //SharedFunctions.WritePymolScriptForInOutStrands(this.BarrelStrands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName, CCentroid, NCentroid);
                         break;
@@ -221,20 +222,69 @@ namespace betaBarrelProgram
             Ncentroid /= NCtr;
             var Axis = Ncentroid - Ccentroid;
             //Console.WriteLine($"Ccentroid: {Ccentroid.X}, {Ccentroid.Y}, {Ccentroid.Z} and Ncentroid: {Ncentroid.X}, {Ncentroid.Y}, {Ncentroid.Z}");
+
+            group.Ccentroid = Ccentroid;
+            group.Ncentroid = Ncentroid;
+            group.Axis = Axis;
+            group.CellipseCoords = myCEllipse;
+            group.NellipseCoords = myNEllipse;
             #endregion
 
             #region Calculate InOut
-            List<Strand> strandList = new List<Strand>();
+            //List<Strand> strandList = new List<Strand>();
+            //foreach (var strand in group.StrandSet)
+            //{
+            //    strandList.Add(strand.StrandInTheGroup);
+            //}
+
+            ////SharedFunctions.setInOut(strandList, Global.OUTPUT_DIR, this.PdbName, Axis, Ccentroid, Ncentroid);
+            ////RYAN//SharedFunctions.setInOutMin(strandList, Global.OUTPUT_DIR, this.PdbName, Ccentroid, Ncentroid);
+            //SharedFunctions.WritePymolScriptForInOutStrands(strandList, Global.OUTPUT_DIR, Global.DB_DIR, PdbName, Ccentroid, Ncentroid);
+            ////SharedFunctions.setInOutMin(strandList, Global.OUTPUT_DIR, this.PdbName, Ccentroid, Ncentroid);
+            #endregion
+        }
+
+        private List<Strand> rearrangeBarrel(GroupOfStrands group)
+        {
+            Vector3 centroid = new Vector3((float)group.Centroid.X, (float)group.Centroid.Y, (float)group.Centroid.Z);
+            List <Strand> strands = new List<Strand>();
+            Vector3 firstCentroid = centroidCalculate(group.StrandSet[0]);
+            Vector3 reference = firstCentroid - centroid;
+
             foreach (var strand in group.StrandSet)
             {
-                strandList.Add(strand.StrandInTheGroup);
+                Vector3 strandCentroid = centroidCalculate(strand);
+                Vector3 strandDirection = strandCentroid - centroid;
+                strand.StrandInTheGroup.angle = SharedFunctions.AngleBetween(reference, strandDirection);
+                Vector3 crossP = Vector3.Cross(reference, strandDirection);
+                if (crossP.Z > 0)
+                {
+                    strand.StrandInTheGroup.angle = 360 - strand.StrandInTheGroup.angle; //positive Z means more than halfway around circle from origin
+                }
+                strands.Add(strand.StrandInTheGroup);
+            }
+            strands.Sort((a, b) => a.angle.CompareTo(b.angle));
+
+            int i = 0;
+            foreach (var strand in strands)
+            {
+                //Console.WriteLine($"{item.betaStrandNum} angle is {item.angle}");
+                strand.StrandNum = i;
+                i++;
             }
 
-            //SharedFunctions.setInOut(strandList, Global.OUTPUT_DIR, this.PdbName, Axis, Ccentroid, Ncentroid);
-            //RYAN//SharedFunctions.setInOutMin(strandList, Global.OUTPUT_DIR, this.PdbName, Ccentroid, Ncentroid);
-            SharedFunctions.WritePymolScriptForInOutStrands(strandList, Global.OUTPUT_DIR, Global.DB_DIR, PdbName, Ccentroid, Ncentroid);
-            //SharedFunctions.setInOutMin(strandList, Global.OUTPUT_DIR, this.PdbName, Ccentroid, Ncentroid);
-            #endregion
+            Vector3 centroidCalculate(OneStrand oneStrand)
+            {
+                var caList = oneStrand.StrandInTheGroup.Select(residue => residue.BackboneCoords["CA"]).ToList();
+                Vector3 strandCentroid = new Vector3
+                {
+                    X = caList.Sum(ca => ca.X) / caList.Count,
+                    Y = caList.Sum(ca => ca.Y) / caList.Count,
+                    Z = caList.Sum(ca => ca.Z) / caList.Count
+                };
+                return strandCentroid;
+            }
+            return strands;
         }
 
         private void CheckIfBarrel(GroupOfStrands group)
@@ -1244,6 +1294,11 @@ namespace betaBarrelProgram
         public Coordinate Centroid { get; set; }
         public Cylinder Cylinder { get; set; }
         public bool IsBarrel { get; set; }
+        public List<Vector3> NellipseCoords { get; set; }
+        public List<Vector3> CellipseCoords { get; set; }
+        public Vector3 Ncentroid { get; set; }
+        public Vector3 Ccentroid { get; set; }
+        public Vector3 Axis { get; set; }
         public GroupOfStrands()
         {
             this.StrandSet = new List<OneStrand>();

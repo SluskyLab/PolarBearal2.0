@@ -143,7 +143,7 @@ namespace betaBarrelProgram
                             {
                                 string fileName = pdb;
                                 //string fileName = pdb + ".pdb";
-                                Barrel myBarrel = Program.runThisBetaBarrel(pdb, "all");
+                                Barrel myBarrel = Program.runThisBetaBarrel(pdb,"all");
                                 try
                                 {
                                     if (myBarrel.Success)

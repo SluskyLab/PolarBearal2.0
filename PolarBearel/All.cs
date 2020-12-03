@@ -144,10 +144,18 @@ namespace betaBarrelProgram
                         {
                             isMonoFlag = true;
                             this.Strands = myStrandGroup.BarrelStrands;
+                            var group = myStrandGroup.GroupOfGroup.First(group => group.IsBarrel == true);
+                            this.Ncentroid = group.Ncentroid;
+                            this.Ccentroid = group.Ncentroid;
+                            this.CellipseCoords = group.CellipseCoords;
+                            this.NellipseCoords = group.NellipseCoords;
+                            this.Axis = group.Axis;
+
                             Console.WriteLine($"Protein {PdbName} Chain {chain.ChainName} has a Mono barrel with {myStrandGroup.BarrelStrands.Count} strands");
                             this.barrelType = "mono";
                             this.Success = true;
                             LogBarrel(myStrandGroup);
+                            
                             break;
                         }
                     }
@@ -190,10 +198,12 @@ namespace betaBarrelProgram
                 this.StrandLength = SharedFunctions.getStrandLengths(this.Strands, path, this.PdbName);
                 //this.PrevTwists = SharedFunctions.writeTwists(this.Strands, Global.OUTPUT_DIR, this.PdbName);
 
-
+                SharedFunctions.AminoAcidPairs(Strands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName);
 
 
                 SharedFunctions.setInOut(this.Strands, path, this.PdbName, this.Axis, this.Ccentroid, this.Ncentroid);
+                //SharedFunctions.setInOutM(this.Strands, Global.OUTPUT_DIR, this.PdbName, this.Ccentroid, this.Ncentroid);
+                SharedFunctions.WritePymolScriptForInOutStrands(this.Strands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName, Ccentroid, Ncentroid);
                 this.AvgTilt = SharedFunctions.getTiltsByAA(this.Strands, path, this.PdbName, this.Axis, ref Global.AADict);
 
                 bool detail_variable_output = true;
@@ -221,6 +231,7 @@ namespace betaBarrelProgram
                 SharedFunctions.writePymolScriptForBarrelStrands(this.Strands, Global.OUTPUT_DIR, Global.DB_DIR, this.PdbName);
             }
         }
+
 
         private void LogBarrel(StrandGroupMaker myStrandGroup)
         {
@@ -253,7 +264,7 @@ namespace betaBarrelProgram
             }
         }
 
-private void CreateStrandList(ref Protein newProt)
+        private void CreateStrandList(ref Protein newProt)
         {
             this.protoBarrel = new List<List<List<int>>>();
             var chainCtr = 0;
