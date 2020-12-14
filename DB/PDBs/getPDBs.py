@@ -5,7 +5,7 @@ import os
 
 
 
-DB_file = "../MonoDBList.txt"
+DB_file = "../dataset.txt"
 poly = False
 
 def getPolyBarrelPDBs(pdb):

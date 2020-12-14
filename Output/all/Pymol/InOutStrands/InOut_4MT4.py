@@ -704,4 +704,4 @@ cmd.color ("blue", "resi 335 & chain C")
 
 cmd.select ("Outward", "resi 335 & chain C", merge=1)
 
-cmd.load_cgo( [9.0, -5.281834,24.986832,-6.2672496, -6.424751, 25.257917, 16.96125, 1, 1,1,0,0,0,1], "axis" )
+cmd.load_cgo( [9.0, 0,0,0, 0, 0, 0, 1, 1,1,0,0,0,1], "axis" )

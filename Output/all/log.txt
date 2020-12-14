@@ -1120,3 +1120,607 @@ PdbName	Success	barrelType	chainID	numberOfStrands
 6UCU	True	mono	A	19
 6V81	True	mono	A	22
 ending create betabarrel ProteinDB at 12/3/2020 1:00:57 PM
+working with db (12/3/2020 1:40:54 PM)
+starting create betabarrel ProteinDB at 12/3/2020 1:40:57 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+1AQB	True	mono	A	8
+working with db (12/3/2020 1:41:07 PM)
+starting create betabarrel ProteinDB at 12/3/2020 1:41:13 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+1AQB	True	mono	A	8
+1AVG	True	mono	I	8
+1D2U	True	mono	A	8
+1DZJ	True	mono	A	8
+1E5P	True	mono	B	8
+1EI5	True	mono	A	8
+1EPA	True	mono	A	8
+1EW3	True	mono	A	8
+1GGL	True	mono	A	10
+1GL4	True	mono	A	11
+1IFC	True	mono	A	10
+1JIW	True	mono	I	8
+1JSG	True	mono	A	8
+1LFO	True	mono	A	10
+1LKE	True	mono	A	8
+1MDC	True	mono	A	10
+1MK5	True	mono	A	8
+1NYC	True	mono	A	8
+1O8V	True	mono	A	10
+1PBY	True	mono	A	8
+1QFT	True	mono	A	8
+1QTT	True	mono	A	8
+1QWD	True	mono	A	8
+1R0U	True	mono	A	8
+1VKY	True	mono	A	6
+1VPR	True	mono	A	10
+1VYF	True	mono	A	10
+1XKI	True	mono	A	8
+1XQB	True	mono	A	6
+1Y0G	True	mono	B	8
+1ZXU	True	mono	A	12
+2A0A	True	mono	A	10
+2A13	True	mono	A	10
+2C9J	True	mono	A	11
+2DD7	True	mono	A	11
+2F9H	True	mono	A	8
+2FHL	True	mono	A	8
+2FIM	True	mono	A	12
+2FR2	True	mono	A	10
+2G3O	True	mono	A	11
+2GW3	True	mono	A	11
+2H5O	True	mono	A	11
+2HLV	True	mono	A	8
+2HPW	True	mono	A	11
+2HZQ	True	mono	A	8
+2ICH	True	mono	A	11
+2ICR	True	mono	A	11
+2JOZ	False	NA	NA	0
+2L5P	True	mono	A	8
+2N93	True	mono	A	10
+2O62	True	mono	A	10
+2Q03	True	mono	A	8
+2QO4	True	mono	A	10
+2R73	True	mono	A	8
+2RD7	True	mono	C	8
+2RH7	True	mono	A	11
+2WIQ	True	mono	A	11
+2WWP	True	mono	A	8
+2XST	True	mono	A	8
+2Y32	True	mono	A	8
+2ZO6	True	mono	A	11
+2ZSC	True	mono	A	8
+3FIQ	True	mono	A	8
+3HPE	True	mono	A	8
+3IA8	True	mono	A	10
+3KFF	True	mono	A	8
+3KZA	True	mono	A	8
+3L4R	True	mono	A	8
+3P6D	True	mono	A	10
+3PDF	True	mono	A	8
+3PIB	True	mono	A	11
+3PPT	True	mono	A	10
+3S26	False	NA	NA	0
+3SAO	True	mono	A	8
+3SZH	True	mono	A	8
+4ALO	True	mono	A	8
+4AW8	True	mono	A	8
+4AZP	True	mono	A	10
+4BJ8	True	mono	A	8
+4DKN	True	mono	A	11
+4ES7	True	mono	A	8
+4GE1	True	mono	A	8
+4GGR	True	mono	A	8
+4H6B	True	mono	A	8
+4HE4	True	mono	A	11
+4HVF	True	mono	A	11
+4I3B	True	mono	A	10
+4ODD	True	mono	A	8
+4R0B	True	mono	A	8
+4RYS	True	mono	A	11
+4UU3	True	mono	A	8
+4WFU	True	mono	A	8
+4XMC	True	mono	A	7
+4Z6J	True	mono	A	8
+5EZ2	True	mono	A	8
+5GGE	True	mono	A	10
+5HZQ	True	mono	A	10
+5IXG	True	mono	A	8
+5L8I	True	mono	A	10
+6AT8	True	mono	A	10
+ending create betabarrel ProteinDB at 12/3/2020 1:48:01 PM
+ended program at 12/3/2020 2:25:33 PM 
+
+
+working with db (12/3/2020 2:26:43 PM)
+starting create betabarrel ProteinDB at 12/3/2020 2:26:54 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+ending create betabarrel ProteinDB at 12/3/2020 2:30:07 PM
+ended program at 12/3/2020 2:30:43 PM 
+
+
+working with db (12/3/2020 2:33:34 PM)
+working with db (12/3/2020 2:34:12 PM)
+starting create betabarrel ProteinDB at 12/3/2020 2:34:23 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+ending create betabarrel ProteinDB at 12/3/2020 2:40:17 PM
+ended program at 12/3/2020 2:41:26 PM 
+
+
+working with db (12/3/2020 2:45:19 PM)
+starting create betabarrel ProteinDB at 12/3/2020 2:45:26 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+working with db (12/3/2020 2:46:35 PM)
+starting create betabarrel ProteinDB at 12/3/2020 2:46:39 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+working with db (12/3/2020 2:47:46 PM)
+starting create betabarrel ProteinDB at 12/3/2020 2:47:55 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+working with db (12/3/2020 2:49:55 PM)
+starting create betabarrel ProteinDB at 12/3/2020 2:50:07 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+working with db (12/3/2020 2:51:31 PM)
+starting create betabarrel ProteinDB at 12/3/2020 2:52:14 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+ending create betabarrel ProteinDB at 12/3/2020 2:57:32 PM
+working with db (12/3/2020 3:02:45 PM)
+working with db (12/3/2020 3:04:49 PM)
+starting create betabarrel ProteinDB at 12/3/2020 3:05:07 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+1EK9	True	poly	A,B,C,A	12
+1UUN	False	NA	NA	0
+2GR7	True	poly	A,C,B,A	12
+2LME	True	poly	A,C,B,C,B,A	12
+3D5K	True	poly	A,C,B	12
+3W9T	True	poly	A,G,F,E,D,C,B	15
+4MT4	True	poly	A,B,C	12
+5AZP	True	poly	A,B,A,C,B,C,B,A	12
+5AZS	True	poly	A,B,C	12
+5GAQ	True	poly	A,B,C,D,E,F,G,H,I	18
+7AHL	True	poly	A,B,C,D,E,F,G,A	14
+ending create betabarrel ProteinDB at 12/3/2020 3:15:31 PM
+working with db (12/3/2020 5:24:57 PM)
+starting create betabarrel ProteinDB at 12/3/2020 5:25:09 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+working with db (12/3/2020 5:25:22 PM)
+working with db (12/3/2020 5:25:38 PM)
+starting create betabarrel ProteinDB at 12/3/2020 5:26:29 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+1A0S	True	mono	P	18
+1AF6	True	mono	A	18
+1KMO	True	mono	A	14
+1P4T	True	mono	A	6
+1PRN	True	mono	A	11
+1QD5	True	mono	A	12
+1QJ8	True	mono	A	8
+1QJP	False	NA	NA	0
+1T16	True	mono	A	14
+1TLY	True	mono	A	12
+1UYN	True	mono	X	12
+1XKW	True	mono	A	22
+2ERV	True	mono	A	8
+2F1V	True	mono	A	8
+2FGR	True	mono	A	16
+2GSK	True	mono	A	22
+2HDI	True	mono	A	18
+2IAH	True	mono	A	22
+2LHF	True	mono	A	8
+2MAF	True	mono	A	8
+2POR	True	mono	A	16
+2VDF	True	mono	A	10
+2WJR	True	mono	A	12
+2X27	False	NA	NA	0
+2X55	True	mono	A	10
+2X9K	True	mono	A	14
+2YNK	True	mono	A	18
+3A2S	True	mono	X	16
+3AEH	True	mono	A	12
+3BRY	True	mono	A	12
+3BS0	True	mono	A	4
+3CSL	True	mono	A	22
+3DWO	True	mono	X	14
+3DZM	True	mono	A	8
+3EFM	True	mono	A	14
+3EMN	True	mono	X	19
+3FHH	True	mono	A	22
+3FID	True	mono	A	12
+3GP6	True	mono	A	8
+3KVN	True	mono	A	12
+3OHN	True	mono	A	24
+3QLB	True	mono	A	22
+3QQ2	True	mono	A	12
+3QRA	True	mono	A	8
+3SY7	True	mono	A	15
+3SY9	True	mono	A	3
+3SYB	True	mono	A	13
+3SYS	True	mono	A	18
+3SZV	True	mono	A	18
+3T0S	True	mono	A	18
+3V8X	True	mono	A	8
+4AFK	True	mono	A	18
+4AIP	True	mono	A	16
+4C00	True	mono	A	16
+4CU4	True	mono	A	18
+4D5B	True	mono	A	14
+4E1S	True	mono	A	12
+4E1T	True	mono	A	12
+4EPA	True	mono	A	22
+4FSO	True	mono	A	15
+4FSP	True	mono	A	12
+4FUV	True	mono	A	8
+4GEY	True	mono	A	16
+4K3B	True	mono	A	16
+4K3C	True	mono	A	16
+4MEE	True	mono	A	12
+4N75	True	mono	A	16
+4Q35	True	mono	A	26
+4QKY	True	mono	A	16
+4RDR	True	mono	A	16
+4RJW	True	mono	A	16
+4RL8	True	mono	A	12
+4RLC	True	mono	A	8
+4Y25	True	mono	A	16
+4ZGV	True	mono	A	22
+5DL5	True	mono	A	18
+5DL6	True	mono	A	18
+5DL7	True	mono	A	18
+5DL8	True	mono	A	18
+5FOK	False	NA	NA	0
+5FP1	False	NA	NA	0
+5FQ8	True	mono	B	22
+5FR8	True	mono	A	6
+5FVN	False	NA	NA	0
+5IVA	True	mono	A	26
+5LDV	True	mono	A	18
+5M9B	True	mono	A	14
+5MDO	True	mono	A	16
+5O65	True	mono	A	12
+5T3R	True	mono	D	22
+6EHB	True	mono	A	12
+6EHD	True	mono	A	16
+ending create betabarrel ProteinDB at 12/3/2020 5:49:04 PM
+working with db (12/3/2020 5:51:17 PM)
+working with db (12/3/2020 5:51:37 PM)
+starting create betabarrel ProteinDB at 12/3/2020 5:51:43 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+working with db (12/3/2020 6:18:02 PM)
+starting create betabarrel ProteinDB at 12/3/2020 6:18:14 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+ending create betabarrel ProteinDB at 12/3/2020 6:35:37 PM
+ended program at 12/3/2020 6:40:06 PM 
+
+
+working with db (12/3/2020 6:42:55 PM)
+starting create betabarrel ProteinDB at 12/3/2020 6:43:01 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+1A0S	True	mono	P	18
+1AF6	True	mono	A	18
+1FEP	False	NA	NA	0
+1I78	True	mono	A	10
+1KMO	True	mono	A	14
+1P4T	True	mono	A	6
+1PHO	True	mono	A	16
+1PRN	True	mono	A	11
+1QD5	True	mono	A	12
+1QJ8	True	mono	A	8
+1QJP	False	NA	NA	0
+1T16	True	mono	A	14
+1TLY	True	mono	A	12
+1UYN	True	mono	X	12
+1XKW	True	mono	A	22
+2ERV	True	mono	A	8
+2F1V	True	mono	A	8
+2FGR	True	mono	A	16
+2GSK	True	mono	A	22
+2HDI	True	mono	A	18
+2IAH	True	mono	A	22
+2K0L	False	NA	NA	0
+2LHF	True	mono	A	8
+2MAF	True	mono	A	8
+2POR	True	mono	A	16
+2QOM	True	mono	A	12
+2VDF	True	mono	A	10
+2WJR	True	mono	A	12
+2X27	False	NA	NA	0
+2X55	True	mono	A	10
+2X9K	True	mono	A	14
+2Y0L	True	mono	A	15
+2YNK	True	mono	A	18
+2ZFG	True	mono	A	16
+3A2S	True	mono	X	16
+3AEH	True	mono	A	12
+3BRY	True	mono	A	12
+3BS0	True	mono	A	4
+3CSL	True	mono	A	22
+3DWO	True	mono	X	14
+3DZM	True	mono	A	8
+3EFM	True	mono	A	14
+3EMN	True	mono	X	19
+3FHH	True	mono	A	22
+3FID	True	mono	A	12
+3GP6	True	mono	A	8
+3JTY	True	mono	A	18
+3KVN	True	mono	A	12
+3NSG	True	mono	A	16
+3OHN	True	mono	A	24
+3QLB	True	mono	A	22
+3QQ2	True	mono	A	12
+3QRA	True	mono	A	8
+3SY7	True	mono	A	15
+3SY9	True	mono	A	3
+3SYB	True	mono	A	13
+3SYS	True	mono	A	18
+3SZD	True	mono	A	18
+3SZV	True	mono	A	18
+3T0S	True	mono	A	18
+3T24	True	mono	A	13
+3V8X	True	mono	A	8
+3WI4	True	mono	A	16
+4AFK	True	mono	A	18
+4AIP	True	mono	A	16
+4AUI	True	mono	A	16
+4C00	True	mono	A	16
+4CU4	True	mono	A	18
+4D5B	True	mono	A	14
+4D65	False	NA	NA	0
+4E1S	True	mono	A	12
+4E1T	True	mono	A	12
+4EPA	True	mono	A	22
+4FSO	True	mono	A	15
+4FSP	True	mono	A	12
+4FT6	True	mono	A	18
+4FUV	True	mono	A	8
+4GEY	True	mono	A	16
+4K3B	True	mono	A	16
+4K3C	True	mono	A	16
+4MEE	True	mono	A	12
+4N75	True	mono	A	16
+4Q35	True	mono	A	26
+4QKY	True	mono	A	16
+4RDR	True	mono	A	16
+4RJW	True	mono	A	16
+4RL8	True	mono	A	12
+4RL9	True	mono	A	8
+4RLB	True	mono	A	8
+4RLC	True	mono	A	8
+4Y25	True	mono	A	16
+4ZGV	True	mono	A	22
+5DL5	True	mono	A	18
+5DL6	True	mono	A	18
+5DL7	True	mono	A	18
+5DL8	True	mono	A	18
+5FOK	False	NA	NA	0
+5FP1	False	NA	NA	0
+5FP2	True	mono	A	16
+5FQ8	True	mono	B	22
+5FR8	True	mono	A	6
+5FVN	False	NA	NA	0
+5IV9	True	mono	A	26
+5IVA	True	mono	A	26
+5IXM	True	mono	A	26
+5LDV	True	mono	A	18
+5M9B	True	mono	A	14
+5MDO	True	mono	A	16
+5NEC	True	mono	A	22
+5NXR	True	mono	A	16
+5O65	True	mono	A	12
+5T3R	True	mono	D	22
+6EHB	True	mono	A	12
+6EHD	True	mono	A	16
+ending create betabarrel ProteinDB at 12/3/2020 7:11:49 PM
+ended program at 12/3/2020 7:20:55 PM 
+
+
+working with db (12/3/2020 7:21:02 PM)
+starting create betabarrel ProteinDB at 12/3/2020 7:21:16 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+1EK9	True	poly	A,B,C,A	12
+1UUN	False	NA	NA	0
+2GR7	True	poly	A,C,B,A	12
+2LME	True	poly	A,C,B,C,B,A	12
+3D5K	True	poly	A,C,B	12
+3W9T	True	poly	A,G,F,E,D,C,B	15
+4MT4	True	poly	A,B,C	12
+5AZP	True	poly	A,B,A,C,B,C,B,A	12
+5AZS	True	poly	A,B,C	12
+5GAQ	True	poly	A,B,C,D,E,F,G,H,I	18
+7AHL	True	poly	A,B,C,D,E,F,G,A	14
+ending create betabarrel ProteinDB at 12/3/2020 7:30:40 PM
+ended program at 12/3/2020 7:41:03 PM 
+
+
+working with db (12/3/2020 8:43:14 PM)
+starting create betabarrel ProteinDB at 12/3/2020 8:44:24 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+1AQB	True	mono	A	8
+1AVG	True	mono	I	8
+1D2U	True	mono	A	8
+1DZJ	True	mono	A	8
+1E5P	True	mono	B	8
+1EI5	True	mono	A	8
+1EPA	True	mono	A	8
+1EW3	True	mono	A	8
+1GGL	True	mono	A	10
+1GL4	True	mono	A	11
+1IFC	True	mono	A	10
+1JIW	True	mono	I	8
+1JSG	True	mono	A	8
+1LFO	True	mono	A	10
+1LKE	True	mono	A	8
+1MDC	True	mono	A	10
+1MK5	True	mono	A	8
+1NYC	True	mono	A	8
+1O8V	True	mono	A	10
+1PBY	True	mono	A	8
+1QFT	True	mono	A	8
+1QTT	True	mono	A	8
+1QWD	True	mono	A	8
+1R0U	True	mono	A	8
+1VKY	True	mono	A	6
+1VPR	True	mono	A	10
+1VYF	True	mono	A	10
+1XKI	True	mono	A	8
+1XQB	True	mono	A	6
+1Y0G	True	mono	B	8
+1ZXU	True	mono	A	12
+2A0A	True	mono	A	10
+2A13	True	mono	A	10
+2C9J	True	mono	A	11
+2DD7	True	mono	A	11
+2F9H	True	mono	A	8
+2FHL	True	mono	A	8
+2FIM	True	mono	A	12
+2FR2	True	mono	A	10
+2G3O	True	mono	A	11
+2GW3	True	mono	A	11
+2H5O	True	mono	A	11
+2HLV	True	mono	A	8
+2HPW	True	mono	A	11
+2HZQ	True	mono	A	8
+2ICH	True	mono	A	11
+2ICR	True	mono	A	11
+2JOZ	False	NA	NA	0
+2L5P	True	mono	A	8
+2N93	True	mono	A	10
+2O62	True	mono	A	10
+2Q03	True	mono	A	8
+2QO4	True	mono	A	10
+2R73	True	mono	A	8
+2RD7	True	mono	C	8
+2RH7	True	mono	A	11
+2WIQ	True	mono	A	11
+2WWP	True	mono	A	8
+2XST	True	mono	A	8
+2Y32	True	mono	A	8
+2ZO6	True	mono	A	11
+2ZSC	True	mono	A	8
+3FIQ	True	mono	A	8
+3HPE	True	mono	A	8
+3IA8	True	mono	A	10
+3KFF	True	mono	A	8
+3KZA	True	mono	A	8
+3L4R	True	mono	A	8
+3P6D	True	mono	A	10
+3PDF	True	mono	A	8
+3PIB	True	mono	A	11
+3PPT	True	mono	A	10
+3S26	False	NA	NA	0
+3SAO	True	mono	A	8
+3SZH	True	mono	A	8
+4ALO	True	mono	A	8
+4AW8	True	mono	A	8
+4AZP	True	mono	A	10
+4BJ8	True	mono	A	8
+4DKN	True	mono	A	11
+4ES7	True	mono	A	8
+4GE1	True	mono	A	8
+4GGR	True	mono	A	8
+4H6B	True	mono	A	8
+4HE4	True	mono	A	11
+4HVF	True	mono	A	11
+4I3B	True	mono	A	10
+4ODD	True	mono	A	8
+4R0B	True	mono	A	8
+4RYS	True	mono	A	11
+4UU3	True	mono	A	8
+4WFU	True	mono	A	8
+4XMC	True	mono	A	7
+4Z6J	True	mono	A	8
+5EZ2	True	mono	A	8
+5GGE	True	mono	A	10
+5HZQ	True	mono	A	10
+5IXG	True	mono	A	8
+5L8I	True	mono	A	10
+6AT8	True	mono	A	10
+ending create betabarrel ProteinDB at 12/3/2020 8:51:06 PM
+ended program at 12/3/2020 8:59:31 PM 
+
+
+working with db (12/3/2020 8:59:54 PM)
+starting create betabarrel ProteinDB at 12/3/2020 9:00:03 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+ending create betabarrel ProteinDB at 12/3/2020 9:03:44 PM
+ended program at 12/3/2020 9:04:54 PM 
+
+
+working with db (12/4/2020 12:07:27 PM)
+starting create betabarrel ProteinDB at 12/4/2020 12:07:43 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+1QWD	True	mono	A	8
+working with db (12/4/2020 12:09:50 PM)
+working with db (12/4/2020 12:10:40 PM)
+starting create betabarrel ProteinDB at 12/4/2020 12:10:54 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+1QWD	True	mono	A	8
+1R0U	True	mono	A	8
+2A13	True	mono	A	10
+2HLV	True	mono	A	8
+2JOZ	False	NA	NA	0
+3S26	False	NA	NA	0
+4XMC	True	mono	A	7
+ending create betabarrel ProteinDB at 12/4/2020 12:11:11 PM
+working with db (12/4/2020 12:14:37 PM)
+starting create betabarrel ProteinDB at 12/4/2020 12:14:50 PM
+PdbName	Success	barrelType	chainID	numberOfStrands
+1FEP	False	NA	NA	0
+1KMO	True	mono	A	14
+1P4T	True	mono	A	6
+1PRN	True	mono	A	11
+1QJP	False	NA	NA	0
+2ERV	True	mono	A	8
+2GSK	True	mono	A	22
+2HDI	True	mono	A	18
+2IAH	True	mono	A	22
+2K0L	False	NA	NA	0
+2VDF	True	mono	A	10
+2X27	False	NA	NA	0
+2Y0L	True	mono	A	15
+2YNK	True	mono	A	18
+3A2S	True	mono	X	16
+3BRY	True	mono	A	12
+3BS0	True	mono	A	4
+3DZM	True	mono	A	8
+3EFM	True	mono	A	14
+3SY7	True	mono	A	15
+3SY9	True	mono	A	3
+3SYB	True	mono	A	13
+3SZV	True	mono	A	18
+3T24	True	mono	A	13
+3V8X	True	mono	A	8
+4AIP	True	mono	A	16
+4CU4	True	mono	A	18
+4D65	False	NA	NA	0
+4FSO	True	mono	A	15
+4FSP	True	mono	A	12
+4FUV	True	mono	A	8
+4K3C	True	mono	A	16
+4RDR	True	mono	A	16
+4RL9	True	mono	A	8
+4RLB	True	mono	A	8
+5FOK	False	NA	NA	0
+5FP1	False	NA	NA	0
+5FP2	True	mono	A	16
+5FR8	True	mono	A	6
+5FVN	False	NA	NA	0
+5IVA	True	mono	A	26
+5IXM	True	mono	A	26
+5LDV	True	mono	A	18
+5M9B	True	mono	A	14
+6EHB	True	mono	A	12
+6EHD	True	mono	A	16
+ending create betabarrel ProteinDB at 12/4/2020 12:25:12 PM
+working with db (12/9/2020 10:48:37 AM)
+starting create betabarrel ProteinDB at 12/9/2020 10:51:36 AM
+PdbName	Success	barrelType	chainID	numberOfStrands
+ending create betabarrel ProteinDB at 12/9/2020 10:51:38 AM
+working with db (12/14/2020 10:45:38 AM)
+starting create betabarrel ProteinDB at 12/14/2020 10:45:52 AM
+PdbName	Success	barrelType	chainID	numberOfStrands
+working with db (12/14/2020 10:48:11 AM)
+starting create betabarrel ProteinDB at 12/14/2020 10:48:17 AM
+PdbName	Success	barrelType	chainID	numberOfStrands
+working with db (12/14/2020 10:55:13 AM)
+starting create betabarrel ProteinDB at 12/14/2020 10:55:17 AM
+PdbName	Success	barrelType	chainID	numberOfStrands
+working with db (12/14/2020 10:58:12 AM)
+starting create betabarrel ProteinDB at 12/14/2020 10:58:32 AM
+PdbName	Success	barrelType	chainID	numberOfStrands

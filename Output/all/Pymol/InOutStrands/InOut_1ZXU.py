@@ -44,41 +44,41 @@ cmd.show("sticks", "barrel")
 cmd.show("cartoon", "barrel")
 cmd.set("cartoon_side_chain_helper", "on")
 cmd.zoom("barrel")
-cmd.color ("blue", "resi 38 & chain A")
+cmd.color ("red", "resi 38 & chain A")
 
-cmd.select ("Outward", "resi 38 & chain A", merge=1)
+cmd.select ("Inward", "resi 38 & chain A", merge=1)
 
 cmd.color ("blue", "resi 39 & chain A")
 
 cmd.select ("Outward", "resi 39 & chain A", merge=1)
 
-cmd.color ("blue", "resi 40 & chain A")
+cmd.color ("red", "resi 40 & chain A")
 
-cmd.select ("Outward", "resi 40 & chain A", merge=1)
+cmd.select ("Inward", "resi 40 & chain A", merge=1)
 
 cmd.color ("blue", "resi 41 & chain A")
 
 cmd.select ("Outward", "resi 41 & chain A", merge=1)
 
-cmd.color ("blue", "resi 42 & chain A")
+cmd.color ("red", "resi 42 & chain A")
 
-cmd.select ("Outward", "resi 42 & chain A", merge=1)
+cmd.select ("Inward", "resi 42 & chain A", merge=1)
 
 cmd.color ("blue", "resi 43 & chain A")
 
 cmd.select ("Outward", "resi 43 & chain A", merge=1)
 
-cmd.color ("blue", "resi 54 & chain A")
+cmd.color ("red", "resi 54 & chain A")
 
-cmd.select ("Outward", "resi 54 & chain A", merge=1)
+cmd.select ("Inward", "resi 54 & chain A", merge=1)
 
 cmd.color ("blue", "resi 55 & chain A")
 
 cmd.select ("Outward", "resi 55 & chain A", merge=1)
 
-cmd.color ("blue", "resi 56 & chain A")
+cmd.color ("red", "resi 56 & chain A")
 
-cmd.select ("Outward", "resi 56 & chain A", merge=1)
+cmd.select ("Inward", "resi 56 & chain A", merge=1)
 
 cmd.color ("blue", "resi 57 & chain A")
 
@@ -92,21 +92,21 @@ cmd.color ("blue", "resi 63 & chain A")
 
 cmd.select ("Outward", "resi 63 & chain A", merge=1)
 
-cmd.color ("blue", "resi 64 & chain A")
+cmd.color ("red", "resi 64 & chain A")
 
-cmd.select ("Outward", "resi 64 & chain A", merge=1)
+cmd.select ("Inward", "resi 64 & chain A", merge=1)
 
-cmd.color ("blue", "resi 65 & chain A")
+cmd.color ("red", "resi 65 & chain A")
 
-cmd.select ("Outward", "resi 65 & chain A", merge=1)
+cmd.select ("Inward", "resi 65 & chain A", merge=1)
 
 cmd.color ("blue", "resi 66 & chain A")
 
 cmd.select ("Outward", "resi 66 & chain A", merge=1)
 
-cmd.color ("blue", "resi 67 & chain A")
+cmd.color ("red", "resi 67 & chain A")
 
-cmd.select ("Outward", "resi 67 & chain A", merge=1)
+cmd.select ("Inward", "resi 67 & chain A", merge=1)
 
 cmd.color ("blue", "resi 68 & chain A")
 
@@ -116,17 +116,17 @@ cmd.color ("blue", "resi 77 & chain A")
 
 cmd.select ("Outward", "resi 77 & chain A", merge=1)
 
-cmd.color ("blue", "resi 78 & chain A")
+cmd.color ("red", "resi 78 & chain A")
 
-cmd.select ("Outward", "resi 78 & chain A", merge=1)
+cmd.select ("Inward", "resi 78 & chain A", merge=1)
 
 cmd.color ("blue", "resi 79 & chain A")
 
 cmd.select ("Outward", "resi 79 & chain A", merge=1)
 
-cmd.color ("blue", "resi 80 & chain A")
+cmd.color ("red", "resi 80 & chain A")
 
-cmd.select ("Outward", "resi 80 & chain A", merge=1)
+cmd.select ("Inward", "resi 80 & chain A", merge=1)
 
 cmd.color ("blue", "resi 81 & chain A")
 
@@ -136,21 +136,21 @@ cmd.color ("blue", "resi 87 & chain A")
 
 cmd.select ("Outward", "resi 87 & chain A", merge=1)
 
-cmd.color ("blue", "resi 88 & chain A")
+cmd.color ("red", "resi 88 & chain A")
 
-cmd.select ("Outward", "resi 88 & chain A", merge=1)
+cmd.select ("Inward", "resi 88 & chain A", merge=1)
 
-cmd.color ("blue", "resi 89 & chain A")
+cmd.color ("red", "resi 89 & chain A")
 
-cmd.select ("Outward", "resi 89 & chain A", merge=1)
+cmd.select ("Inward", "resi 89 & chain A", merge=1)
 
 cmd.color ("blue", "resi 90 & chain A")
 
 cmd.select ("Outward", "resi 90 & chain A", merge=1)
 
-cmd.color ("blue", "resi 91 & chain A")
+cmd.color ("red", "resi 91 & chain A")
 
-cmd.select ("Outward", "resi 91 & chain A", merge=1)
+cmd.select ("Inward", "resi 91 & chain A", merge=1)
 
 cmd.color ("blue", "resi 92 & chain A")
 
@@ -160,17 +160,17 @@ cmd.color ("blue", "resi 101 & chain A")
 
 cmd.select ("Outward", "resi 101 & chain A", merge=1)
 
-cmd.color ("blue", "resi 102 & chain A")
+cmd.color ("red", "resi 102 & chain A")
 
-cmd.select ("Outward", "resi 102 & chain A", merge=1)
+cmd.select ("Inward", "resi 102 & chain A", merge=1)
 
 cmd.color ("blue", "resi 103 & chain A")
 
 cmd.select ("Outward", "resi 103 & chain A", merge=1)
 
-cmd.color ("blue", "resi 104 & chain A")
+cmd.color ("red", "resi 104 & chain A")
 
-cmd.select ("Outward", "resi 104 & chain A", merge=1)
+cmd.select ("Inward", "resi 104 & chain A", merge=1)
 
 cmd.color ("blue", "resi 105 & chain A")
 
@@ -184,37 +184,37 @@ cmd.color ("blue", "resi 115 & chain A")
 
 cmd.select ("Outward", "resi 115 & chain A", merge=1)
 
-cmd.color ("blue", "resi 116 & chain A")
+cmd.color ("red", "resi 116 & chain A")
 
-cmd.select ("Outward", "resi 116 & chain A", merge=1)
+cmd.select ("Inward", "resi 116 & chain A", merge=1)
 
-cmd.color ("blue", "resi 117 & chain A")
+cmd.color ("red", "resi 117 & chain A")
 
-cmd.select ("Outward", "resi 117 & chain A", merge=1)
+cmd.select ("Inward", "resi 117 & chain A", merge=1)
 
 cmd.color ("blue", "resi 118 & chain A")
 
 cmd.select ("Outward", "resi 118 & chain A", merge=1)
 
-cmd.color ("blue", "resi 119 & chain A")
+cmd.color ("red", "resi 119 & chain A")
 
-cmd.select ("Outward", "resi 119 & chain A", merge=1)
+cmd.select ("Inward", "resi 119 & chain A", merge=1)
 
 cmd.color ("blue", "resi 120 & chain A")
 
 cmd.select ("Outward", "resi 120 & chain A", merge=1)
 
-cmd.color ("blue", "resi 131 & chain A")
+cmd.color ("red", "resi 131 & chain A")
 
-cmd.select ("Outward", "resi 131 & chain A", merge=1)
+cmd.select ("Inward", "resi 131 & chain A", merge=1)
 
 cmd.color ("blue", "resi 132 & chain A")
 
 cmd.select ("Outward", "resi 132 & chain A", merge=1)
 
-cmd.color ("blue", "resi 133 & chain A")
+cmd.color ("red", "resi 133 & chain A")
 
-cmd.select ("Outward", "resi 133 & chain A", merge=1)
+cmd.select ("Inward", "resi 133 & chain A", merge=1)
 
 cmd.color ("blue", "resi 134 & chain A")
 
@@ -224,17 +224,17 @@ cmd.color ("blue", "resi 135 & chain A")
 
 cmd.select ("Outward", "resi 135 & chain A", merge=1)
 
-cmd.color ("blue", "resi 146 & chain A")
+cmd.color ("red", "resi 146 & chain A")
 
-cmd.select ("Outward", "resi 146 & chain A", merge=1)
+cmd.select ("Inward", "resi 146 & chain A", merge=1)
 
 cmd.color ("blue", "resi 147 & chain A")
 
 cmd.select ("Outward", "resi 147 & chain A", merge=1)
 
-cmd.color ("blue", "resi 148 & chain A")
+cmd.color ("red", "resi 148 & chain A")
 
-cmd.select ("Outward", "resi 148 & chain A", merge=1)
+cmd.select ("Inward", "resi 148 & chain A", merge=1)
 
 cmd.color ("blue", "resi 149 & chain A")
 
@@ -244,9 +244,9 @@ cmd.color ("blue", "resi 158 & chain A")
 
 cmd.select ("Outward", "resi 158 & chain A", merge=1)
 
-cmd.color ("blue", "resi 159 & chain A")
+cmd.color ("red", "resi 159 & chain A")
 
-cmd.select ("Outward", "resi 159 & chain A", merge=1)
+cmd.select ("Inward", "resi 159 & chain A", merge=1)
 
 cmd.color ("blue", "resi 160 & chain A")
 
@@ -260,13 +260,13 @@ cmd.color ("blue", "resi 167 & chain A")
 
 cmd.select ("Outward", "resi 167 & chain A", merge=1)
 
-cmd.color ("blue", "resi 168 & chain A")
+cmd.color ("red", "resi 168 & chain A")
 
-cmd.select ("Outward", "resi 168 & chain A", merge=1)
+cmd.select ("Inward", "resi 168 & chain A", merge=1)
 
-cmd.color ("blue", "resi 169 & chain A")
+cmd.color ("red", "resi 169 & chain A")
 
-cmd.select ("Outward", "resi 169 & chain A", merge=1)
+cmd.select ("Inward", "resi 169 & chain A", merge=1)
 
 cmd.color ("blue", "resi 170 & chain A")
 
@@ -276,32 +276,32 @@ cmd.color ("blue", "resi 171 & chain A")
 
 cmd.select ("Outward", "resi 171 & chain A", merge=1)
 
-cmd.color ("blue", "resi 172 & chain A")
+cmd.color ("red", "resi 172 & chain A")
 
-cmd.select ("Outward", "resi 172 & chain A", merge=1)
+cmd.select ("Inward", "resi 172 & chain A", merge=1)
 
 cmd.color ("blue", "resi 173 & chain A")
 
 cmd.select ("Outward", "resi 173 & chain A", merge=1)
 
-cmd.color ("blue", "resi 187 & chain A")
+cmd.color ("red", "resi 187 & chain A")
 
-cmd.select ("Outward", "resi 187 & chain A", merge=1)
+cmd.select ("Inward", "resi 187 & chain A", merge=1)
 
 cmd.color ("blue", "resi 188 & chain A")
 
 cmd.select ("Outward", "resi 188 & chain A", merge=1)
 
-cmd.color ("blue", "resi 189 & chain A")
+cmd.color ("red", "resi 189 & chain A")
 
-cmd.select ("Outward", "resi 189 & chain A", merge=1)
+cmd.select ("Inward", "resi 189 & chain A", merge=1)
 
 cmd.color ("blue", "resi 190 & chain A")
 
 cmd.select ("Outward", "resi 190 & chain A", merge=1)
 
-cmd.color ("blue", "resi 191 & chain A")
+cmd.color ("red", "resi 191 & chain A")
 
-cmd.select ("Outward", "resi 191 & chain A", merge=1)
+cmd.select ("Inward", "resi 191 & chain A", merge=1)
 
-cmd.load_cgo( [9.0, 13.986416,-1.4751668,4.2376666, 4.8994164, 2.6755831, 1.1978332, 1, 1,1,0,0,0,1], "axis" )
+cmd.load_cgo( [9.0, 4.8994164,2.6755831,1.1978332, 4.8994164, 2.6755831, 1.1978332, 1, 1,1,0,0,0,1], "axis" )

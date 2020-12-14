@@ -198,7 +198,16 @@ namespace betaBarrelProgram
                 this.StrandLength = SharedFunctions.getStrandLengths(this.Strands, path, this.PdbName);
                 //this.PrevTwists = SharedFunctions.writeTwists(this.Strands, Global.OUTPUT_DIR, this.PdbName);
 
-                SharedFunctions.AminoAcidPairs(Strands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName);
+                try
+                {
+                    SharedFunctions.AminoAcidPairs(Strands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName);
+                }
+                catch (Exception)
+                {
+
+                    Console.WriteLine("Failed to make pairs");
+                }
+                
 
 
                 SharedFunctions.setInOut(this.Strands, path, this.PdbName, this.Axis, this.Ccentroid, this.Ncentroid);

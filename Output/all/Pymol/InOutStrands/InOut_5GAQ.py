@@ -94,9 +94,9 @@ cmd.color ("blue", "resi 41 & chain A")
 
 cmd.select ("Outward", "resi 41 & chain A", merge=1)
 
-cmd.color ("blue", "resi 42 & chain A")
+cmd.color ("red", "resi 42 & chain A")
 
-cmd.select ("Outward", "resi 42 & chain A", merge=1)
+cmd.select ("Inward", "resi 42 & chain A", merge=1)
 
 cmd.color ("blue", "resi 43 & chain A")
 
@@ -1970,9 +1970,9 @@ cmd.color ("blue", "resi 41 & chain H")
 
 cmd.select ("Outward", "resi 41 & chain H", merge=1)
 
-cmd.color ("blue", "resi 42 & chain H")
+cmd.color ("red", "resi 42 & chain H")
 
-cmd.select ("Outward", "resi 42 & chain H", merge=1)
+cmd.select ("Inward", "resi 42 & chain H", merge=1)
 
 cmd.color ("blue", "resi 43 & chain H")
 
@@ -2238,9 +2238,9 @@ cmd.color ("blue", "resi 41 & chain I")
 
 cmd.select ("Outward", "resi 41 & chain I", merge=1)
 
-cmd.color ("blue", "resi 42 & chain I")
+cmd.color ("red", "resi 42 & chain I")
 
-cmd.select ("Outward", "resi 42 & chain I", merge=1)
+cmd.select ("Inward", "resi 42 & chain I", merge=1)
 
 cmd.color ("blue", "resi 43 & chain I")
 
@@ -2474,4 +2474,4 @@ cmd.color ("blue", "resi 107 & chain I")
 
 cmd.select ("Outward", "resi 107 & chain I", merge=1)
 
-cmd.load_cgo( [9.0, 160.15927,160.15962,200.3246, 160.1595, 160.15936, 115.547104, 1, 1,1,0,0,0,1], "axis" )
+cmd.load_cgo( [9.0, 0,0,0, 0, 0, 0, 1, 1,1,0,0,0,1], "axis" )

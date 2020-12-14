@@ -68,7 +68,8 @@ namespace betaBarrelProgram
             var PDBList = new List<string>() {  "1O8V", "1IFC", "4UU3", "1GL4", "2HLV", "2YNK", "4GEY", 
                                                 "5GAQ", "6RB9", "3W9T", "5WC3", 
                                                 "6RHV", "2R73", "2RD7", "5AZO", "3ANZ", 
-                                                "4P1X", "5JZT" };//#Hard Coding# Manually select strands
+                                                "4P1X", "5JZT",
+                                                "1QWD"};//#Hard Coding# Manually select strands
             bool ManualSelect = PDBList.Contains(PdbName);
             if (ManualSelect)
             {
@@ -113,27 +114,32 @@ namespace betaBarrelProgram
                                                         { "2YNK", 1 }, { "5GAQ", 1 }, { "1GL4", 2 }, { "6RB9", 3 }, { "5JZT", 3 }, { "3W9T", 3 }
             };//PDB name and the group number.
 
-            if (new List<string>() { "2HLV", "2R73" }.Contains(PdbName))
+            if (new List<string>() { "2HLV", "2R73" }.Contains(this.PdbName))
             {
-                groupOfGroup[pdbs[PdbName]].StrandSet.RemoveAt(8);//Removing problem strand
+                groupOfGroup[pdbs[this.PdbName]].StrandSet.RemoveAt(8);//Removing problem strand
             }
-            if (PdbName == "2RD7")
+            if (this.PdbName == "2RD7")
             {
-                groupOfGroup[pdbs[PdbName]].StrandSet.RemoveAt(8);//Removing problem strand
-                groupOfGroup[pdbs[PdbName]].StrandSet.RemoveAt(8);//Removing problem strand
+                groupOfGroup[pdbs[this.PdbName]].StrandSet.RemoveAt(8);//Removing problem strand
+                groupOfGroup[pdbs[this.PdbName]].StrandSet.RemoveAt(8);//Removing problem strand
+            }
+            if (this.PdbName == "1QWD")
+            {
+                groupOfGroup[pdbs[this.PdbName]].StrandSet.RemoveAt(0);//Removing problem strand
+                groupOfGroup[pdbs[this.PdbName]].StrandSet.RemoveAt(0);//Removing problem strand
             }
 
-            if (new List<string>(pdbs.Keys).Contains(PdbName))
+            if (new List<string>(pdbs.Keys).Contains(this.PdbName))
             {
-                Console.WriteLine($"Manually changing 'IsBarrel' {PdbName}");
-                var group = groupOfGroup[pdbs[PdbName]];
+                Console.WriteLine($"Manually changing 'IsBarrel' {this.PdbName}");
+                var group = groupOfGroup[pdbs[this.PdbName]];
                 group.IsBarrel = true;
                 AssignDirection(group);
             }
 
-            else if (PdbName == "")
+            else if (this.PdbName == "")
             {
-                Console.WriteLine($"Manually removing strand for {PdbName}");
+                Console.WriteLine($"Manually removing strand for {this.PdbName}");
             }
 
             void AssignDirection(GroupOfStrands group)
