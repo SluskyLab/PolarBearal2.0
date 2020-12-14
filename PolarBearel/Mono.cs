@@ -47,7 +47,7 @@ namespace betaBarrelProgram
                     }
                     if (IsItProtein == true)
                     {
-                        Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, true, Global.DB_DIR, false);
+                        Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, true, Global.MONO_DB_DIR);
                         //Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, false, Global.MONO_DB_DIR); //changed mono status for SS for solubles
                         this.Chains.Add(myChain);
                         this.ChainCount++;
@@ -339,7 +339,7 @@ namespace betaBarrelProgram
 	            //SharedFunctions.findAllNearNeighDistOnly(this.Strands, path, this.PdbName, ref _myChain);
 	            //this.Axis = this.Ccentroid - this.Ncentroid; //july3
 	            this.AvgTilt = SharedFunctions.getTiltsByAA(this.Strands, path, this.PdbName, this.Axis, ref Global.AADict);
-                this.Success = true;
+
 	            //getTyrVector(path, ref _myChain);
             
             }
@@ -750,11 +750,10 @@ namespace betaBarrelProgram
 	            }
 	            if (PdbName.ToUpper() == "5FQ8") //added 6-22-17 for v4
 	            {
-                    //RYAN check why this failed later
-	                //protoBarrel[3].RemoveRange(27, 13);
-	                //protoBarrel[4].RemoveRange(0, 41);
-	                //protoBarrel[19].RemoveRange(13, 15);
-	                //protoBarrel.RemoveRange(20, 2);
+	                protoBarrel[3].RemoveRange(27, 13);
+	                protoBarrel[4].RemoveRange(0, 41);
+	                protoBarrel[19].RemoveRange(13, 15);
+	                protoBarrel.RemoveRange(20, 2);
 	            }
 	            if (PdbName.ToUpper() == "5FR8") //added 6-22-17 for v4
 	            {

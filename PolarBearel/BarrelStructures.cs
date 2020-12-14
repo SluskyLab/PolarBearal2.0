@@ -1,7 +1,7 @@
 ﻿/*
 **  File: BarrelStructures.cs
 **  Started: 
-**  Contributors: Meghan Franklin, Ryan Feehan, Rik Dhar
+**  Contributors: Meghan Franklin, Ryan Feehan
 **  Overview: 
 **
 **  About: 
@@ -65,7 +65,7 @@ namespace betaBarrelProgram
             public string ChainName { get; set; }
             public bool MonovsPoly { get; set; }
 
-            public Chain(ref AtomParser.AtomCategory _myAtomCat, int chainNum, string pdbName, bool mono_status, string dssp_dir, bool getPDBSS)
+            public Chain(ref AtomParser.AtomCategory _myAtomCat, int chainNum, string pdbName, bool mono_status, string dssp_dir)
             {
                 this.ChainName = _myAtomCat.ChainAtomList[chainNum].AuthAsymChain;
                 this.ChainNum = chainNum;
@@ -158,11 +158,22 @@ namespace betaBarrelProgram
                             Residues[residueCtr].Psi = SharedFunctions.CalculateTorsion(Residues[residueCtr].BackboneCoords["N"], Residues[residueCtr].BackboneCoords["CA"], Residues[residueCtr].BackboneCoords["C"], Residues[residueCtr + 1].BackboneCoords["N"]);
                         }
                     }
-                    
+                    // I only left this because who is Ben? - Ryan
+                    //ben's code moved from peptide analytics
+                    //order: 
+                    // [0] CA (index-1)
+                    // [1] C' (index-1)
+                    // [2] N
+                    // [3] CA
+                    // [4] C'
+                    // [5] N (index+1)
+
+                    //phiPsiAndOmega[2] = CalculateTorsion(atom0, atom1, atom2, atom3);
+                    //  phiPsiAndOmega[0] = CalculateTorsion(atom1, atom2, atom3, atom4);
+                    //  phiPsiAndOmega[1] = CalculateTorsion(atom2, atom3, atom4, atom5);
                 }
-                Dictionary<int, string> PDB_SS_dict=null;
                 //8-10-2020 - Rik - Added a new method to read SSType from PDB File
-                if (true == getPDBSS) { PDB_SS_dict = getSSfromPDB(this.PdbName, this.ChainName); }
+                var PDB_SS_dict = getSSfromPDB(this.PdbName, this.ChainName);
 
                 // set SecondaryStructure
                 for (int residueCtr = 1; residueCtr < ResidueCount - 1; residueCtr++)
@@ -195,7 +206,7 @@ namespace betaBarrelProgram
                         }
                         else // beta or polyproII
                         {
-                            if (MonovsPoly == false && phiValue < -90) //Changed from -100 on 12/1/15; needs to be -90 for multi-chain barrels
+                            if (MonovsPoly == false && phiValue < -80) //Changed from -100 on 12/1/15; needs to be -90 for multi-chain barrels
                             {
                                 if (transPeptide) { geoSeq += "B"; }
                                 else { geoSeq += "b"; }
@@ -235,18 +246,36 @@ namespace betaBarrelProgram
                     }
 
                     Residues[residueCtr].SSType = geoSeq;
-                    if(true == getPDBSS){
-                        if (PDB_SS_dict.ContainsKey(Residues[residueCtr].SeqID))
-                        {
-                            Residues[residueCtr].DSSP = "E";
-                        }
-                        else
-                        {
-                            Residues[residueCtr].DSSP = "*";
-                        }
+
+                    if (PDB_SS_dict.ContainsKey(Residues[residueCtr].SeqID))
+                    {
+                        Residues[residueCtr].DSSP = "E";
+                    }
+                    else
+                    {
+                        Residues[residueCtr].DSSP = "*";
                     }
 
                 }
+
+                //RYAN// trying to see if this is a big slor down 98 seconds w/o, 494 seconds with all, 120 s w/o loop
+
+                //8-10-2020 - Rik - Added a new method to read SSType from PDB File
+                //var DSSP_values2 = getSSfromPDB(this.PdbName, this.ChainName);
+                /*foreach (Res Res1 in Residues)
+                {
+                    try
+                    {
+                        if (DSSP_values2[Res1.SeqID] == "E")
+                        {
+                            Res1.DSSP = DSSP_values2[Res1.SeqID];
+                        }
+                    }
+                    catch (KeyNotFoundException)
+                    {
+                        Res1.DSSP = "*";
+                    }
+                }*/
             }
 
             //8-10-2020 - Rik - Get_DSSP from PDB

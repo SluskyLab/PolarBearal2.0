@@ -47,10 +47,11 @@ namespace betaBarrelProgram
                     {
                         if (_myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomNum].atomName == "CA") IsItProtein = true; //if there is a CA anywhere in chain, create new Chain
                     }
+					//if (chainNum != 0) { IsItProtein = false; }// added to try to get gfp on 7/15/2020
 					if (IsItProtein == true)
                     {
                         Console.WriteLine("Creating new chain");
-                        Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, false, Global.DB_DIR, false);
+                        Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, false, Global.DB_DIR);
                         this.Chains.Add(myChain);
                         this.ChainCount++;
                     }
@@ -67,7 +68,7 @@ namespace betaBarrelProgram
             public PolyProtein(ref AtomParser.AtomCategory _myAtomCat, int chainNum, string PdbName)
             {
                 this.Chains = new List<BarrelStructures.Chain>();
-                Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, false, Global.DB_DIR, false);
+                Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, false, Global.DB_DIR);
                 this.Chains.Add(myChain);
             }
 
@@ -142,11 +143,10 @@ namespace betaBarrelProgram
 	            createAllStrands(ref _myProtein, outputDirectory); //This also changes all SStypes to B for H-bond searching to be more effective; we can reference back to psi/phi angles for orig type if necessary
             
 	            if (protoBarrel[0].Count > 4) makeBarrelCircular(ref _myProtein); //remove extra chains if more than 4; known 4x3 proteins have no extra chains, 12-10-15
-				//makeBarrelCircular(ref _myProtein); //RYAN commented out above and tried w/o if statement 10--2020
-
-				//most functions are based on the Strand list, so this region must work properly for any other functions to work properly
-				#region create Strand list 
-				for (int j = 0; j < protoBarrel.Count; j++)
+            
+	            //most functions are based on the Strand list, so this region must work properly for any other functions to work properly
+	            #region create Strand list 
+	            for (int j = 0; j < protoBarrel.Count; j++)
 	            {
 	                for (int strandCtr = 0; strandCtr < protoBarrel[j].Count; strandCtr++)
 	                {
@@ -190,7 +190,7 @@ namespace betaBarrelProgram
 	            this.AxisVector = this.Ccentroid - this.Ncentroid;
 	            this.Axis = this.Ccentroid - this.Ncentroid;
 
-	            this.StrandLength = SharedFunctions.getStrandLengths(this.Strands, outputDirectory, this.PdbName);
+	            //this.StrandLength = SharedFunctions.getStrandLengths(this.Strands, outputDirectory, this.PdbName);
             
 	            #endregion
             
@@ -267,10 +267,10 @@ namespace betaBarrelProgram
 
 	            sortStrandsAroundEllipse(); //This function allows ease of comparison of strands around the barrel in physical order, rather than in input order, so this function needs to work for any function that finds interactions to properly compare neighboring strands
 
-				//SharedFunctions.findHBondingPartnersEnergy(this.Strands, outputDirectory, this.PdbName); //SQRWL-like implementation of hydrogen bonding
-				//SharedFunctions.findNearNeighDistOnly(this.Strands, outputDirectory, this.PdbName);
+	            //SharedFunctions.findHBondingPartnersEnergy(this.Strands, outputDirectory, this.PdbName); //SQRWL-like implementation of hydrogen bonding
+	            //SharedFunctions.findNearNeighDistOnly(this.Strands, outputDirectory, this.PdbName);
 
-				/*foreach (Strand strand in this.Strands)
+	            /*foreach (Strand strand in this.Strands)
 	            {
 	                foreach (Res res in strand)
 	                {
@@ -278,9 +278,9 @@ namespace betaBarrelProgram
 	                    res.BackboneNeighbors = new List<Res>();
 	                }
 	            }*/
-				//SharedFunctions.findNearestNeighbors(this.Strands, outputDirectory, this.PdbName); //based on CA distances
-				//SharedFunctions.findHBondingPartnersGeomOnly(this.Strands, outputDirectory, this.PdbName, true); //Modelling program-like implementation of hydrogen bonding
-				this.Success = true;
+	            //SharedFunctions.findNearestNeighbors(this.Strands, outputDirectory, this.PdbName); //based on CA distances
+	            //SharedFunctions.findHBondingPartnersGeomOnly(this.Strands, outputDirectory, this.PdbName, true); //Modelling program-like implementation of hydrogen bonding
+                       
 
 	        }//End of class PBarrel
 

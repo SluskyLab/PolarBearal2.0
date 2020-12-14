@@ -20,35 +20,39 @@ using betaBarrelProgram.Mono;
 using System.Collections;
 using System.IO;
 
-using System.Net.Http;// for downloading new PDBs 
+using System.Net.Http;// for downloading new PDBs
 
 
 namespace betaBarrelProgram
 {
     public static class Global
     {
-        public static string POLARBEARAL_DIR = Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
+        
+        public static string POLARBEARAL_DIR = Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;//"/Users/r567f246/Desktop/gitLab/PolarBearal/";
+        //public static string POLY_DB_DIR = @"\\psf\Home\Desktop\SluskyLab\betaBarrelProgram\betaBarrelOutput\PolyBarrelsDB\";
+        //public static string MACPOLYDBDIR = @"\\psf\Home\Desktop\SluskyLab\betaBarrelProgram\betaBarrelOutput\PolyBarrelsDB\PolyDBList_v4.txt";
+        //public static string POLY_OUTPUT_DIR = @"\\psf\Home\Desktop\SluskyLab\betaBarrelProgram\betaBarrelOutput\PolyBarrels\";
 
-        public static string MONO_DB_DIR = POLARBEARAL_DIR + "/DB/PDBs/";
-        public static string MONO_DB_file = POLARBEARAL_DIR + "/DB/MonoDBList.txt";
-        public static string MONO_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/mono/";
+        public static string MONO_DB_DIR = POLARBEARAL_DIR + "/DB/mono/";
+        public static string MONO_DB_file = POLARBEARAL_DIR + "/DB/MonoDB_v5.txt";
+        public static string MONO_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/mono_v5/";
 
-        public static string POLY_DB_DIR = POLARBEARAL_DIR + "/DB/PolyBarrelsDB/";
-        public static string POLY_DB_file = POLARBEARAL_DIR + "/DB/PolyDBList.txt";
+        public static string POLY_DB_DIR = POLARBEARAL_DIR + "/DB/mono/";
+        public static string POLY_DB_file = POLARBEARAL_DIR + "/DB/poly.txt";
         public static string POLY_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/poly/";
 
         public static string MEMB_DB_DIR = POLARBEARAL_DIR + "/DB/PDBs/";
-        public static string MEMB_DB_file = POLARBEARAL_DIR + "/DB/MembDBList.txt";
+        public static string MEMB_DB_file = POLARBEARAL_DIR + "/DB/Riks_membrane_barrels.txt";
         public static string MEMB_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/membrane/";
 
         public static string SOLUBLE_DB_DIR = POLARBEARAL_DIR + "/DB/PDBs/";
-        public static string SOLUBLE_DB_file = POLARBEARAL_DIR + "/DB/SolubleDBList.txt";
+        public static string SOLUBLE_DB_file = POLARBEARAL_DIR + "/DB/Riks_soluble_barrels.txt";
         public static string SOLUBLE_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/soluble/";
 
-        // default to comprensive input and outputt
+        // default to comprensive input and output
         public static string DB_DIR = POLARBEARAL_DIR + "/DB/PDBs/";
         public static string OUTPUT_DIR = POLARBEARAL_DIR + "/Output/all/";
-        public static string DB_file = POLARBEARAL_DIR + "/DB/AllDBList.txt";
+        public static string DB_file = POLARBEARAL_DIR + "/DB/dataset.txt";
 
         public static void change_to_mono_data()
         {
@@ -195,10 +199,6 @@ namespace betaBarrelProgram
             }
             
             string choice = "";
-
-            string method_input = "3";
-            string use_method = "all";
-
             while (choice != "10")
             {
                 Display_menu();
@@ -211,16 +211,8 @@ namespace betaBarrelProgram
                         BarrelStructures.Barrel _barrel = null;
                         Console.WriteLine("Enter pdb:");
                         string PDBid = Console.ReadLine();
-
-                        Console.WriteLine("Enter method (1=mono, 2=poly, default=all):");
-                        method_input = Console.ReadLine();
-                        use_method = "all";
-                        if (method_input == "1"){ use_method = "mono"; }
-                        if (method_input == "2") { use_method = "poly"; }
-                        Console.WriteLine("Attempting to run {0} with {1} code.  Output will be in \n{2}", PDBid, use_method, Global.OUTPUT_DIR);
-
                         // change method from mono depending on wht method you want to use
-                        runThisBetaBarrel(PDBid, use_method, ref _barrel, ref _protein);
+                        runThisBetaBarrel(PDBid, "mono", ref _barrel, ref _protein);
                         break;
                     case "2":
                         BarrelEllipse.testEllipseSinglePDB();
@@ -240,30 +232,14 @@ namespace betaBarrelProgram
                         PolarBearal.RunPolarBearal();
                         break;
                     case "6":
-                        Console.WriteLine("This has not been checked in a bit.  Proceed with caution");
-
-                        Console.WriteLine("Enter method (1=mono, 2=poly, default=all):");
-                        method_input = Console.ReadLine();
-                        use_method = "all";
-                        if (method_input == "1") { use_method = "mono"; }
-                        if (method_input == "2") { use_method = "poly"; }
-                        Console.WriteLine("Using {1} code.  Output will be in \n{2}", use_method, Global.OUTPUT_DIR);
-                        SharedFunctions.RunCbeta2Axis(use_method);
+                        SharedFunctions.RunCbeta2Axis();
                         break;
                     case "7":
-                        Console.WriteLine("This has not been checked in a bit.  Proceed with caution");
-
-                        Console.WriteLine("Enter method (1=mono, 2=poly, default=all):");
-                        method_input = Console.ReadLine();
-                        use_method = "all";
-                        if (method_input == "1") { use_method = "mono"; }
-                        if (method_input == "2") { use_method = "poly"; }
-                        Console.WriteLine("Using {1} code.  Output will be in \n{2}", use_method, Global.OUTPUT_DIR);
-                        SharedFunctions.run_Centroids(use_method);
+                        SharedFunctions.run_Centroids();
                         break;
                     case "8":
-                        Console.WriteLine("This has not been checked in a bit.  Proceed with caution");
                         BarrelEllipse.run_HighLowData();
+
                         break;
                     case "9":
                         PDBInfo testInfo = new PDBInfo();
@@ -311,13 +287,13 @@ namespace betaBarrelProgram
                     }
                     catch
                     {
-                       Console.WriteLine("Failed to run {0} using the poly methods\n", pdb);
+                        Console.WriteLine("Failed to run {0} using the poly methods\n", pdb);
                     }
                 }
                 // use all method 
                 else if ("all" == method)
                 {
-                    try//if (File.Exists(pdbFileName))
+                    try //if (File.Exists(pdbFileName))
                     {
                         Console.WriteLine("all method for protein...");
                         Protein newProt = new AllProtein(ref myAtomCat, PDB);
@@ -332,7 +308,7 @@ namespace betaBarrelProgram
                 // default to mono method
                 else //if ("mono" == method)
                 {
-                    try//if(File.Exists(pdbFileName))
+                    try
                     {
                         Console.WriteLine("Generating mono protein");
                         Protein newProt = new MonoProtein(ref myAtomCat, 0, PDB);
@@ -417,6 +393,109 @@ namespace betaBarrelProgram
             }
         }
 
+
+        public static Barrel runBetaBarrel(string pdb, ref Dictionary<string, AminoAcid> _aaDict, ref Dictionary<Tuple<string, string>, double> partialChargesDict)
+        {
+            Directory.SetCurrentDirectory(Global.MONO_DB_DIR);
+
+            string PDB = pdb.Substring(0, 4).ToUpper();
+            string pdbFileName = pdb.Substring(0, 6).ToUpper() + ".pdb";
+            AtomParser.AtomCategory myAtomCat = new AtomParser.AtomCategory();
+
+            if (File.Exists(pdbFileName))
+            {
+                Console.WriteLine("\nopened {0}", pdbFileName);
+                myAtomCat = ReadPdbFile(pdbFileName, ref Global.partialChargesDict);
+            }
+
+
+            int chainNum = 0;
+
+            int stop = myAtomCat.ChainAtomList.Count();
+            Console.Write("Protein Class {0}", chainNum);
+
+            Protein newProt = new MonoProtein(ref myAtomCat, chainNum, PDB);
+
+            Console.Write("creating barrel class..");
+
+            Barrel myBarrel = new MonoBarrel(newProt.Chains[0], newProt);
+            return (myBarrel);
+        }
+        /*
+        public static PolyBarrel runPBetaBarrel(string pdb, ref Dictionary<string, AminoAcid> _aaDict)
+        {
+            Directory.SetCurrentDirectory(Global.POLY_DB_DIR);
+            
+            string pdbFileName = pdb + ".pdb";
+            AtomParser.AtomCategory myAtomCat = new AtomParser.AtomCategory();
+            
+                       if (File.Exists(pdbFileName))
+            {
+                Console.WriteLine("opened {0}", pdbFileName);
+                myAtomCat = readPdbFile(pdbFileName, ref Global.partialChargesDict);
+            }
+            
+           PolyProtein newProt = new PolyProtein(ref myAtomCat, pdb); //For considering all chains
+
+           Console.WriteLine("creating barrel class..");
+
+           PolyBarrel myBarrel = new PolyBarrel(newProt, Global.POLY_OUTPUT_DIR, Global.POLY_DB_DIR);
+
+           return (myBarrel);
+        }
+
+        static public void startPolyBarrel()
+        {
+            //for making barrel
+            Dictionary<string, int> pdbBeta = new Dictionary<string, int>();
+
+            //PDBIDs that will be run
+            string fileOfPDBs = Global.POLY_DB_DIR + "PolyDBList.txt"; //input file with list of polymeric xml files
+
+            if (File.Exists(fileOfPDBs))
+            {
+                using (StreamReader sr = new StreamReader(fileOfPDBs))
+                {
+                    String line;
+                    string fileLocation2 = Global.POLY_OUTPUT_DIR + "AllBarrelChar.txt";
+                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation2))
+                    {
+                        string newLine = "PDB" + "\t\t" + "Length" + "\t" + "AvgLength" + "\t" + "MinLength" + "\t" + "MaxLength" + "\t" + "Radius" + "\t\t" + "Total Chains" + "\t" + "Total Strands" + "\t" + "Barrel Tilt";
+                        file.WriteLine(newLine);
+                        // Read and display lines from the file until the end of the file is reached.
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            string[] splitLine = Array.FindAll<string>(((string)line).Split(
+                                new char[] { ' ', '\t', ',' }), delegate (string s) { return !String.IsNullOrEmpty(s); });
+                            string pdb = splitLine[0];
+                            if (pdb != "IDs")
+                            {
+                                PolyBarrel myBarrel = runPBetaBarrel(pdb, ref Global.AADict);
+                                string char1 = myBarrel.PdbName;
+                                string char2 = myBarrel.Axis.Length.ToString();
+                                string char7 = myBarrel.StrandLength.Average().ToString();
+                                string char8 = myBarrel.StrandLength.Min().ToString();
+                                string char9 = myBarrel.StrandLength.Max().ToString();
+                                string char3 = myBarrel.AvgRadius.ToString();
+                                string char4 = myBarrel.protoBarrel.Count().ToString();
+                                string char5 = myBarrel.Strands.Count().ToString();
+                                string char6 = myBarrel.AvgTilt.ToString();
+                                newLine = char1 + "\t" + char2 + "\t" + char7 + "\t" + char8 + "\t" + char9 + "\t" + char3 + "\t" + char4 + "\t" + char5 + "\t" + char6;
+                                file.WriteLine(newLine);
+                            }
+                        }
+                    }
+
+                }
+            }
+            else
+            {
+                Console.WriteLine("could not open {0}", fileOfPDBs);
+                Console.ReadLine();
+
+            }
+        }
+        */
 
         //extracts atoms from pdb file
         public static AtomCategory ReadPdbFile(string pdbfilename, ref Dictionary<Tuple<string, string>, double> partialCharges)
