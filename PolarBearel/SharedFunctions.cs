@@ -337,6 +337,64 @@ namespace betaBarrelProgram
             }
         }
 
+        public static void setInOutMin(List<Strand> strandlist, string outputDirectory, string pdbName, Vector3 CCentroid, Vector3 NCentroid) //10-07-20 - RD - Use the reference point on axis
+        {
+            string fileLocation3 = outputDirectory + "InOut/InOut_" + pdbName + ".txt";
+            create_dir(outputDirectory + "InOut");
+            Dictionary <Vector3, Vector3> nearestPoint = new Dictionary<Vector3, Vector3>();
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation3))
+            {
+                file.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\n", "Res", "ResNum", "SeqID", "Strand", "Chain", "Inward", "ZCoord");
+
+                foreach (Strand strand in strandlist)
+                {
+                    foreach (Res myRes in strand)
+                    {
+                        var reference = ReferenceVector(myRes.BackboneCoords["CA"]);
+                        var axisDirection = myRes.BackboneCoords["CA"] - reference;
+                        var angle = 0.0;
+
+                        nearestPoint.Add(myRes.BackboneCoords["CA"], reference); //For pymol output
+
+                        if (myRes.ThreeLetCode != "GLY")
+                        {
+                            angle = AngleBetween(myRes.BackboneCoords["CA"] - myRes.Atoms.First(Atom => Atom.AtomName == "CB").Coords, axisDirection);
+                        }
+                        else
+                        {
+                            angle = AngleBetween(((myRes.BackboneCoords["N"] + myRes.BackboneCoords["C"]) / 2) - myRes.BackboneCoords["CA"], axisDirection);
+                        }
+                        //Console.WriteLine($"{myRes.SeqID}, {myRes.ThreeLetCode} - {angle}");
+                        if (angle < 90)
+                        {
+                            myRes.Inward = true;
+                        }
+                        else
+                        {
+                            myRes.Inward = false;
+                        }
+
+                        file.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\n", myRes.ThreeLetCode, myRes.ResNum + 1, myRes.SeqID, myRes.StrandNum, myRes.ChainName, myRes.Inward, myRes.BackboneCoords["CA"].Z);
+                    }
+                }
+            }
+
+            //Calculate vector from CA to the nearest reference point on the axis
+            Vector3 ReferenceVector(Vector3 CAAtom)
+            {
+                Vector3 p1 = NCentroid;
+                Vector3 p2 = CCentroid;
+                Vector3 q = CAAtom;
+                Vector3 u = p2 - p1;
+                Vector3 pq = q - p1;
+                Vector3 w2 = pq - Vector3.Multiply(u, Vector3.Dot(pq, u) / u.LengthSquared()); //point on axis
+                Vector3 reference = q - w2;
+                return reference;
+            }
+
+        }
+
+
         public static void getInOut(List<Strand> strandlist, string outputDirectory, string pdbName, Vector3 axis, Vector3 CCentroid, Vector3 NCentroid)
         {
             create_dir(outputDirectory + "InOut");
@@ -416,13 +474,27 @@ namespace betaBarrelProgram
             
             return all_lengths;
         }
-        
+
+        public static void LogBarrel(ref Barrel myBarrel, string method)
+        {
+            var numberOfStrands = 0;
+            if (myBarrel.Success) numberOfStrands = myBarrel.Strands.Count;
+
+            var chainID = myBarrel.Strands[0].ChainName;
+           
+            string logFileLoc = Global.OUTPUT_DIR + "Log.txt";
+            using (StreamWriter log = File.AppendText(logFileLoc))
+            {
+                log.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", myBarrel.PdbName, myBarrel.Success, method, chainID, numberOfStrands);
+            }
+        }
+
         public static Dictionary<string, string> getLoopTurns(List<Strand> strandlist, ref Chain myChain, string outputDirectory, string pdbName)
         {
             create_dir(outputDirectory + "LoopData");
-            create_dir(outputDirectory + "LoopData/v4Turns");
+            create_dir(outputDirectory + "LoopData/v4Loops");
             create_dir(outputDirectory + "TurnData");
-            create_dir(outputDirectory + "TurnData/v4Loops");
+            create_dir(outputDirectory + "TurnData/v4Turns");
             //string fileLocation = outputDirectory + "RosettaLoops/Loops/" + pdbName + "_Loops_Test.txt";
             //string fileLocation2 = outputDirectory + "RosettaLoops/Turns/" + pdbName + "_Turns_Test.txt";
             string fileLocation = outputDirectory + "LoopData/v4Loops/" + pdbName + "_Loops_Hairpin.txt";
@@ -1943,7 +2015,7 @@ namespace betaBarrelProgram
             }
         }
 
-        static public void RunCbeta2Axis()
+        static public void RunCbeta2Axis(string method)
         {
             Console.WriteLine("Starting RunCbeta2Axis");
             string file = @"Cbeta2AxisData.txt";
@@ -1968,7 +2040,7 @@ namespace betaBarrelProgram
                         {
                             Console.WriteLine("running {0}", pdb);
                             string fileName = pdb.Substring(0, 4).ToUpper();
-                            Barrel myBarrel = Program.runBetaBarrel(pdb, ref Global.AADict, ref Global.partialChargesDict);
+                            Barrel myBarrel = Program.runThisBetaBarrel(pdb, method);
                             saveCbeta2AxisData(ref myBarrel);
                         }
                     }
@@ -2012,7 +2084,7 @@ namespace betaBarrelProgram
             }
         }
 
-        static public void runC_DistanceData()
+        static public void runC_DistanceData(string method)
         {
             Console.WriteLine("Starting C_DistanceData");
             string file = @"C_DistanceData.txt";
@@ -2037,7 +2109,7 @@ namespace betaBarrelProgram
                         {
                             Console.WriteLine("running {0}", pdb);
                             string fileName = pdb.Substring(0, 4).ToUpper();
-                            Barrel myBarrel = Program.runBetaBarrel(pdb, ref Global.AADict, ref Global.partialChargesDict);
+                            Barrel myBarrel = Program.runThisBetaBarrel(pdb, method);
                             saveC_DistanceData(ref myBarrel);
                         }
                     }
@@ -2068,7 +2140,7 @@ namespace betaBarrelProgram
             }
         }
 
-        static public void run_Centroids()
+        static public void run_Centroids(string method)
         {
             Console.WriteLine("Starting centroids");
             string file = @"centroids.txt";
@@ -2093,7 +2165,7 @@ namespace betaBarrelProgram
                         {
                             Console.WriteLine("running {0}", pdb);
                             string fileName = pdb.Substring(0, 4).ToUpper();
-                            Barrel myBarrel = Program.runBetaBarrel(pdb, ref Global.AADict, ref Global.partialChargesDict);
+                            Barrel myBarrel = Program.runThisBetaBarrel(pdb, method);
                             save_Centroids(ref myBarrel);
                         }
                     }

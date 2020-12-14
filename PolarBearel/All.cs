@@ -35,7 +35,7 @@ namespace betaBarrelProgram
                 }
                 if (IsItProtein == true)
                 {
-                    BarrelStructures.Chain myChain = new BarrelStructures.Chain(ref myAtomCat, chainNum, PdbName, false, Global.DB_DIR);
+                    BarrelStructures.Chain myChain = new BarrelStructures.Chain(ref myAtomCat, chainNum, PdbName, false, Global.DB_DIR, true);
                     this.Chains.Add(myChain);
                     chainNumList.Add(ChainCount, chainNum);
                     this.ChainCount++;
@@ -154,8 +154,7 @@ namespace betaBarrelProgram
                             Console.WriteLine($"Protein {PdbName} Chain {chain.ChainName} has a Mono barrel with {myStrandGroup.BarrelStrands.Count} strands");
                             this.barrelType = "mono";
                             this.Success = true;
-                            LogBarrel(myStrandGroup);
-                            
+                            //LogBarrel(myStrandGroup);
                             break;
                         }
                     }
@@ -176,14 +175,14 @@ namespace betaBarrelProgram
                     Console.WriteLine($"Protein {PdbName} has a Poly barrel with {myStrandGroup.BarrelStrands.Count} strands");
                     this.barrelType = "poly";
                     this.Success = true;
-                    LogBarrel(myStrandGroup);
+                    //LogBarrel(myStrandGroup);
                 }
             }
             #endregion
 
             if (!isMonoFlag && !isPolyFlag)
             {
-                LogBarrel(null);
+                //LogBarrel(null);
                 
             }
             else
@@ -281,7 +280,7 @@ namespace betaBarrelProgram
             #region HardCoding
             var PDBList = new List<string>(){ "1E5P","1R0U","3PDF","3FHH","4E1T","6TZK","3QQ2","1QTT","4ALO","4WFU","1LFO","3A2S","4Q35", "1GL4" };//#Hard Coding# Use SSType for these
             bool useSSType = PDBList.Contains(PdbName);
-            //useSSType = true;//RYAN//trying to see if Rik's SS is taking forever
+            //useSSType = true;//RYAN//just cleaned PDB files, removing all PDB SS!! :(
             if (PdbName == "1GL4")
             {
                 //manually remove few SSTypes

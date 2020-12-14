@@ -271,26 +271,12 @@ namespace betaBarrelProgram
             }
             strands.Sort((a, b) => a.angle.CompareTo(b.angle));
 
-            int i = 0;
-            foreach (var strand in strands)
-            {
-                //Console.WriteLine($"{item.betaStrandNum} angle is {item.angle}");
-                strand.StrandNum = i;
-                i++;
-            }
-
-            Vector3 centroidCalculate(OneStrand oneStrand)
-            {
-                var caList = oneStrand.StrandInTheGroup.Select(residue => residue.BackboneCoords["CA"]).ToList();
-                Vector3 strandCentroid = new Vector3
-                {
-                    X = caList.Sum(ca => ca.X) / caList.Count,
-                    Y = caList.Sum(ca => ca.Y) / caList.Count,
-                    Z = caList.Sum(ca => ca.Z) / caList.Count
-                };
-                return strandCentroid;
-            }
-            return strands;
+            //SharedFunctions.setInOut(strandList, Global.OUTPUT_DIR, this.PdbName, Axis, Ccentroid, Ncentroid);
+            //RYAN//SharedFunctions.setInOutMin(strandList, Global.OUTPUT_DIR, this.PdbName, Ccentroid, Ncentroid);
+            SharedFunctions.setInOutMin(strandList, Global.OUTPUT_DIR, this.PdbName, Ccentroid, Ncentroid);
+            SharedFunctions.WritePymolScriptForInOutStrands(strandList, Global.OUTPUT_DIR, Global.DB_DIR, PdbName, Ccentroid, Ncentroid);
+            //SharedFunctions.setInOutMin(strandList, Global.OUTPUT_DIR, this.PdbName, Ccentroid, Ncentroid);
+            #endregion
         }
 
         private void CheckIfBarrel(GroupOfStrands group)

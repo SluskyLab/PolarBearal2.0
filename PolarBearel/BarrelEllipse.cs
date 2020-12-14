@@ -47,16 +47,6 @@ namespace betaBarrelProgram
             Console.WriteLine("Enter pdb:");
             string pdb = Console.ReadLine();
 
-            /*updated with new input output methods below Oct 10, 2020
-             string IN_FILE = Global.MONO_DB_DIR + pdb + ".pdb";
-            OUTPUT_PATH = Global.MONO_OUTPUT_DIR + "ellipse/";
-
-            if (!File.Exists(IN_FILE))
-            { 
-                IN_FILE = Global.POLY_DB_DIR + pdb + ".pdb";
-                OUTPUT_PATH = Global.POLY_OUTPUT_DIR + "ellipse/";
-            }
-            */
             string IN_FILE = Global.DB_DIR + pdb + ".pdb";
             OUTPUT_PATH = Global.OUTPUT_DIR + "ellipse/";
             SharedFunctions.create_dir(Global.OUTPUT_DIR + "ellipse");
@@ -94,22 +84,7 @@ namespace betaBarrelProgram
             TimeSpan ts;
             string file;
 
-            /*updated with new input output methods below Oct 10, 2020
-           Console.WriteLine("Mono or Poly?(m/p)");
-           string input = Console.ReadLine();
-
-           if (input == "m")
-           {
-               DB_FILE = Global.MONO_DB_file;
-               OUTPUT_PATH = Global.MONO_OUTPUT_DIR + "ellipse/";
-           }
-           else
-           {
-               DB_FILE = Global.POLY_DB_file;
-               OUTPUT_PATH = Global.POLY_OUTPUT_DIR + "ellipse/";
-           }
-            */
-            DB_FILE = Global.MONO_DB_file;
+            DB_FILE = Global.DB_file;
             OUTPUT_PATH = Global.OUTPUT_DIR + "ellipse/";
             SharedFunctions.create_dir(Global.OUTPUT_DIR + "ellipse");
 
@@ -167,8 +142,8 @@ namespace betaBarrelProgram
             _protein = null;
             _barrel = null;
 
-            //SharedFunctions.runBetaBarrel_RYAN(PDBid, ref _protein, ref _barrel);
-            Program.runThisBetaBarrel(PDBid, "mono", ref _barrel, ref _protein);
+            // testing all
+            Program.runThisBetaBarrel(PDBid, "all", ref _barrel, ref _protein);
             strandlist = _barrel.Strands;
 
             BottomEllipse = new Ellipse(SharedFunctions.getBottomEllipseCoords(strandlist));
@@ -203,7 +178,7 @@ namespace betaBarrelProgram
             Res lowRes = strandlist[0].Residues[0];
 
             string file = @"highLowRes.txt";
-            using (StreamWriter output = File.AppendText(Global.MONO_OUTPUT_DIR + file))
+            using (StreamWriter output = File.AppendText(Global.OUTPUT_DIR + file))
             {
                 foreach (Strand strand in strandlist)
                 {
@@ -228,12 +203,12 @@ namespace betaBarrelProgram
         {
             Console.WriteLine("Starting highLowRes");
             string file = @"highLowRes.txt";
-            using (System.IO.StreamWriter output = new System.IO.StreamWriter(Global.MONO_OUTPUT_DIR + file))
+            using (System.IO.StreamWriter output = new System.IO.StreamWriter(Global.OUTPUT_DIR + file))
             {
                 output.Write("\n{0}\t{1}\t{2}\t{3}\t{4}\t{5}", "pdb", "StrandNum", "ThreeLetCode", "ResNum", "Z", "high/low");
             }
 
-            string fileOfPDBs = Global.MONO_DB_file; //input file with list of monomeric xml files
+            string fileOfPDBs = Global.DB_file; //input file with list of monomeric xml files
 
             if (File.Exists(fileOfPDBs))
             {
@@ -500,8 +475,10 @@ namespace betaBarrelProgram
         {
             string fileName = _pdbId;
             fileName += ".pdb";
-            string outputDir = Global.MONO_OUTPUT_DIR + "axisAlignedPDBS/";
+            string outputDir = Global.OUTPUT_DIR + "axisAlignedPDBS/";
+            SharedFunctions.create_dir(outputDir);
             FileStream fileStream = new FileStream(Path.Combine(outputDir, fileName), FileMode.Create, FileAccess.Write);
+
             StreamWriter fileWriter = new StreamWriter(fileStream);
             string header = "HEADER    " + _pdbId + "                    " + DateTime.Now;
             fileWriter.WriteLine(header);
