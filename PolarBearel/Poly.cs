@@ -142,7 +142,7 @@ namespace betaBarrelProgram
 	            createAllStrands(ref _myProtein, outputDirectory); //This also changes all SStypes to B for H-bond searching to be more effective; we can reference back to psi/phi angles for orig type if necessary
             
 	            if (protoBarrel[0].Count > 4) makeBarrelCircular(ref _myProtein); //remove extra chains if more than 4; known 4x3 proteins have no extra chains, 12-10-15
-				//makeBarrelCircular(ref _myProtein); //RYAN commented out above and tried w/o if statement 10--2020
+				
 
 				//most functions are based on the Strand list, so this region must work properly for any other functions to work properly
 				#region create Strand list 
@@ -442,18 +442,29 @@ namespace betaBarrelProgram
 	                }
 	                if (_myProtein.PdbName == "5GAQ")
 	                {
-	                    protoBarrel[i].RemoveRange(2, 1);
-	                }
+						protoBarrel[i].RemoveRange(0, 1); // (Ryan; 12/15/2020)
+						protoBarrel[i].RemoveRange(2, 1);
+					}
 	                if (_myProtein.PdbName.Contains("3J9C"))
 	                {
 	                    protoBarrel[i][0].RemoveRange(0, 8);
 	                }
-                
-	                /*if (_myProtein.PdbName == "7AHL" && (_myProtein.Chains[i].ChainName == "A" || _myProtein.Chains[i].ChainName == "C" || _myProtein.Chains[i].ChainName == "F")) //This stretches into the upper head
+					// Started picking up this extra strand (Ryan; 12/15/2020)
+					if (_myProtein.PdbName == "1UUN")
+					{
+						protoBarrel[i].RemoveRange(2, 1);
+					}
+					// Previously did not identify enough strands to make it to makeCircular, could be cause of future issues (Ryan; 12/15/2020)
+					if (_myProtein.PdbName == "3W9T")
+					{
+						protoBarrel[i].RemoveRange(2, 1);
+					}
+
+					/*if (_myProtein.PdbName == "7AHL" && (_myProtein.Chains[i].ChainName == "A" || _myProtein.Chains[i].ChainName == "C" || _myProtein.Chains[i].ChainName == "F")) //This stretches into the upper head
 	                {
 	                    protoBarrel[i][0].RemoveRange(0, 9);
 	                }*/
-	            } //End of checking each chain
+				} //End of checking each chain
 	        }
 
 	        public void createAllStrands(ref PolyProtein _myProtein, string outputDirectory) //This does NOT create the list of Strands
@@ -592,14 +603,11 @@ namespace betaBarrelProgram
 	                protoBarrel.Add(tempList);
 	                StrandsInChain.Clear();
 	                strandNum = 0;
-	                if (_myProtein.PdbName == "3W9T") //only four strands are recognized in 3W9T, which means it doesn't go through MakeBarrelCircular
-	                {
-	                    protoBarrel[chain.ChainNum].RemoveRange(2, 1);
-	                    //protoBarrel[chain.ChainNum].RemoveRange(0, 1);
-	                }
+	                
                 
 	            }
-	        }//end of create strands fxn
+				
+			}//end of create strands fxn
 
 	        public void extractStrands(ref PolyProtein _myProtein, string outputDirectory) //This doesn't quite work, but it is very close
 	        {
