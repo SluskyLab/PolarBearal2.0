@@ -117,6 +117,7 @@ namespace betaBarrelProgram
                     change_to_mono_data();
                     break;
             }
+            SharedFunctions.create_dir(OUTPUT_DIR);
         }
 
 
