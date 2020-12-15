@@ -48,11 +48,23 @@ namespace betaBarrelProgram
                         if (_myAtomCat.ChainAtomList[chainNum].CartnAtoms[atomNum].atomName == "CA") IsItProtein = true; //if there is a CA anywhere in chain, create new Chain
                     }
 					if (IsItProtein == true)
-                    {
-                        Console.WriteLine("Creating new chain");
-                        Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, false, Global.DB_DIR, false);
-                        this.Chains.Add(myChain);
-                        this.ChainCount++;
+					{
+						if ("6UWR" == this.PdbName) // 7 non-barrel chains prevent the code from getting the first and last barrel strands
+						{
+							if (this.ChainCount < 7) {
+							Console.WriteLine("Creating new chain");
+							Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, false, Global.DB_DIR, false);
+							this.Chains.Add(myChain);
+							this.ChainCount++;
+						}
+						}
+						else
+						{
+						Console.WriteLine("Creating new chain");
+						Chain myChain = new Chain(ref _myAtomCat, chainNum, PdbName, false, Global.DB_DIR, false);
+						this.Chains.Add(myChain);
+						this.ChainCount++;
+						}
                     }
                 }
                 this.Chains.Sort((x, y) => x.ChainName.CompareTo(y.ChainName)); //This sorts chains by letter - dimers don't necessarily add in order.
@@ -137,9 +149,9 @@ namespace betaBarrelProgram
 	                        }
 	                    }
 	                }
-	            #endregion
-
-	            createAllStrands(ref _myProtein, outputDirectory); //This also changes all SStypes to B for H-bond searching to be more effective; we can reference back to psi/phi angles for orig type if necessary
+				#endregion
+				
+				createAllStrands(ref _myProtein, outputDirectory); //This also changes all SStypes to B for H-bond searching to be more effective; we can reference back to psi/phi angles for orig type if necessary
             
 	            if (protoBarrel[0].Count > 4) makeBarrelCircular(ref _myProtein); //remove extra chains if more than 4; known 4x3 proteins have no extra chains, 12-10-15
 				
@@ -329,7 +341,9 @@ namespace betaBarrelProgram
 	            int i; //chain count
 	            int strandCtr; //strand count
 
-	            for (i = 0; i < protoBarrel.Count; i++)//for each chain
+				
+
+				for (i = 0; i < protoBarrel.Count; i++)//for each chain
 	            {
 	                for (strandCtr = 0; strandCtr < protoBarrel[i].Count; )//for each strand strandCtr++
 	                {
@@ -464,6 +478,10 @@ namespace betaBarrelProgram
 					{
 						protoBarrel[i].RemoveRange(0, 1); // (Ryan; 12/15/2020)
 						protoBarrel[i].RemoveRange(2, 1);
+					}
+					if (_myProtein.PdbName.Contains("6UWR"))
+					{
+						protoBarrel[i][0].RemoveRange(0, 6);
 					}
 					/*if (_myProtein.PdbName == "7AHL" && (_myProtein.Chains[i].ChainName == "A" || _myProtein.Chains[i].ChainName == "C" || _myProtein.Chains[i].ChainName == "F")) //This stretches into the upper head
 	                {
