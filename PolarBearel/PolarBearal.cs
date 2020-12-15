@@ -143,11 +143,11 @@ namespace betaBarrelProgram
                             {
                                 string fileName = pdb;
                                 //string fileName = pdb + ".pdb";
-                                Barrel myBarrel = Program.runThisBetaBarrel(pdb, "mono");
+                                Barrel myBarrel = Program.runThisBetaBarrel(pdb, "all");
                                 
                                 try
                                 {
-                                    SharedFunctions.LogBarrel(ref myBarrel, "mono");
+                                    SharedFunctions.LogBarrel(ref myBarrel, "all");
                                     if (myBarrel.Success)
                                     {
                                         PolarBearal roar = new PolarBearal(ref myBarrel);

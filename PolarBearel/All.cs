@@ -198,7 +198,7 @@ namespace betaBarrelProgram
                 /* ---------output information from mono --------- */
                 this.StrandLength = SharedFunctions.getStrandLengths(this.Strands, path, this.PdbName);
                 //this.PrevTwists = SharedFunctions.writeTwists(this.Strands, Global.OUTPUT_DIR, this.PdbName);
-                /* RYAN, checking ALL function before adding this into shared
+
                 try
                 {
                     SharedFunctions.AminoAcidPairs(Strands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName);
@@ -207,7 +207,7 @@ namespace betaBarrelProgram
                 {
 
                     Console.WriteLine("Failed to make pairs");
-                }*/
+                }
 
 
 

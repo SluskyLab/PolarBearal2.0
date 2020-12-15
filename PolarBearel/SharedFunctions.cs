@@ -2589,7 +2589,294 @@ namespace betaBarrelProgram
             return averagePosition;
         }
 
-        /* Riks output functions*/
+
+        /* Rik's functions*/
+
+        //Find Amino acid pairs in a barrel
+        public static void AminoAcidPairs(List<Strand> strandlist, string outputDirectory, string DBdirectory, string pdbName)
+        {
+            List<Tuple<Res, Res>> strongHBondList = new List<Tuple<Res, Res>>();
+            List<Tuple<Res, Res>> nonHBondList = new List<Tuple<Res, Res>>();
+            List<Tuple<Res, Res>> weakHBondList = new List<Tuple<Res, Res>>();
+
+            Dictionary<Res, Vector3> HydrogenList = new Dictionary<Res, Vector3>();
+            Dictionary<Res, Vector3> GlyRGroupList = new Dictionary<Res, Vector3>();
+
+            double strongHBondLimit = 3.65; //(Oxygen to Nitrogen)
+            double weakHBondLimit = 3.15; //(C-Alpha's Hydrogen to Oxygen - 2A to 3A)
+            double nonHBondLimit = 3.15; // (Two C-Alpha's facing each other - Distance between their Hydrogens)
+
+            #region ##Find and list all the pairs##
+            for (int i = 0; i < strandlist.Count; i++)
+            {
+                int nextstrandctr = i + 1;
+                if (i == strandlist.Count - 1)
+                {
+                    nextstrandctr = 0;
+                }
+
+                foreach (var residue1 in strandlist[i])
+                {
+                    foreach (var residue2 in strandlist[nextstrandctr])
+                    {
+
+                        #region ***Stong Hydrogen bonding check***
+                        var strongHBondDist1 = (residue1.Atoms.First(i => i.AtomName == "O").Coords - residue2.Atoms.First(i => i.AtomName == "N").Coords).Length();
+                        var strongHBondDist2 = (residue1.Atoms.First(i => i.AtomName == "N").Coords - residue2.Atoms.First(i => i.AtomName == "O").Coords).Length();
+                        if (residue1.ThreeLetCode != "PRO" || residue2.ThreeLetCode != "PRO")
+                        {
+                            if (strongHBondDist1 < strongHBondLimit && strongHBondDist2 < strongHBondLimit)
+                            {
+                                strongHBondList.Add(new Tuple<Res, Res>(residue1, residue2));
+                            }
+                        }
+                        else
+                        {
+                            if (strongHBondDist1 < strongHBondLimit || strongHBondDist2 < strongHBondLimit)
+                            {
+                                strongHBondList.Add(new Tuple<Res, Res>(residue1, residue2));
+                            }
+                        }
+                        #endregion
+
+                        #region ***Weak Hydrogen bonding check***
+                        Vector3 hydrogenOfCA2 = findHydrogenOfCA(residue2);
+                        var weakHBondDist2 = (residue1.Atoms.First(i => i.AtomName == "O").Coords - hydrogenOfCA2).Length();
+                        if (weakHBondDist2 < weakHBondLimit)
+                        {
+                            weakHBondList.Add(new Tuple<Res, Res>(residue1, residue2));
+                            //if (!HydrogenList.ContainsKey(residue2))
+                            {
+                                HydrogenList.Add(residue2, hydrogenOfCA2);
+                            }
+
+                        }
+
+                        Vector3 hydrogenOfCA1 = findHydrogenOfCA(residue1);
+                        var weakHBondDist1 = (residue2.Atoms.First(i => i.AtomName == "O").Coords - hydrogenOfCA1).Length();
+                        if (weakHBondDist1 < weakHBondLimit)
+                        {
+                            weakHBondList.Add(new Tuple<Res, Res>(residue2, residue1));
+                            //if (!HydrogenList.ContainsKey(residue1))
+                            {
+                                HydrogenList.Add(residue1, hydrogenOfCA1);
+                            }
+
+                        }
+                        #endregion
+
+                        #region ***Non Hydrogen bonding check***
+                        Vector3 RGroup1;
+                        Vector3 RGroup2;
+
+                        if (residue1.ThreeLetCode == "GLY")
+                        {
+                            RGroup1 = findRGroupOfGly(residue1);
+                        }
+                        else
+                        {
+                            RGroup1 = residue1.Atoms.First(i => i.AtomName == "CB").Coords;
+                        }
+
+                        if (residue2.ThreeLetCode == "GLY")
+                        {
+                            RGroup2 = findRGroupOfGly(residue2);
+                        }
+                        else
+                        {
+                            RGroup2 = residue2.Atoms.First(i => i.AtomName == "CB").Coords;
+                        }
+
+
+                        var nonHBondDist = (findHydrogenOfCA(residue1) - findHydrogenOfCA(residue2)).Length();
+                        if (nonHBondDist < nonHBondLimit)
+                        {
+                            nonHBondList.Add(new Tuple<Res, Res>(residue1, residue2));
+                            if (residue1.ThreeLetCode == "GLY" && !GlyRGroupList.ContainsKey(residue1))
+                            {
+                                GlyRGroupList.Add(residue1, RGroup1);
+                            }
+                            if (residue2.ThreeLetCode == "GLY" && !GlyRGroupList.ContainsKey(residue2))
+                            {
+                                GlyRGroupList.Add(residue2, RGroup2);
+                            }
+                        }
+                        #endregion
+                    }
+                }
+            }
+            #endregion
+
+            #region ##Output PyMol File##
+            create_dir(outputDirectory + "Pymol/aa_pairs");
+            string fileLocation = outputDirectory + "Pymol/aa_pairs/aa_pairs_" + pdbName + ".py";
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation))
+            {
+                List<string> chain_names = new List<string>();
+                file.WriteLine("from pymol import cmd, stored"); //For MacPyMOL
+                string pdb_file = DBdirectory + pdbName + ".pdb";
+                file.WriteLine("x = r\"{0}\"", pdb_file); //For PC
+                file.WriteLine("cmd.load(x)"); //For PC
+                //file.WriteLine("cmd.load(\"{0}\")", pdb_file); for Mac
+                file.WriteLine("cmd.hide(\"everything\", \"all\")");
+                file.WriteLine("cmd.color(\"wheat\",\"all\")");
+
+                //Show Hydrogens for CA atoms only
+                file.WriteLine("cmd.remove(\"hydrogens\")");
+                file.WriteLine("cmd.h_add(\"(name CA)\")");
+
+                //Create Strand List and Barrel
+                foreach (Strand strand in strandlist)
+                {
+                    string listOfResidue = $"{strand.Residues[0].SeqID}"; //creating a string of all the residues in this strand
+                    for (int i = 1; i < strand.Residues.Count; i++)
+                    {
+                        var residue = strand.Residues[i];
+                        listOfResidue += $"+{residue.SeqID}";
+                    }
+                    file.WriteLine($"cmd.select(\"{strand.ChainName}strand{strand.StrandNum}\", \"resi {listOfResidue} & chain {strand.ChainName} \")");
+                    if (chain_names.Contains(strand.ChainName) == false) chain_names.Add(strand.ChainName);
+                    file.WriteLine("\n");
+                }
+                file.WriteLine("cmd.group(\"Strands\", \"*strand*\")");
+                file.Write("cmd.select(\"barrel\", \"");
+                for (int i = 0; i < chain_names.Count; i++)
+                {
+                    if (i < chain_names.Count - 1) file.Write("{0}strand* or ", chain_names[i]);
+                    else file.WriteLine("{0}strand*\")", chain_names[i]);
+                }
+
+                //Add Pseudo Hydrogens and Glycine R-Group Hydrogen
+                foreach (var Hydrogen in HydrogenList)
+                {
+                    file.WriteLine($"cmd.pseudoatom (\"PseudoH{Hydrogen.Key.SeqID}{Hydrogen.Key.ChainName}\", pos=[{Hydrogen.Value.X},{Hydrogen.Value.Y},{Hydrogen.Value.Z}])");
+                }
+                file.WriteLine("cmd.group(\"Pseudo_Hydrogens\", \"PseudoH*\")");
+                foreach (var RGroup in GlyRGroupList)
+                {
+                    file.WriteLine($"cmd.pseudoatom (\"PseudoR{RGroup.Key.SeqID}{RGroup.Key.ChainName}\", pos=[{RGroup.Value.X},{RGroup.Value.Y},{RGroup.Value.Z}])");
+                }
+                file.WriteLine("cmd.group(\"Pseudo_RGroups\", \"PseudoR*\")");
+
+                //Create measurments showing the bonds
+                foreach (var pair in strongHBondList)
+                {
+                    Res res1 = pair.Item1;
+                    Res res2 = pair.Item2;
+                    file.WriteLine($"cmd.distance(\"StrongHBond\", \"resi {res1.SeqID} & chain {res1.ChainName} & name O\", \"resi {res2.SeqID} & chain {res2.ChainName} & name N\")");
+                    file.WriteLine($"cmd.distance(\"StrongHBond\", \"resi {res1.SeqID} & chain {res1.ChainName} & name N\", \"resi {res2.SeqID} & chain {res2.ChainName} & name O\")");
+                }
+
+                foreach (var pair in weakHBondList)
+                {
+                    Res res1 = pair.Item1;
+                    Res res2 = pair.Item2;
+                    file.WriteLine($"cmd.distance(\"WeakHBond\", \"resi {res1.SeqID} & chain {res1.ChainName} & name O\", \"PseudoH{res2.SeqID}{res2.ChainName}\")");
+                }
+
+                foreach (var pair in nonHBondList)
+                {
+                    Res res1 = pair.Item1;
+                    Res res2 = pair.Item2;
+                    if (res1.ThreeLetCode == "GLY" && res2.ThreeLetCode != "GLY")
+                    {
+                        file.WriteLine($"cmd.distance(\"NonHBond\", \"PseudoR{res1.SeqID}{res1.ChainName}\", \"resi {res2.SeqID} & chain {res2.ChainName} & name CB\")");
+                    }
+                    else if (res1.ThreeLetCode != "GLY" && res2.ThreeLetCode == "GLY")
+                    {
+                        file.WriteLine($"cmd.distance(\"NonHBond\", \"resi {res1.SeqID} & chain {res1.ChainName} & name CB\", \"PseudoR{res2.SeqID}{res2.ChainName}\")");
+                    }
+                    else if (res1.ThreeLetCode == "GLY" && res2.ThreeLetCode == "GLY")
+                    {
+                        file.WriteLine($"cmd.distance(\"NonHBond\", \"PseudoR{res1.SeqID}{res1.ChainName}\", \"PseudoR{res2.SeqID}{res2.ChainName}\")");
+                    }
+                    else
+                    {
+                        file.WriteLine($"cmd.distance(\"NonHBond\", \"resi {res1.SeqID} & chain {res1.ChainName} & name CB\", \"resi {res2.SeqID} & chain {res2.ChainName} & name CB\")");
+                    }
+                }
+
+                //Displaying the Barrel
+                file.WriteLine("cmd.show(\"stick\", \"barrel\")");
+                file.WriteLine("cmd.color(\"red\",\"StrongHBond\")");
+                file.WriteLine("cmd.color(\"green\",\"WeakHBond\")");
+                file.WriteLine("cmd.color(\"purpleblue\",\"NonHBond\")");
+                file.WriteLine("cmd.color(\"magenta\",\"PseudoR*\")");
+                file.WriteLine("cmd.color(\"green\",\"name CA & barrel\")");
+                file.WriteLine("cmd.color(\"red\",\"name O & barrel\")");
+                file.WriteLine("cmd.color(\"blue\",\"name N & barrel\")");
+                file.WriteLine("cmd.hide(\"labels\")");
+                file.WriteLine("cmd.zoom(\"barrel\")");
+
+            }
+            #endregion
+
+            #region ##OutPut List as Text File###
+            create_dir(outputDirectory + "InterstrandPairings");
+            string AAPairsFileLoc = outputDirectory + "InterstrandPairings/aa_pairs_" + pdbName + ".txt";
+            using (StreamWriter file = new StreamWriter(AAPairsFileLoc))
+            {
+                file.WriteLine("Type" + "\t" + "Residue1" + "\t" + "Chain1" + "\t" + "Strand1Num" + "\t" + "Residue2" + "\t" + "Chain2" + "\t" + "Strand2Num" + "\t" + "Pair");
+            }
+            using (StreamWriter log = File.AppendText(AAPairsFileLoc))
+            {
+                List<List<Tuple<Res, Res>>> listOfList = new List<List<Tuple<Res, Res>>> { strongHBondList, weakHBondList, nonHBondList };
+                int i = 0;
+                foreach (var list in listOfList)
+                {
+                    foreach (var resPair in list)
+                    {
+                        string[] type = { "Strong", "Weak", "Non" };
+                        string[] pair = { resPair.Item1.OneLetCode, resPair.Item2.OneLetCode };
+                        Array.Sort(pair);
+                        string AApair = string.Join("", pair);
+                        log.WriteLine($"{type[i]}" + "\t" + $"{resPair.Item1.ThreeLetCode}{resPair.Item1.SeqID}" + "\t" + $"{ resPair.Item1.ChainName}" + "\t" + $"{resPair.Item1.StrandNum}" + "\t" + $"{resPair.Item2.ThreeLetCode}{resPair.Item2.SeqID}" + "\t" + $"{ resPair.Item2.ChainName}" + "\t" + $"{resPair.Item2.StrandNum}" + "\t" + $"{AApair}");
+                    }
+                    i++;
+                }
+
+
+
+            }
+            #endregion
+
+            Vector3 findHydrogenOfCA(Res residue)
+            {
+                Vector3 CAtoN = residue.BackboneCoords["N"] - residue.BackboneCoords["CA"];
+                Vector3 CAtoC = residue.BackboneCoords["C"] - residue.BackboneCoords["CA"];
+
+                Vector3 rotAxis = Vector3.Normalize(CAtoC);
+                float rotAngle = Convert.ToSingle(120 * Math.PI / 180); // Convert to radians
+                Quaternion q = Quaternion.CreateFromAxisAngle(rotAxis, rotAngle); //Creating rotation quaternion
+                Quaternion hydrogenQ = q * (new Quaternion(CAtoN.X, CAtoN.Y, CAtoN.Z, 0)) / q; //Rotating
+
+                Vector3 hydrogenVect = new Vector3(hydrogenQ.X, hydrogenQ.Y, hydrogenQ.Z); //Converting Quaternion to Vector
+                Vector3 hydrogenVectCorrect = Vector3.Multiply(1.09f, Vector3.Normalize(hydrogenVect)); //Correcting the bond length
+                Vector3 Hydrogen = residue.BackboneCoords["CA"] + hydrogenVectCorrect; //Moving the hydrogen respective to the CA atom
+
+                return Hydrogen;
+            }
+
+            Vector3 findRGroupOfGly(Res residue)
+            {
+                Vector3 CAtoN = residue.BackboneCoords["N"] - residue.BackboneCoords["CA"];
+                Vector3 CAtoC = residue.BackboneCoords["C"] - residue.BackboneCoords["CA"];
+
+                Vector3 rotAxis = Vector3.Normalize(CAtoN);
+                float rotAngle = Convert.ToSingle(120 * Math.PI / 180); // Convert to radians
+                Quaternion q = Quaternion.CreateFromAxisAngle(rotAxis, rotAngle); //Creating rotation quaternion
+                Quaternion RGroupQ = q * (new Quaternion(CAtoC.X, CAtoC.Y, CAtoC.Z, 0)) / q; //Rotating
+
+                Vector3 RGroupVect = new Vector3(RGroupQ.X, RGroupQ.Y, RGroupQ.Z); //Converting Quaternion to Vector
+                Vector3 RGroupVectCorrect = Vector3.Multiply(1.09f, Vector3.Normalize(RGroupVect)); //Correcting the bond length
+                Vector3 RGroup = residue.BackboneCoords["CA"] + RGroupVectCorrect; //Moving the hydrogen respective to the CA atom
+
+                return RGroup;
+            }
+        }
+
+
+
         public static void writePymolScriptCylinder(GroupOfStrands group, Cylinder cylinder, string outputDirectory, string DBdirectory, string pdbName)
         {
             create_dir(outputDirectory + "Pymol/cylinder");
