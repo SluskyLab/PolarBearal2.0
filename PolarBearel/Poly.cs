@@ -459,7 +459,12 @@ namespace betaBarrelProgram
 					{
 						protoBarrel[i].RemoveRange(2, 1);
 					}
-
+					// (Ryan; 12/15/2020)
+					if (_myProtein.PdbName == "6RB9")
+					{
+						protoBarrel[i].RemoveRange(0, 1); // (Ryan; 12/15/2020)
+						protoBarrel[i].RemoveRange(2, 1);
+					}
 					/*if (_myProtein.PdbName == "7AHL" && (_myProtein.Chains[i].ChainName == "A" || _myProtein.Chains[i].ChainName == "C" || _myProtein.Chains[i].ChainName == "F")) //This stretches into the upper head
 	                {
 	                    protoBarrel[i][0].RemoveRange(0, 9);
