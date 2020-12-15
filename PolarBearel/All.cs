@@ -98,7 +98,7 @@ namespace betaBarrelProgram
             this.barrelType = "NA";
             this.Success = false;
             var resList = new List<Res>();
-            StrandGroupMaker myStrandGroup=null;
+            StrandGroupMaker myStrandGroup = null;
 
 
             CreateStrandList(ref newProt);
@@ -144,10 +144,18 @@ namespace betaBarrelProgram
                         {
                             isMonoFlag = true;
                             this.Strands = myStrandGroup.BarrelStrands;
+                            var group = myStrandGroup.GroupOfGroup.First(group => group.IsBarrel == true);
+                            this.Ncentroid = group.Ncentroid;
+                            this.Ccentroid = group.Ncentroid;
+                            this.CellipseCoords = group.CellipseCoords;
+                            this.NellipseCoords = group.NellipseCoords;
+                            this.Axis = group.Axis;
+
                             Console.WriteLine($"Protein {PdbName} Chain {chain.ChainName} has a Mono barrel with {myStrandGroup.BarrelStrands.Count} strands");
                             this.barrelType = "mono";
                             this.Success = true;
-                            //LogBarrel(myStrandGroup);
+                            LogBarrel(myStrandGroup);
+
                             break;
                         }
                     }
@@ -168,32 +176,44 @@ namespace betaBarrelProgram
                     Console.WriteLine($"Protein {PdbName} has a Poly barrel with {myStrandGroup.BarrelStrands.Count} strands");
                     this.barrelType = "poly";
                     this.Success = true;
-                    //LogBarrel(myStrandGroup);
+                    LogBarrel(myStrandGroup);
                 }
             }
             #endregion
 
             if (!isMonoFlag && !isPolyFlag)
             {
-                //LogBarrel(null);
-                
+                LogBarrel(null);
+
             }
             else
             {
                 this.Strands = myStrandGroup.BarrelStrands;
                 var barrel_strand_ctr = 0;
-                foreach (Strand strand in this.Strands){
+                foreach (Strand strand in this.Strands)
+                {
                     strand.StrandNum = barrel_strand_ctr++;
-                    foreach(Res r in strand) r.StrandNum = barrel_strand_ctr;
+                    foreach (Res r in strand) r.StrandNum = barrel_strand_ctr;
                 }
                 /* ---------output information from mono --------- */
                 this.StrandLength = SharedFunctions.getStrandLengths(this.Strands, path, this.PdbName);
                 //this.PrevTwists = SharedFunctions.writeTwists(this.Strands, Global.OUTPUT_DIR, this.PdbName);
+                /* RYAN, checking ALL function before adding this into shared
+                try
+                {
+                    SharedFunctions.AminoAcidPairs(Strands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName);
+                }
+                catch (Exception)
+                {
 
+                    Console.WriteLine("Failed to make pairs");
+                }*/
 
 
 
                 SharedFunctions.setInOut(this.Strands, path, this.PdbName, this.Axis, this.Ccentroid, this.Ncentroid);
+                //SharedFunctions.setInOutM(this.Strands, Global.OUTPUT_DIR, this.PdbName, this.Ccentroid, this.Ncentroid);
+                SharedFunctions.WritePymolScriptForInOutStrands(this.Strands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName, Ccentroid, Ncentroid);
                 this.AvgTilt = SharedFunctions.getTiltsByAA(this.Strands, path, this.PdbName, this.Axis, ref Global.AADict);
 
                 bool detail_variable_output = true;
@@ -222,6 +242,7 @@ namespace betaBarrelProgram
             }
         }
 
+
         private void LogBarrel(StrandGroupMaker myStrandGroup)
         {
             var numberOfStrands = 0;
@@ -235,7 +256,7 @@ namespace betaBarrelProgram
                 chainID += curChain;
                 foreach (Strand curStrand in myStrandGroup.BarrelStrands)
                 {
-                    if(curStrand.ChainName!= curChain)
+                    if (curStrand.ChainName != curChain)
                     {
                         curChain = curStrand.ChainName;
                         chainID += "," + curChain;
@@ -244,7 +265,7 @@ namespace betaBarrelProgram
 
             }
             else chainID = "NA";
-            
+
 
             string logFileLoc = Global.OUTPUT_DIR + "Log.txt";
             using (StreamWriter log = File.AppendText(logFileLoc))
@@ -253,15 +274,15 @@ namespace betaBarrelProgram
             }
         }
 
-private void CreateStrandList(ref Protein newProt)
+        private void CreateStrandList(ref Protein newProt)
         {
             this.protoBarrel = new List<List<List<int>>>();
             var chainCtr = 0;
 
             #region HardCoding
-            var PDBList = new List<string>(){ "1E5P","1R0U","3PDF","3FHH","4E1T","6TZK","3QQ2","1QTT","4ALO","4WFU","1LFO","3A2S","4Q35", "1GL4" };//#Hard Coding# Use SSType for these
+            var PDBList = new List<string>() { "1E5P", "1R0U", "3PDF", "3FHH", "4E1T", "6TZK", "3QQ2", "1QTT", "4ALO", "4WFU", "1LFO", "3A2S", "4Q35", "1GL4" };//#Hard Coding# Use SSType for these
             bool useSSType = PDBList.Contains(PdbName);
-            //useSSType = true;//RYAN//just cleaned PDB files, removing all PDB SS!! :(
+            //useSSType = true;//RYAN//trying to see if Rik's SS is taking forever
             if (PdbName == "1GL4")
             {
                 //manually remove few SSTypes
@@ -311,13 +332,13 @@ private void CreateStrandList(ref Protein newProt)
                     //Console.WriteLine($"res1ctr: {res1ctr}: DDSP = {Residue1.DSSP}");
                     if ((!useSSType && Residue1.DSSP == "E") || (useSSType && Residue1.SSType == "B")) //(Residue1.DSSP == "E" || Residue1.SSType == "B") //(Residue1.DSSP == "E")
                     {
-                        
+
                         //add Residue1.ResNum
                         if (myStrand1.Count > 0)
                         {
                             //var angle = Vector3.AngleBetween(chain.Residues.Single(s => s.ResNum == myStrand1.Last()).Direction, Residue1.Direction);
                             //Console.WriteLine($"ResNum: {Residue1.ResNum} and myStrand1{myStrand1.Last()+1}");
-                            
+
                             if ((Residue1.ResNum == myStrand1.Last() + 1))  // & (angle <= 71)
                             {
                                 //Console.WriteLine($"Angle is between {Residue1.ResNum} and {myStrand1.Last()} is {angle}");
@@ -348,9 +369,9 @@ private void CreateStrandList(ref Protein newProt)
                     }
 
                 } //end of going through each res and adding to barrel. 
-                if (myStrand1.Count > 0) 
+                if (myStrand1.Count > 0)
                 {
-                   tempList.Add(myStrand1); 
+                    tempList.Add(myStrand1);
                 }
                 #endregion
                 protoBarrel.Add(tempList);
@@ -363,7 +384,7 @@ private void CreateStrandList(ref Protein newProt)
                 for (int j = 0; j < protoBarrel[i].Count; j++)
                 {
                     // pass -1 for strandNum because we only know this strands number relitive to all beta conformation strands
-                    Strand newStrand = new Strand(newProt.Chains[i], protoBarrel[i][j][0], protoBarrel[i][j][protoBarrel[i][j].Count-1], -1, strandCtr);
+                    Strand newStrand = new Strand(newProt.Chains[i], protoBarrel[i][j][0], protoBarrel[i][j][protoBarrel[i][j].Count - 1], -1, strandCtr);
                     this.Strands.Add(newStrand);
                     strandCtr++;
                 }

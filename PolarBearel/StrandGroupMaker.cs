@@ -8,7 +8,7 @@ using System.Numerics;
 
 namespace betaBarrelProgram
 {
-    public class StrandGroupMaker
+    public class StrandGroupMaker //Rik
     {
         public string PdbName { get; set; }
         public List<GroupOfStrands> GroupOfGroup { get; set; }
@@ -24,12 +24,12 @@ namespace betaBarrelProgram
             var UnassignedStrandSet = new List<Strand>(); //Create a set of unsorted strand with strand size greater than 3
             foreach (var strands in AllStrands)
             {
-                if (strands.Residues.Count>2)
+                if (strands.Residues.Count > 2)
                 {
                     UnassignedStrandSet.Add(strands);
                 }
             }
-            
+
             var GroupedStrandSet = new GroupOfStrands();
             var FirstStrand = new OneStrand(UnassignedStrandSet[0]); // Selecting the first strand from the unsorted list of strands.
             UnassignedStrandSet.RemoveAt(0); //Remove the first strand from the unsorted list.
@@ -60,15 +60,16 @@ namespace betaBarrelProgram
                     this.GroupOfGroup.Add(GroupedStrandSet); //Add the group of strands to the group of group.
                     GroupedStrandSet = new GroupOfStrands(); //Creat a new group
                 }
-            } while ((UnassignedStrandSet.Count != 0) || (GroupedStrandSet.StrandSet.Count != 0)); 
+            } while ((UnassignedStrandSet.Count != 0) || (GroupedStrandSet.StrandSet.Count != 0));
 
             SharedFunctions.writePymolScriptForStrandGroups(GroupOfGroup, Global.OUTPUT_DIR, Global.DB_DIR, PdbName);
 
             #region Hardcoding the PDBs that fails to work on it's own
-            var PDBList = new List<string>() {  "1O8V", "1IFC", "4UU3", "1GL4", "2HLV", "2YNK", "4GEY", 
-                                                "5GAQ", "6RB9", "3W9T", "5WC3", 
-                                                "6RHV", "2R73", "2RD7", "5AZO", "3ANZ", 
-                                                "4P1X", "5JZT" };//#Hard Coding# Manually select strands
+            var PDBList = new List<string>() {  "1O8V", "1IFC", "4UU3", "1GL4", "2HLV", "2YNK", "4GEY",
+                                                "5GAQ", "6RB9", "3W9T", "5WC3",
+                                                "6RHV", "2R73", "2RD7", "5AZO", "3ANZ",
+                                                "4P1X", "5JZT",
+                                                "1QWD"};//#Hard Coding# Manually select strands
             bool ManualSelect = PDBList.Contains(PdbName);
             if (ManualSelect)
             {
@@ -78,7 +79,7 @@ namespace betaBarrelProgram
 
             foreach (var group in this.GroupOfGroup)
             {
-                if ((group.StrandSet.Count >= 8)||(PdbName == "1VKY")||(PdbName == "1XQB"))
+                if ((group.StrandSet.Count >= 8) || (PdbName == "1VKY") || (PdbName == "1XQB"))
                 {
                     if (!ManualSelect)
                     {
@@ -91,20 +92,21 @@ namespace betaBarrelProgram
                         //Add direction assignment
                         BarrelAxis(group);
                         LogStrandData(group);
-                        foreach (var strand in group.StrandSet)
-                        {
-                            BarrelStrands.Add(strand.StrandInTheGroup);
-                        }
+                        BarrelStrands = rearrangeBarrel(group);
+                        //foreach (var strand in group.StrandSet)
+                        //{
+                        //    BarrelStrands.Add(strand.StrandInTheGroup);
+                        //}
                         SharedFunctions.writePymolScriptForBarrelStrands(this.BarrelStrands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName);
                         //SharedFunctions.WritePymolScriptForInOutStrands(this.BarrelStrands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName, CCentroid, NCentroid);
                         break;
                     }
                 }
             }
-            
+
 
             //Console.WriteLine("");
-    }
+        }
 
         private void HardCode(List<GroupOfStrands> groupOfGroup)
         {
@@ -112,40 +114,45 @@ namespace betaBarrelProgram
                                                         { "2YNK", 1 }, { "5GAQ", 1 }, { "1GL4", 2 }, { "6RB9", 3 }, { "5JZT", 3 }, { "3W9T", 3 }
             };//PDB name and the group number.
 
-            if (new List<string>() { "2HLV", "2R73" }.Contains(PdbName))
+            if (new List<string>() { "2HLV", "2R73" }.Contains(this.PdbName))
             {
-                groupOfGroup[pdbs[PdbName]].StrandSet.RemoveAt(8);//Removing problem strand
+                groupOfGroup[pdbs[this.PdbName]].StrandSet.RemoveAt(8);//Removing problem strand
             }
-            if (PdbName == "2RD7")
+            if (this.PdbName == "2RD7")
             {
-                groupOfGroup[pdbs[PdbName]].StrandSet.RemoveAt(8);//Removing problem strand
-                groupOfGroup[pdbs[PdbName]].StrandSet.RemoveAt(8);//Removing problem strand
+                groupOfGroup[pdbs[this.PdbName]].StrandSet.RemoveAt(8);//Removing problem strand
+                groupOfGroup[pdbs[this.PdbName]].StrandSet.RemoveAt(8);//Removing problem strand
+            }
+            if (this.PdbName == "1QWD")
+            {
+                groupOfGroup[pdbs[this.PdbName]].StrandSet.RemoveAt(0);//Removing problem strand
+                groupOfGroup[pdbs[this.PdbName]].StrandSet.RemoveAt(0);//Removing problem strand
             }
 
-            if (new List<string>(pdbs.Keys).Contains(PdbName))
+            if (new List<string>(pdbs.Keys).Contains(this.PdbName))
             {
-                Console.WriteLine($"Manually changing 'IsBarrel' {PdbName}");
-                var group = groupOfGroup[pdbs[PdbName]];
+                Console.WriteLine($"Manually changing 'IsBarrel' {this.PdbName}");
+                var group = groupOfGroup[pdbs[this.PdbName]];
                 group.IsBarrel = true;
                 AssignDirection(group);
             }
 
-            else if (PdbName == "")
+            else if (this.PdbName == "")
             {
-                Console.WriteLine($"Manually removing strand for {PdbName}");
+                Console.WriteLine($"Manually removing strand for {this.PdbName}");
             }
 
             void AssignDirection(GroupOfStrands group)
             {
                 for (int i = 0; i < group.StrandSet.Count; i++)
                 {
-                    if (i==0)
+                    if (i == 0)
                     {
                         group.StrandSet[0].DirectionAssigned = true;
                     }
                     else
                     {
-                        var strandOne = group.StrandSet[i-1];
+                        var strandOne = group.StrandSet[i - 1];
                         var strandTwo = group.StrandSet[i];
                         if (strandOne.DirectionAssigned = !strandTwo.DirectionAssigned)//check if either of the strands don't have a direction assigned
                         {
@@ -161,7 +168,7 @@ namespace betaBarrelProgram
                             }
                         }
                     }
-                    
+
                 }
             }
         }
@@ -221,27 +228,75 @@ namespace betaBarrelProgram
             Ncentroid /= NCtr;
             var Axis = Ncentroid - Ccentroid;
             //Console.WriteLine($"Ccentroid: {Ccentroid.X}, {Ccentroid.Y}, {Ccentroid.Z} and Ncentroid: {Ncentroid.X}, {Ncentroid.Y}, {Ncentroid.Z}");
+
+            group.Ccentroid = Ccentroid;
+            group.Ncentroid = Ncentroid;
+            group.Axis = Axis;
+            group.CellipseCoords = myCEllipse;
+            group.NellipseCoords = myNEllipse;
             #endregion
 
             #region Calculate InOut
-            List<Strand> strandList = new List<Strand>();
+            //List<Strand> strandList = new List<Strand>();
+            //foreach (var strand in group.StrandSet)
+            //{
+            //    strandList.Add(strand.StrandInTheGroup);
+            //}
+
+            ////SharedFunctions.setInOut(strandList, Global.OUTPUT_DIR, this.PdbName, Axis, Ccentroid, Ncentroid);
+            ////RYAN//SharedFunctions.setInOutMin(strandList, Global.OUTPUT_DIR, this.PdbName, Ccentroid, Ncentroid);
+            //SharedFunctions.WritePymolScriptForInOutStrands(strandList, Global.OUTPUT_DIR, Global.DB_DIR, PdbName, Ccentroid, Ncentroid);
+            ////SharedFunctions.setInOutMin(strandList, Global.OUTPUT_DIR, this.PdbName, Ccentroid, Ncentroid);
+            #endregion
+        }
+
+        private List<Strand> rearrangeBarrel(GroupOfStrands group)
+        {
+            Vector3 centroid = new Vector3((float)group.Centroid.X, (float)group.Centroid.Y, (float)group.Centroid.Z);
+            List<Strand> strands = new List<Strand>();
+            Vector3 firstCentroid = centroidCalculate(group.StrandSet[0]);
+            Vector3 reference = firstCentroid - centroid;
+
             foreach (var strand in group.StrandSet)
             {
-                strandList.Add(strand.StrandInTheGroup);
+                Vector3 strandCentroid = centroidCalculate(strand);
+                Vector3 strandDirection = strandCentroid - centroid;
+                strand.StrandInTheGroup.angle = SharedFunctions.AngleBetween(reference, strandDirection);
+                Vector3 crossP = Vector3.Cross(reference, strandDirection);
+                if (crossP.Z > 0)
+                {
+                    strand.StrandInTheGroup.angle = 360 - strand.StrandInTheGroup.angle; //positive Z means more than halfway around circle from origin
+                }
+                strands.Add(strand.StrandInTheGroup);
+            }
+            strands.Sort((a, b) => a.angle.CompareTo(b.angle));
+
+            int i = 0;
+            foreach (var strand in strands)
+            {
+                //Console.WriteLine($"{item.betaStrandNum} angle is {item.angle}");
+                strand.StrandNum = i;
+                i++;
             }
 
-            //SharedFunctions.setInOut(strandList, Global.OUTPUT_DIR, this.PdbName, Axis, Ccentroid, Ncentroid);
-            //RYAN//SharedFunctions.setInOutMin(strandList, Global.OUTPUT_DIR, this.PdbName, Ccentroid, Ncentroid);
-            SharedFunctions.setInOutMin(strandList, Global.OUTPUT_DIR, this.PdbName, Ccentroid, Ncentroid);
-            SharedFunctions.WritePymolScriptForInOutStrands(strandList, Global.OUTPUT_DIR, Global.DB_DIR, PdbName, Ccentroid, Ncentroid);
-            //SharedFunctions.setInOutMin(strandList, Global.OUTPUT_DIR, this.PdbName, Ccentroid, Ncentroid);
-            #endregion
+            Vector3 centroidCalculate(OneStrand oneStrand)
+            {
+                var caList = oneStrand.StrandInTheGroup.Select(residue => residue.BackboneCoords["CA"]).ToList();
+                Vector3 strandCentroid = new Vector3
+                {
+                    X = caList.Sum(ca => ca.X) / caList.Count,
+                    Y = caList.Sum(ca => ca.Y) / caList.Count,
+                    Z = caList.Sum(ca => ca.Z) / caList.Count
+                };
+                return strandCentroid;
+            }
+            return strands;
         }
 
         private void CheckIfBarrel(GroupOfStrands group)
         {
-            
-            
+
+
             int NeighborCount = 0;
             foreach (var oneStrand in group.StrandSet)
             {
@@ -252,12 +307,12 @@ namespace betaBarrelProgram
             {
                 group.IsBarrel = true;
             }
-            if ((NeighborCount == ((2 * group.StrandSet.Count)-2))&&(group.StrandSet.Count>4))
+            if ((NeighborCount == ((2 * group.StrandSet.Count) - 2)) && (group.StrandSet.Count > 4))
             {
                 {
                     foreach (var oneStrand in group.StrandSet)
                     {
-                        if (oneStrand.LeftNeighbors.Count==0||oneStrand.RightNeighbors.Count==0)
+                        if (oneStrand.LeftNeighbors.Count == 0 || oneStrand.RightNeighbors.Count == 0)
                         {
                             OneStrand strand1 = oneStrand;
                             foreach (var oneStrand2 in group.StrandSet)
@@ -288,7 +343,7 @@ namespace betaBarrelProgram
                     if (distance.Length() < 11)
                     {
                         flag = true;
-                    } 
+                    }
                 }
             }
             return flag;
@@ -298,7 +353,7 @@ namespace betaBarrelProgram
         {
             for (int i = 0; i < UnassignedStrandSet.Count; i++)
             {
-                            
+
                 for (int j = 0; j < GroupedStrandSet.Count; j++)
                 {
                     var SortedStrand = GroupedStrandSet[j];
@@ -331,9 +386,9 @@ namespace betaBarrelProgram
                             }
                         }
                     }
-                    if (Hbond>=1)
+                    if (Hbond >= 1)
                     {
-                        
+
                         //Console.WriteLine($"\n\nUnassigned count = {UnassignedStrandSet.Count}");
                         //SortedStrand.AllNeighboringStrands.Add(UnassignedStrandSet[i]); //Add the neighboring strand as the neighbor of the sorted strand.
                         var TempStrand = new OneStrand(UnassignedStrandSet[i]); //Create a new groupedstrand with the neighbor strand.
@@ -353,7 +408,7 @@ namespace betaBarrelProgram
                         //{
                         //    j = -1;
                         //}
-                        
+
                         #region CodeTest
                         //Console.WriteLine($"i = {i}, j = {j}");
                         //Console.WriteLine($" tempstrand = {TempStrand.StrandInTheGroup.ResNumStart}");
@@ -379,12 +434,12 @@ namespace betaBarrelProgram
                 }
             }
         }
-        
+
         public void NeighboringStrand(GroupOfStrands groupOfStrands)
         {
             Coordinate centroidOfGroup = groupOfStrands.Centroid;
             int k = 0;
-            
+
             groupOfStrands.StrandSet[0].DirectionAssigned = true; //Assigning the direction of first strand as parrallel
             for (int i = 0; i < groupOfStrands.StrandSet.Count; i++) //Iterate over two strand and check if they are neigbors based on Hbonds
             {
@@ -403,7 +458,7 @@ namespace betaBarrelProgram
                     //Console.WriteLine($"StrandOne: {strandOne.StrandInTheGroup.betaStrandNum}, strandTwo: {strandTwo.StrandInTheGroup.betaStrandNum}");
                     if (strandOne != strandTwo)
                     {
-                        for (int p = 0; p <strandOne.StrandInTheGroup.Residues.Count; p++)
+                        for (int p = 0; p < strandOne.StrandInTheGroup.Residues.Count; p++)
                         {
                             Res ResOne = strandOne.StrandInTheGroup.Residues[p];
                             for (int r = 0; r < strandTwo.StrandInTheGroup.Residues.Count; r++)
@@ -500,7 +555,7 @@ namespace betaBarrelProgram
                                 strandOne.DirectionAssigned = true;
                             }
                         }
-                        
+
 
 
                     }
@@ -561,8 +616,8 @@ namespace betaBarrelProgram
 
             var resFirstStrand1 = resiOne[0].BackboneCoords["CA"];
             var resFirstStrand2 = resiTwo[0].BackboneCoords["CA"];
-            var resLastStrand1 = resiOne[resiOne.Count-1].BackboneCoords["CA"];
-            var resLastStrand2 = resiTwo[resiTwo.Count-1].BackboneCoords["CA"];
+            var resLastStrand1 = resiOne[resiOne.Count - 1].BackboneCoords["CA"];
+            var resLastStrand2 = resiTwo[resiTwo.Count - 1].BackboneCoords["CA"];
 
             var vectorStrand1 = resFirstStrand1 - resLastStrand1;
             var vectorStrand2 = resFirstStrand2 - resLastStrand2;
@@ -571,7 +626,7 @@ namespace betaBarrelProgram
 
             //Console.WriteLine(angleBetween);
 
-            if ((strand2.IsAntiParallel==false && angleBetween >= 90) || (strand2.IsAntiParallel == true && angleBetween < 90))
+            if ((strand2.IsAntiParallel == false && angleBetween >= 90) || (strand2.IsAntiParallel == true && angleBetween < 90))
             {
                 strand1.IsAntiParallel = true;
             }
@@ -591,7 +646,7 @@ namespace betaBarrelProgram
                 {
                     foreach (Atom atom in residue)
                     {
-                        if (atom.AtomName=="CA")
+                        if (atom.AtomName == "CA")
                         {
                             i++;
                             x = x + atom.Coords.X;
@@ -601,7 +656,7 @@ namespace betaBarrelProgram
                     }
                 }
             }
-            Coordinate centroid = new Coordinate((x/i), (y/i), (z/i));
+            Coordinate centroid = new Coordinate((x / i), (y / i), (z / i));
             return centroid;
         }
 
@@ -615,7 +670,7 @@ namespace betaBarrelProgram
                 {
                     //moveNeighbor(StrandSet[i].LeftNeighbors);
                     joinNeighbors(StrandSet[i].LeftNeighbors);
-                    if (StrandSet[i].LeftNeighbors.Count<2 && StrandSet[i].RightNeighbors.Count<2)
+                    if (StrandSet[i].LeftNeighbors.Count < 2 && StrandSet[i].RightNeighbors.Count < 2)
                     {
                         break;
                     }
@@ -664,7 +719,7 @@ namespace betaBarrelProgram
                         StartEnd(firstStrand, nearestStrand);
                         //firstStrand.Residues.Sort((x, y) => x.SeqID.CompareTo(y.SeqID)); //8/23/20 - Removed, as it should be sort by physical  position. //This sorts residue by sequence ID 
                         var firstRes = firstStrand.Residues.Single(s => s.ResNum == firstStrand.ResNumStart);
-                        firstStrand.Residues.Sort((x, y) => 
+                        firstStrand.Residues.Sort((x, y) =>
                         {
                             var d1 = (firstRes.BackboneCoords["CA"] - x.BackboneCoords["CA"]).Length();
                             var d2 = (firstRes.BackboneCoords["CA"] - y.BackboneCoords["CA"]).Length();
@@ -686,16 +741,16 @@ namespace betaBarrelProgram
                     {
                         foreach (var strand2 in neighbors)
                         {
-                            if (strand1!=strand2)
+                            if (strand1 != strand2)
                             {
                                 var listOfDist = CompareStrands(strand1, strand2);
                                 var maxLength = listOfDist.Max(r => r.Length());
-                                if (maxLength>maxOfMaxLength)//change the strand and longest length if that is found
+                                if (maxLength > maxOfMaxLength)//change the strand and longest length if that is found
                                 {
                                     maxOfMaxLength = maxLength;
                                     maxStrand = strand1;
                                 }
-                            } 
+                            }
                         }
                     }
                     return maxStrand;
@@ -705,10 +760,10 @@ namespace betaBarrelProgram
                 Strand findNearestNeighbor(Strand firstStrand, List<Strand> neighbors)
                 {
                     double minOfMinLength = 0;
-                    Strand minStrand = neighbors[neighbors.Count-1];
+                    Strand minStrand = neighbors[neighbors.Count - 1];
                     foreach (var strand in neighbors)
                     {
-                        if (strand!=firstStrand)
+                        if (strand != firstStrand)
                         {
                             var listOfDist = CompareStrands(firstStrand, strand);
                             var minLength = listOfDist.Min(r => r.Length());
@@ -744,7 +799,7 @@ namespace betaBarrelProgram
                 {
                     var listOfDist = CompareStrands(strand1, strand2);
                     double maxLength = listOfDist.Max(r => r.Length());
-                    
+
                     //Console.WriteLine($"Start: {strand1.Residues.Single(s => s.ResNum == strand1.ResNumStart).SeqID} & End: {strand1.Residues.Single(s => s.ResNum == strand1.ResNumEnd).SeqID}");
 
                     if (listOfDist[0].Length() == maxLength)
@@ -844,7 +899,7 @@ namespace betaBarrelProgram
             //Console.WriteLine(determinantPoint);
             return determinantPoint;
 
-        }  
+        }
 
         //Method to return a positive or negative value based on which side of the plane the MEDIAN strand residue is at.
         private double CheckLeftOrRightCylinder(List<Res> ResList1, List<Res> ResList2, GroupOfStrands group)
@@ -893,7 +948,7 @@ namespace betaBarrelProgram
             //Console.WriteLine(determinantPoint);
             return determinantPoint;
 
-        }  
+        }
 
         private bool CheckHBond(Res residue1, Res residue2, Strand strand1, Strand strand2)
         {
@@ -972,7 +1027,7 @@ namespace betaBarrelProgram
             //    }
 
             //}
-            if (d1<=d2)
+            if (d1 <= d2)
             {
                 d = d1;
             }
@@ -987,23 +1042,23 @@ namespace betaBarrelProgram
         // Determinant calculation for plane containing A, B, C and checking position of X.
         private double Determinant(Vector3 A, Vector3 B, Vector3 X, Vector3 C)
         {
-        Vector3 Asub = Vector3.Subtract(A, C); //(A' = A - C)
-        Vector3 Bsub = Vector3.Subtract(B, C); //(B' = B - C)
-        Vector3 Xsub = Vector3.Subtract(X, C); //(X' = X - C)
+            Vector3 Asub = Vector3.Subtract(A, C); //(A' = A - C)
+            Vector3 Bsub = Vector3.Subtract(B, C); //(B' = B - C)
+            Vector3 Xsub = Vector3.Subtract(X, C); //(X' = X - C)
 
-        var a = Asub.X;
-        var b = Asub.Y;
-        var c = Asub.Z;
-        var d = Bsub.X;
-        var e = Bsub.Y;
-        var f = Bsub.Z;
-        var g = Xsub.X;
-        var h = Xsub.Y;
-        var i = Xsub.Z;
+            var a = Asub.X;
+            var b = Asub.Y;
+            var c = Asub.Z;
+            var d = Bsub.X;
+            var e = Bsub.Y;
+            var f = Bsub.Z;
+            var g = Xsub.X;
+            var h = Xsub.Y;
+            var i = Xsub.Z;
 
-        var determinantPoint = a * e * i + b * f * g + c * d * h - c * e * g - b * d * i - a * f * h;
+            var determinantPoint = a * e * i + b * f * g + c * d * h - c * e * g - b * d * i - a * f * h;
 
-        return determinantPoint;
+            return determinantPoint;
         }
 
         public Cylinder GetAxisCylinder(GroupOfStrands group)
@@ -1012,7 +1067,7 @@ namespace betaBarrelProgram
             var caList = group.StrandSet.SelectMany(oneStrand => oneStrand.StrandInTheGroup.Select(residue => residue.BackboneCoords["CA"])).ToList();
 
             //Calculate centroid of the CA atom list.
-            Vector3 caCentroid = new Vector3 
+            Vector3 caCentroid = new Vector3
             {
                 X = caList.Sum(ca => ca.X) / caList.Count,
                 Y = caList.Sum(ca => ca.Y) / caList.Count,
@@ -1020,13 +1075,13 @@ namespace betaBarrelProgram
             };
 
             //Move all the CA Atom coordinates around the origin from the original centroid
-            for (int i = 0; i < caList.Count; i++) 
+            for (int i = 0; i < caList.Count; i++)
             {
                 caList[i] = caList[i] - caCentroid;
             }
 
             //Create a cylinder
-            Cylinder cylinder = new Cylinder 
+            Cylinder cylinder = new Cylinder
             {
                 pointOne = new Vector3((caList.Max(ca => ca.Length()) + 2), 0, 0),
                 pointTwo = new Vector3(-(caList.Max(ca => ca.Length()) + 2), 0, 0),
@@ -1039,8 +1094,8 @@ namespace betaBarrelProgram
 
             #region Fourth attempt
 
-        //    bool firstPass = false;
-        //secondPass:
+            //    bool firstPass = false;
+            //secondPass:
             //Create Variable
             double degree = 1;
             double radiusChange = 0.5;
@@ -1158,20 +1213,20 @@ namespace betaBarrelProgram
             {
                 Matrix4x4 rotationMatrixX = new Matrix4x4(1, 0, 0, 0,
                     0, (float)Math.Cos(rAngles.X), (float)Math.Sin(rAngles.X), 0,
-                    0, -1*(float)Math.Sin(rAngles.X), (float)Math.Cos(rAngles.X), 0,
+                    0, -1 * (float)Math.Sin(rAngles.X), (float)Math.Cos(rAngles.X), 0,
                     0, 0, 0, 1);
-                Matrix4x4 rotationMatrixY = new Matrix4x4((float)Math.Cos(rAngles.Y), 0, -1*(float)Math.Sin(rAngles.Y), 0,
+                Matrix4x4 rotationMatrixY = new Matrix4x4((float)Math.Cos(rAngles.Y), 0, -1 * (float)Math.Sin(rAngles.Y), 0,
                     0, 1, 0, 0,
                     (float)(Math.Sin(rAngles.Y)), 0, (float)Math.Cos(rAngles.Y), 0,
                     0, 0, 0, 1);
                 Matrix4x4 rotationMatrixZ = new Matrix4x4((float)Math.Cos(rAngles.Z), (float)Math.Sin(rAngles.Z), 0, 0,
-                    -1*(float)Math.Sin(rAngles.Z), (float)Math.Cos(rAngles.Z), 0, 0,
+                    -1 * (float)Math.Sin(rAngles.Z), (float)Math.Cos(rAngles.Z), 0, 0,
                     0, 0, 1, 0,
                     0, 0, 0, 1);
 
                 rCylinder.pointOne = applyRotation(rCylinder.pointOne, rCylinder.centerPoint);
                 rCylinder.pointTwo = applyRotation(rCylinder.pointTwo, rCylinder.centerPoint);
-                
+
                 Vector3 applyRotation(Vector3 point, Vector3 pivot)
                 {
                     var pointDiff = point - pivot;
@@ -1245,6 +1300,11 @@ namespace betaBarrelProgram
         public Coordinate Centroid { get; set; }
         public Cylinder Cylinder { get; set; }
         public bool IsBarrel { get; set; }
+        public List<Vector3> NellipseCoords { get; set; }
+        public List<Vector3> CellipseCoords { get; set; }
+        public Vector3 Ncentroid { get; set; }
+        public Vector3 Ccentroid { get; set; }
+        public Vector3 Axis { get; set; }
         public GroupOfStrands()
         {
             this.StrandSet = new List<OneStrand>();
@@ -1298,5 +1358,3 @@ namespace betaBarrelProgram
     }
 
 }
-
-

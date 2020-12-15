@@ -14,6 +14,8 @@ test-results/
 ## ignore large, uneeded for version control directories 
 DB/
 Output/
+prevDB/
+prevOutput/
 # Mac bundle stuff
 *.dmg
 *.app
