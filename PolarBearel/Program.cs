@@ -45,6 +45,11 @@ namespace betaBarrelProgram
         public static string SOLUBLE_DB_file = POLARBEARAL_DIR + "/DB/SolubleDBList.txt";
         public static string SOLUBLE_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/soluble/";
 
+        // curently testing poly barrels that decided to stop working - Ryan 12/15/2020
+        public static string TEST_DB_DIR = POLARBEARAL_DIR + "/DB/PolyBarrelsDB/";
+        public static string TEST_DB_file = POLARBEARAL_DIR + "/DB/TestDBList.txt";
+        public static string TEST_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/test/";
+
         // default to comprensive input and outputt
         public static string DB_DIR = POLARBEARAL_DIR + "/DB/PDBs/";
         public static string OUTPUT_DIR = POLARBEARAL_DIR + "/Output/all/";
@@ -75,12 +80,20 @@ namespace betaBarrelProgram
             OUTPUT_DIR = SOLUBLE_OUTPUT_DIR;
         }
 
+        public static void change_to_test_data()
+        {
+            DB_DIR = TEST_DB_DIR;
+            DB_file = TEST_DB_file;
+            OUTPUT_DIR = TEST_OUTPUT_DIR;
+        }
+
         public static void change_dataset()
         {
             Console.WriteLine("0. mono");
             Console.WriteLine("1. poly");
             Console.WriteLine("2. membrane");
             Console.WriteLine("3. soluable");
+            Console.WriteLine("4. test");
             string user_input = "";
             user_input = Console.ReadLine();
             switch (user_input)
@@ -96,6 +109,9 @@ namespace betaBarrelProgram
                     break;
                 case "3":
                     change_to_soluble_data();
+                    break;
+                case "4":
+                    change_to_test_data();
                     break;
                 default:
                     change_to_mono_data();
