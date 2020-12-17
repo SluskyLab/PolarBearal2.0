@@ -121,40 +121,42 @@ namespace betaBarrelProgram
 	            /*foreach (Res Res1 in _myChain){
 	                checkDSSPNeighs(Res1, ref _myChain);
 				}*/
-				
+				/* commented out to work on 6H3I_A*/
                 makeBarrelCircular(ref _myChain); // keeps out the beta strands that occlude the barrel
                 removeNonBarrelRes(ref _myChain);
 
-                //twice for 2VQI
-                makeBarrelCircular(ref _myChain);
-                removeNonBarrelRes(ref _myChain);
+                if (PdbName.ToUpper() != "6H3I_A")// this big guy loses too much if passed threw the following code
+                {
+                    //twice for 2VQI
+                    makeBarrelCircular(ref _myChain);
+                    removeNonBarrelRes(ref _myChain);
 
-                //check the ends for inserting loops
-                setCEllipseCoords(ref _myChain);
-                setNEllipseCoords(ref _myChain);
+                    //check the ends for inserting loops
+                    setCEllipseCoords(ref _myChain);
+                    setNEllipseCoords(ref _myChain);
 
-                this.Axis = this.Ccentroid - this.Ncentroid;
+                    this.Axis = this.Ccentroid - this.Ncentroid;
 
-                for (int strandCtr = 0; strandCtr < this.protoBarrel.Count; strandCtr++)
-                {// gets rid of loops that can bond with each other but go into the middle
-                    double angle = (SharedFunctions.AngleBetween(_myChain.Residues[this.protoBarrel[strandCtr][0]].BackboneCoords["CA"] - _myChain.Residues[this.protoBarrel[strandCtr][1]].BackboneCoords["CA"], this.Axis));
-                    double direction = SharedFunctions.AngleBetween(_myChain.Residues[this.protoBarrel[strandCtr][0]].BackboneCoords["CA"] - _myChain.Residues[this.protoBarrel[strandCtr][this.protoBarrel[strandCtr].Count - 1]].BackboneCoords["CA"], this.Axis);
+                    for (int strandCtr = 0; strandCtr < this.protoBarrel.Count; strandCtr++)
+                    {// gets rid of loops that can bond with each other but go into the middle
+                        double angle = (SharedFunctions.AngleBetween(_myChain.Residues[this.protoBarrel[strandCtr][0]].BackboneCoords["CA"] - _myChain.Residues[this.protoBarrel[strandCtr][1]].BackboneCoords["CA"], this.Axis));
+                        double direction = SharedFunctions.AngleBetween(_myChain.Residues[this.protoBarrel[strandCtr][0]].BackboneCoords["CA"] - _myChain.Residues[this.protoBarrel[strandCtr][this.protoBarrel[strandCtr].Count - 1]].BackboneCoords["CA"], this.Axis);
 
-                    while ((direction > 90 && angle < 105) || (angle > 75 && direction < 90))
-                    {
-                        this.protoBarrel[strandCtr].RemoveAt(0);
-                        angle = (SharedFunctions.AngleBetween(_myChain.Residues[this.protoBarrel[strandCtr][0]].BackboneCoords["CA"] - _myChain.Residues[this.protoBarrel[strandCtr][1]].BackboneCoords["CA"], this.Axis));
-                    }
+                        while ((direction > 90 && angle < 105) || (angle > 75 && direction < 90))
+                        {
+                            this.protoBarrel[strandCtr].RemoveAt(0);
+                            angle = (SharedFunctions.AngleBetween(_myChain.Residues[this.protoBarrel[strandCtr][0]].BackboneCoords["CA"] - _myChain.Residues[this.protoBarrel[strandCtr][1]].BackboneCoords["CA"], this.Axis));
+                        }
 
-                    double angle2 = (SharedFunctions.AngleBetween(_myChain.Residues[this.protoBarrel[strandCtr][this.protoBarrel[strandCtr].Count - 1]].BackboneCoords["CA"] - _myChain.Residues[this.protoBarrel[strandCtr][this.protoBarrel[strandCtr].Count - 2]].BackboneCoords["CA"], this.Axis));
+                        double angle2 = (SharedFunctions.AngleBetween(_myChain.Residues[this.protoBarrel[strandCtr][this.protoBarrel[strandCtr].Count - 1]].BackboneCoords["CA"] - _myChain.Residues[this.protoBarrel[strandCtr][this.protoBarrel[strandCtr].Count - 2]].BackboneCoords["CA"], this.Axis));
 
-                    while ((angle2 < 105 && direction < 90) || (angle2 > 75 && direction > 90))
-                    {
-                        this.protoBarrel[strandCtr].RemoveAt(this.protoBarrel[strandCtr].Count - 1);
-                        angle2 = (SharedFunctions.AngleBetween(_myChain.Residues[this.protoBarrel[strandCtr][this.protoBarrel[strandCtr].Count - 1]].BackboneCoords["CA"] - _myChain.Residues[this.protoBarrel[strandCtr][this.protoBarrel[strandCtr].Count - 2]].BackboneCoords["CA"], this.Axis));
+                        while ((angle2 < 105 && direction < 90) || (angle2 > 75 && direction > 90))
+                        {
+                            this.protoBarrel[strandCtr].RemoveAt(this.protoBarrel[strandCtr].Count - 1);
+                            angle2 = (SharedFunctions.AngleBetween(_myChain.Residues[this.protoBarrel[strandCtr][this.protoBarrel[strandCtr].Count - 1]].BackboneCoords["CA"] - _myChain.Residues[this.protoBarrel[strandCtr][this.protoBarrel[strandCtr].Count - 2]].BackboneCoords["CA"], this.Axis));
+                        }
                     }
                 }
-
            		//checkStrands is written to use protobarrel list before the strand list is created. 
 				//checkStrandDefnsDSSP(ref _myChain);
                 
@@ -162,7 +164,7 @@ namespace betaBarrelProgram
                 setCEllipseCoords(ref _myChain);
                 setNEllipseCoords(ref _myChain);
                 this.Axis = this.Ncentroid - this.Ccentroid;
-
+                /*end of 6H3I_A commented out*/
 
                 for (int strandCtr = 0; strandCtr < protoBarrel.Count; strandCtr++)
                 {
@@ -171,7 +173,7 @@ namespace betaBarrelProgram
                 }
 
                 #endregion
-
+                //SharedFunctions.writePymolScriptForStrands(this.Strands, Global.OUTPUT_DIR, Global.DB_DIR, this.PdbName);// added to look at 6H3I_A 
                 #region Rotate barrel to z-axis
                 this.AvgRadius = SharedFunctions.setRadius(this.Strands, this.Axis, this.Ccentroid, this.Ncentroid);
                 setCEllipseCoords(ref _myChain);
@@ -332,9 +334,12 @@ namespace betaBarrelProgram
                 if (PdbName.ToUpper() == "4K3B") usually0 = 400;
                 if (PdbName.ToUpper() == "4K3C") usually0 = 150;
                 if (PdbName.ToUpper() == "6SLJ") usually0 = 120;
-
+                if (PdbName.ToUpper() == "6FOK") usually0 = 120;
+                if (PdbName.Substring(0, 4).ToUpper() == "6WUT") usually0 = 70;
+                //if (PdbName.ToUpper() == "6UCU") usually0 = 30;
                 int usuallyEnd = _myChain.ResidueCount;
                 if (PdbName.ToUpper() == "3RFZ") usuallyEnd = 603;
+                if (PdbName.ToUpper() == "6UCU") usuallyEnd = _myChain.Residues.Count-10;//small helix at the end is added as strand, breaking check first w/ last
 
                 for (int res1ctr = usually0; res1ctr < usuallyEnd; res1ctr++)
                 {
@@ -533,7 +538,7 @@ namespace betaBarrelProgram
                     protoBarrel.Add(myStrand3);
 
                 }
-                for (int x = 0; x < this.protoBarrel.Count; x++) { Console.WriteLine(x + "\t" + _myChain.Residues[this.protoBarrel[x][0]].SeqID + "\t" + _myChain.Residues[this.protoBarrel[x].Last()].SeqID); }
+                //for (int x = 0; x < this.protoBarrel.Count; x++) { Console.WriteLine(x + "\t" + _myChain.Residues[this.protoBarrel[x][0]].SeqID + "\t" + _myChain.Residues[this.protoBarrel[x].Last()].SeqID); }
 
 	            if (PdbName.ToUpper() == "3RBH" || PdbName.ToUpper() == "4AFK") //Added 4afk 6-22-17 as replacement in v4 for 3rbh
 	            {
@@ -591,13 +596,14 @@ namespace betaBarrelProgram
 	                protoBarrel[7].RemoveRange(14, 9);
 	                protoBarrel[8].RemoveRange(0, 22);
 	            }
-	            if (PdbName.ToUpper() == "5FQ8") //added 6-22-17 for v4
+	            if (PdbName.Substring(0, 4).ToUpper() == "5FQ8") //added 6-22-17 for v4
 	            {
                     //RYAN check why this failed later
-	                //protoBarrel[3].RemoveRange(27, 13);
-	                //protoBarrel[4].RemoveRange(0, 41);
-	                //protoBarrel[19].RemoveRange(13, 15);
-	                //protoBarrel.RemoveRange(20, 2);
+	                protoBarrel[3].RemoveRange(27, 13);
+	                protoBarrel[4].RemoveRange(0, 41);
+                    protoBarrel[16].RemoveRange(0, protoBarrel[16].Count - 15);
+                    protoBarrel[19].RemoveRange(13, 15);
+	                protoBarrel.RemoveRange(20, 2);
 	            }
 	            if (PdbName.ToUpper() == "5FR8") //added 6-22-17 for v4
 	            {
@@ -615,7 +621,7 @@ namespace betaBarrelProgram
 	            {
 	                protoBarrel[6].RemoveRange(11, 16);
 	            }
-	            if (PdbName.ToUpper() == "5T3R") //added 6-22-17 for v4
+	            if (PdbName.Substring(0, 4).ToUpper() == "5T3R") //added 6-22-17 for v4
 	            {
 	                protoBarrel.RemoveRange(19, 1);
 	            }
@@ -661,8 +667,16 @@ namespace betaBarrelProgram
                     myStrand1.AddRange(Enumerable.Range(protoBarrel[1][0], 11));
                     protoBarrel.Insert(1, myStrand1);
                 }
+                if (PdbName.ToUpper() == "6H3I_A")
+                {
+                    protoBarrel.RemoveRange(7, 10);
+                    protoBarrel.RemoveRange(11, 9);
+                    protoBarrel[26].RemoveRange(protoBarrel[26].Count - 3, 3);
+                }
+
+
                 // re print strands to check changes
-                for (int x = 0; x < this.protoBarrel.Count; x++) { Console.WriteLine(x + "\t" + _myChain.Residues[this.protoBarrel[x][0]].SeqID + "\t" + _myChain.Residues[this.protoBarrel[x].Last()].SeqID); }
+                //for (int x = 0; x < this.protoBarrel.Count; x++) { Console.WriteLine(x + "\t" + _myChain.Residues[this.protoBarrel[x][0]].SeqID + "\t" + _myChain.Residues[this.protoBarrel[x].Last()].SeqID); }
 
             }//End of CreateStrands
 
@@ -1318,12 +1332,14 @@ namespace betaBarrelProgram
                             if (strndCtr == 0)
                             {
                                 if (this.protoBarrel[this.protoBarrel.Count - 1].Contains(_myChain.Residues[this.protoBarrel[strndCtr][resCtr]].Neighbors[nCtr])) HbondedPrev = true;
+                                if (this.PdbName.Substring(0,4).ToUpper()=="6WUT") HbondedPrev = true;//SAM barrel is too open for this to be detected
                                 if (this.protoBarrel[1].Contains(_myChain.Residues[this.protoBarrel[strndCtr][resCtr]].Neighbors[nCtr])) HbondedNext = true;
                             }
                             else if (strndCtr == this.protoBarrel.Count - 1)
                             {
                                 if (this.protoBarrel[strndCtr - 1].Contains(_myChain.Residues[this.protoBarrel[strndCtr][resCtr]].Neighbors[nCtr])) HbondedPrev = true;
                                 if (this.protoBarrel[0].Contains(_myChain.Residues[this.protoBarrel[strndCtr][resCtr]].Neighbors[nCtr])) HbondedNext = true;
+                                if (this.PdbName.Substring(0, 4).ToUpper() == "6WUT") HbondedNext = true;//SAM barrel is too open for this to be detected
                             }
                             else
                             {
@@ -1339,7 +1355,7 @@ namespace betaBarrelProgram
                     if (HbondedPrev == false || HbondedNext == false)
                     {
                         this.protoBarrel.Remove(this.protoBarrel[strndCtr]);
-                        Console.WriteLine("removing strand {0}", strndCtr);
+                        //Console.WriteLine("removing strand {0}", strndCtr);
                     }
                     else strndCtr++;
 
@@ -1513,7 +1529,7 @@ namespace betaBarrelProgram
                         if (markForDeletion == true)
                         {
                             this.protoBarrel[strndCtr].RemoveAt(resCtr);
-                            Console.WriteLine("removed a residue from Strand {0})", strndCtr);
+                            //Console.WriteLine("removed a residue from Strand {0})", strndCtr);
                         }
                         else resCtr++;
                         //resCtr--;
@@ -1549,77 +1565,6 @@ namespace betaBarrelProgram
                 }
             }
 
-            public void removeNonBarrelResPatt(ref Chain _myChain)
-            {// removes residues that are not h-bonded to the next or the previous strand.
-             //bool deletedSomething = false;
-                for (int strndCtr = 0; strndCtr < this.protoBarrel.Count; strndCtr++)
-                {
-                    int halfway;
-                    if (this.protoBarrel[strndCtr].Count > 4) halfway = this.protoBarrel[strndCtr].Count / 2;
-                    else halfway = this.protoBarrel[strndCtr].Count - 2;
-                    for (int resCtr = this.protoBarrel[strndCtr].Count - 1; resCtr > halfway;)
-                    {
-                        bool markForDeletion = true;
-                        int index2 = protoBarrel[strndCtr][resCtr];
-                        if (_myChain.Residues[index2].Neighbors.Count != 0)
-                        {
-                            for (int nCtr = 0; nCtr < _myChain.Residues[index2].Neighbors.Count; nCtr++)
-                            {
-                                if (strndCtr == 0)
-                                {
-                                    if (this.protoBarrel[this.protoBarrel.Count - 1].Contains(_myChain.Residues[index2].Neighbors[nCtr]) == true || this.protoBarrel[strndCtr + 1].Contains(_myChain.Residues[index2].Neighbors[nCtr]) == true) markForDeletion = false;
-
-                                }
-                                else if (strndCtr == this.protoBarrel.Count - 1)
-                                {
-                                    if (this.protoBarrel[strndCtr - 1].Contains(_myChain.Residues[index2].Neighbors[nCtr]) == true || this.protoBarrel[0].Contains(_myChain.Residues[index2].Neighbors[nCtr]) == true) markForDeletion = false;
-
-                                }
-                                else
-                                {
-                                    if (this.protoBarrel[strndCtr - 1].Contains(_myChain.Residues[index2].Neighbors[nCtr]) == true || this.protoBarrel[strndCtr + 1].Contains(_myChain.Residues[index2].Neighbors[nCtr]) == true) markForDeletion = false;
-
-                                }
-                            }
-                        }
-
-                        if (markForDeletion == true)
-                        {
-                            this.protoBarrel[strndCtr].RemoveAt(resCtr);
-                            //Console.WriteLine("removed a residue from Strand {0})", strndCtr);
-                        }
-                        //else resCtr++;
-                        resCtr--;
-
-                    }
-
-                    this.protoBarrel[strndCtr].Sort();
-
-                    for (int resCtr = 0; resCtr < this.protoBarrel[strndCtr].Count;)
-                    {// if there are no residues before or after 5 that are part of the sheet delete that residue too.
-                        bool markForDeletion = true;
-                        for (int ctr2 = this.protoBarrel[strndCtr][resCtr] - 5; ctr2 < this.protoBarrel[strndCtr][resCtr] + 5; ctr2++)
-                        {
-                            if (ctr2 > -1 && ctr2 != this.protoBarrel[strndCtr][resCtr])
-                            {
-                                if (this.protoBarrel[strndCtr].Contains(ctr2) == true)
-                                {
-                                    markForDeletion = false;
-                                }
-
-                            }
-                        }
-                        if (markForDeletion == true)
-                        {
-                            //this.protoBarrel[strndCtr].RemoveAt(resCtr);
-                            //Console.WriteLine("removed a residue from Strand {0})", strndCtr);
-                            //deletedSomething = true;
-                        }
-                        else resCtr++;
-                    }
-                }
-            }
-			
 	        public bool check_neighbors(int strand_num, Res Res1)
 	        {
 	            bool markForDeletion = true;
