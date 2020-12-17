@@ -314,6 +314,10 @@ namespace betaBarrelProgram
             //Protein ThisProtein = null;
             Barrel ThisBarrel = null;
             string PDB = pdb.Substring(0, 4).ToUpper();
+            if (pdb.Count() == 6)
+            {
+                PDB = pdb.Substring(0, 6).ToUpper();
+            }
             string pdbFileName = Global.DB_DIR + pdb + ".pdb";
 
             if (File.Exists(pdbFileName))
