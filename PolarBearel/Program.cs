@@ -54,30 +54,35 @@ namespace betaBarrelProgram
         public static string DB_DIR = POLARBEARAL_DIR + "/DB/PDBs/";
         public static string OUTPUT_DIR = POLARBEARAL_DIR + "/Output/all/";
         public static string DB_file = POLARBEARAL_DIR + "/DB/AllDBList.txt";
+        public static string METHOD = POLARBEARAL_DIR + "mono";
 
         public static void change_to_mono_data()
         {
             DB_DIR = MONO_DB_DIR;
             DB_file = MONO_DB_file;
             OUTPUT_DIR = MONO_OUTPUT_DIR;
+            METHOD = "mono";
         }
         public static void change_to_poly_data()
         {
             DB_DIR = POLY_DB_DIR;
             DB_file = POLY_DB_file;
             OUTPUT_DIR = POLY_OUTPUT_DIR;
+            METHOD = "poly";
         }
         public static void change_to_membrane_data()
         {
             DB_DIR = MEMB_DB_DIR;
             DB_file = MEMB_DB_file;
             OUTPUT_DIR = MEMB_OUTPUT_DIR;
+            METHOD = "mono/poly";
         }
         public static void change_to_soluble_data()
         {
             DB_DIR = SOLUBLE_DB_DIR;
             DB_file = SOLUBLE_DB_file;
             OUTPUT_DIR = SOLUBLE_OUTPUT_DIR;
+            METHOD = "all";
         }
 
         public static void change_to_test_data()
@@ -85,6 +90,7 @@ namespace betaBarrelProgram
             DB_DIR = TEST_DB_DIR;
             DB_file = TEST_DB_file;
             OUTPUT_DIR = TEST_OUTPUT_DIR;
+            METHOD = "mono";
         }
 
         public static void change_dataset()
