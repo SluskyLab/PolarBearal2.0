@@ -240,7 +240,7 @@ namespace betaBarrelProgram
 	                    }
 	                }
 	            }*/
-	            //SharedFunctions.setInOut(this.Strands, outputDirectory, this.PdbName, this.Axis, this.Ccentroid, this.Ncentroid);
+	            SharedFunctions.setInOut(this.Strands, outputDirectory, this.PdbName, this.Axis, this.Ccentroid, this.Ncentroid);
 	            SharedFunctions.writePymolScriptForStrands(this.Strands, outputDirectory, Global.DB_DIR, this.PdbName);
 	            //writeAminoAcidsTypesToFile(ref _myProtein, outputDirectory);
 	            //this.AvgTilt = SharedFunctions.getTiltsByAA(this.Strands, outputDirectory, this.PdbName, this.Axis, ref Program.AADict);
