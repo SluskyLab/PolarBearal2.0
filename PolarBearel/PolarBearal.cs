@@ -17,6 +17,7 @@ namespace betaBarrelProgram
         public static string PolarBearal_INPUT_DB_FILE = Global.DB_file; //Global.POLARBEARAL_DIR + "/DB/MonoDB_v5.txt"; //Global.MONO_DB_file;
 
         double zone = 13;
+        bool use_zone = true;// when true, only +-zone (a.k.a. membrane) is considered for (most?) outputs
         static public void menu()
         {
             Console.WriteLine("1. Generate empty result files");
@@ -143,11 +144,11 @@ namespace betaBarrelProgram
                             {
                                 string fileName = pdb;
                                 //string fileName = pdb + ".pdb";
-                                Barrel myBarrel = Program.runThisBetaBarrel(pdb, "poly");
+                                Barrel myBarrel = Program.runThisBetaBarrel(pdb, Global.METHOD);
                                 
                                 try
                                 {
-                                    SharedFunctions.LogBarrel(ref myBarrel, "poly");
+                                    SharedFunctions.LogBarrel(ref myBarrel, Global.METHOD);
                                     if (myBarrel.Success)
                                     {
                                         PolarBearal roar = new PolarBearal(ref myBarrel);
@@ -355,8 +356,19 @@ namespace betaBarrelProgram
 
                     tempaa.angle = Double.Parse(preaa[6]);
                     //Console.Write(preaa[0] + ":" + preaa[1] + "," + preaa[2] + "," + preaa[3] + "," + preaa[4] + "\n");
-
-                    if (tempaa.height > -zone && tempaa.height < zone)
+                    if (use_zone)
+                    {
+                        if (tempaa.height > -zone && tempaa.height < zone)
+                        {
+                            chain.Enqueue(tempaa);
+                            file = @"DisplayAngles.txt";
+                            using (StreamWriter output = File.AppendText(PolarBearal_OUTPUT_DIR + file))
+                            {
+                                output.Write("\n{0}\t{1}\t{2}", tempaa.m_aa_ID, tempaa.angle, tempaa.Inward);
+                            }
+                        }
+                    }
+                    else
                     {
                         chain.Enqueue(tempaa);
                         file = @"DisplayAngles.txt";
@@ -371,7 +383,7 @@ namespace betaBarrelProgram
                 seperatedBarrel = new Queue<aa[][]>();
                 SeperateBarrel();
 
-                printZ();
+                if (use_zone) { printZ(); }
                 PolarBearalCalculations();
                 PinNoutByProtein();
                 //update all db counts since attempt has successfullly completed
@@ -807,7 +819,7 @@ namespace betaBarrelProgram
                 bool range = false;
                 foreach (aa amino in strand)
                 {
-                    if (amino.height > -zone && amino.height < zone)
+                    if (!use_zone || (amino.height > -zone && amino.height < zone) )
                     {
                         totalAAs++;
                         range = true;
@@ -817,7 +829,6 @@ namespace betaBarrelProgram
                             if (seqCount == 0)
                             {
                                 seqCount++;
-                                //if (amino.Inward == false && amino.mPolarity == 'N' || amino.Inward == true && amino.mPolarity == 'P') seqCount++;
                             }
                             else
                             {
@@ -869,8 +880,7 @@ namespace betaBarrelProgram
                                 }
                             }
                         }
-                        //else if (amino.Inward == false && amino.mPolarity == 'N' || amino.Inward == true && amino.mPolarity == 'P') seqCount++;
-                        else seqCount++;
+                        else if (use_zone){ seqCount++;}
                     }
 
 
