@@ -112,38 +112,9 @@ namespace betaBarrelProgram
                 this.PdbName = _myChain.PdbName;
                 this.Success = true;//need to actually check this at some point, but variable is currently only for all method
                 string path = Global.OUTPUT_DIR;
-                //Writing info about residues
-                /*string fileLocation2 = path + "PhiPsiBBAngle/" + this.PdbName + ".txt";
-	                using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation2))
-	                {
-	                        foreach (Res res in _myChain)
-	                        {
-	                            if (res.ResNum != 0)
-	                            {
-	                                file.WriteLine("Residue {0}({1}), SSType {2}, phi {4}, psi {5}, Angle formed at this residue {3}", res.SeqID, res.ThreeLetCode, res.SSType, (SharedFunctions.AngleBetween(_myChain.Residues[res.ResNum - 1].Direction, res.Direction)), res.Phi, res.Psi);
-	                            }
-	                        }
-	                }*/
+                
 
                 #region makeBarrel
-                //Pattern finding method of barrels
-                /*createStrandsPattern(ref _myChain, ref _myProtein, path);
-	            //for (int x = 0; x < this.protoBarrel.Count; x++) { Console.WriteLine(x + "\t" + _myChain.Residues[this.protoBarrel[x][0]].SeqID + "\t" + _myChain.Residues[this.protoBarrel[x].Last()].SeqID); }
-	            checkStrandPatt(ref _myChain);
-	            makeBarrelCircular(ref _myChain);
-	            for (int x = 0; x < this.protoBarrel.Count; x++) { Console.WriteLine(x + "\t" + _myChain.Residues[this.protoBarrel[x][0]].SeqID + "\t" + _myChain.Residues[this.protoBarrel[x].Last()].SeqID); }
-	            removeNonBarrelRes(ref _myChain);
-
-	            makeBarrelCircular(ref _myChain);
-	            removeNonBarrelRes(ref _myChain);*/
-                //Reset to run diff way
-                /*foreach (Res res1 in _myChain)
-	            {
-	                res1.Neighbors = new List<int>();
-	            }
-	            this.protoBarrel = new List<List<int>>();
-
-	            Console.WriteLine("Redefining strands");*/
                 //Current method of defining strands
                 createStrands(ref _myChain);
 				//If DSSP definitions are important
@@ -346,137 +317,6 @@ namespace betaBarrelProgram
             
             }
 
-            public void createStrandsPattern(ref Chain chain, ref Protein _myProtein, string outputDirectory) //This does NOT create the list of Strands
-            {
-                bool strandStart = false;
-                int strandStartRes = 0;
-                int strandEndRes = 0;
-                int CurrentResNum;
-                int UsualStart = 0;
-                int strandNum = 0;
-                int betaScore = 0;
-                List<int> myStrand = new List<int>();
-
-                //These have very large plugs with some short beta strands.
-                if (PdbName.ToUpper() == "4EPA" || PdbName.ToUpper() == "4RDR" || PdbName.ToUpper() == "4AIP") UsualStart = 120;
-                if (PdbName.ToUpper() == "1XKW" || PdbName.ToUpper() == "3CSL") UsualStart = 125;
-                if (PdbName.ToUpper() == "2GSK" || PdbName.ToUpper() == "3V8X" || PdbName.ToUpper() == "4CU4" || PdbName.ToUpper() == "4K3C" || PdbName.ToUpper() == "2HDI") UsualStart = 130;
-                if (PdbName.ToUpper() == "3QLB" || PdbName.ToUpper() == "3EFM" || PdbName.ToUpper() == "1FEP" || PdbName.ToUpper() == "1KMO" || PdbName.ToUpper() == "3FHH") UsualStart = 135;
-                if (PdbName.ToUpper() == "2IAH" || PdbName.ToUpper() == "4Q35" || PdbName.ToUpper() == "4QKY") UsualStart = 200;
-                if (PdbName.ToUpper() == "4C00") UsualStart = 235;
-                if (PdbName.ToUpper() == "4K3B") UsualStart = 400;
-
-                for (CurrentResNum = UsualStart; CurrentResNum < chain.ResidueCount; CurrentResNum++)
-                {
-                    if (strandStart == false)
-                    {
-                        if (CurrentResNum >= chain.ResidueCount - 3) continue;
-
-                        if (chain.Residues[CurrentResNum].SSType.ToUpper() == "B")
-                        {
-                            strandStartRes = chain.Residues[CurrentResNum].ResNum; //ResNum is index of residue w/in protein; Seq_ID is the PDB residue number
-                            betaScore = 0;
-                            for (int i = 1; i < 5; i++)
-                            {
-                                try
-                                {
-                                    if (chain.Residues[CurrentResNum + i].SSType.ToUpper() == "B") betaScore++;
-                                }
-
-                                catch (ArgumentOutOfRangeException)
-                                {
-                                    continue;
-                                }
-                            }
-                            if (betaScore >= 2) strandStart = true; //Changed to just 2 to catch short bent upper pieces in esp FpvA
-                        }
-                    }
-
-                    else //Strand has been started
-                    {
-                        if ((CurrentResNum == chain.ResidueCount - 1) || (chain.Residues[CurrentResNum + 1].SeqID > (chain.Residues[CurrentResNum].SeqID + 6))) //If we are still forming a chain and reach the end of the residues OR if big gap in seqIDs, end the chain
-                        {
-                            goto EndChain;
-                        }
-
-                        else
-                        {
-                            if (chain.Residues[CurrentResNum].SSType.ToUpper() == "B") continue;
-                            else //if the chain is started and next residue is NOT beta-residue, determine if @ the end of a chain
-                            {
-                                //if there's a big bend in chain, definitely end the chain
-                                if (SharedFunctions.AngleBetween(chain.Residues[CurrentResNum - 1].Direction, chain.Residues[CurrentResNum].Direction) >= 82) //Changed from 80 for 1THQ
-                                {
-                                    goto EndChain;
-                                }
-                                //if no bend in chain, check next residue in line 
-                                else
-                                {
-                                    if (chain.Residues[CurrentResNum + 1].SSType.ToUpper() == "B" && chain.Residues[CurrentResNum + 2].SSType.ToUpper() == "B") continue; // XBB
-                                    else if (chain.Residues[CurrentResNum + 1].SSType.ToUpper() == "B" && chain.Residues[CurrentResNum + 2].SSType.ToUpper() != "B") //XBX
-                                    {
-                                        double Angle1 = SharedFunctions.AngleBetween(chain.Residues[CurrentResNum].Direction, chain.Residues[CurrentResNum + 1].Direction);
-                                        double Angle2 = SharedFunctions.AngleBetween(chain.Residues[CurrentResNum + 1].Direction, chain.Residues[CurrentResNum + 2].Direction);
-                                        if (Angle1 > 71 || Angle2 > 71 || Angle1 < 40 || Angle2 < 40) goto EndChain; //1qj8 needs angle between 40-71 instead of 45-71
-                                        else continue;
-                                    }
-                                    else //XX
-                                    {
-                                        betaScore = 0;
-                                        for (int i = 2; i < 5; i++)
-                                        {
-                                            try
-                                            {
-                                                if (chain.Residues[CurrentResNum + i].SSType.ToUpper() == "B") betaScore++;
-                                            }
-                                            catch (ArgumentOutOfRangeException)
-                                            {
-                                                betaScore = 0;
-                                            }
-
-                                        }
-                                        if (betaScore >= 2) //Was beta score of 3/3. Changed to 2/3 for kinky monomerics
-                                        {
-                                            double Angle1 = SharedFunctions.AngleBetween(chain.Residues[CurrentResNum - 1].Direction, chain.Residues[CurrentResNum].Direction);
-                                            double Angle2 = SharedFunctions.AngleBetween(chain.Residues[CurrentResNum].Direction, chain.Residues[CurrentResNum + 1].Direction);
-                                            if (Angle1 + Angle2 > 136 || Angle1 > 80 || Angle2 > 80) //if there's a decent bend at the two non-beta residues between long beta sequences //changed from 129 for 1T16 and others on 5-11-16
-                                            {
-                                                goto EndChain;
-                                            }
-                                        }
-                                        else //this means two res in a row were non-beta AND that less than three res of next 3 were also not beta 
-                                        {
-                                            goto EndChain;
-                                        }
-
-                                    }
-                                }
-                            } //end of dealing with non-Beta conformation residues
-                        }
-                    } //end of strandStart == true
-                    continue;
-                EndChain:
-                    {
-                        strandEndRes = CurrentResNum - 1;
-                        if (strandEndRes - strandStartRes >= 2) //This results in a strand of 3+ residues; super short strands will be removed later if they don't combine with another strand.
-                        {
-                            for (int j = strandStartRes; j <= strandEndRes; j++)
-                            {
-                                myStrand.Add(chain.Residues[j].ResNum);
-                                //chain.Residues[j].SSType = "B"; //Removed for monomeric barrels. 
-                            }
-                            List<int> newList = new List<int>();
-                            newList.AddRange(myStrand);
-                            protoBarrel.Add(newList);
-                            myStrand.Clear();
-                            strandNum++;
-                        }
-                        strandStart = false;
-                    }
-
-                }
-            }//end of create strands fxn
-
             public void createStrands(ref Chain _myChain)
             {
 
@@ -491,6 +331,7 @@ namespace betaBarrelProgram
                 if (PdbName.ToUpper() == "4QKY") usually0 = 180;
                 if (PdbName.ToUpper() == "4K3B") usually0 = 400;
                 if (PdbName.ToUpper() == "4K3C") usually0 = 150;
+                if (PdbName.ToUpper() == "6SLJ") usually0 = 120;
 
                 int usuallyEnd = _myChain.ResidueCount;
                 if (PdbName.ToUpper() == "3RFZ") usuallyEnd = 603;
@@ -807,9 +648,25 @@ namespace betaBarrelProgram
 	                protoBarrel[12].InsertRange(0, Enumerable.Range(protoBarrel[12][0]-3, 3));
 	                protoBarrel[13].AddRange(Enumerable.Range(protoBarrel[13].Last(), 4));
 	            }
-			}//End of CreateStrands
+                if (PdbName.ToUpper() == "6SLJ") //Added 12/17/20 for v6DB
+                {
+                    //TODO: clean up the strand edges before any loop analysis
+                    protoBarrel[12].RemoveRange(0, protoBarrel[12].Count - 14);
+                    protoBarrel[13].RemoveRange(12, protoBarrel[13].Count - 12);
+                    protoBarrel[15].RemoveRange(15, protoBarrel[15].Count - 15);
+                    protoBarrel[19].RemoveRange(9, protoBarrel[19].Count - 9);
+                    protoBarrel.RemoveRange(16, 2);
 
-	        public void checkStrandDefnsDSSP(ref Chain _myChain) //Added 6-5-17 for loops
+                    myStrand1 = new List<int>();
+                    myStrand1.AddRange(Enumerable.Range(protoBarrel[1][0], 11));
+                    protoBarrel.Insert(1, myStrand1);
+                }
+                // re print strands to check changes
+                for (int x = 0; x < this.protoBarrel.Count; x++) { Console.WriteLine(x + "\t" + _myChain.Residues[this.protoBarrel[x][0]].SeqID + "\t" + _myChain.Residues[this.protoBarrel[x].Last()].SeqID); }
+
+            }//End of CreateStrands
+
+            public void checkStrandDefnsDSSP(ref Chain _myChain) //Added 6-5-17 for loops
 	        {
 	            for (int strandNum = 0; strandNum < this.protoBarrel.Count; strandNum ++)
 	            {
@@ -1482,7 +1339,7 @@ namespace betaBarrelProgram
                     if (HbondedPrev == false || HbondedNext == false)
                     {
                         this.protoBarrel.Remove(this.protoBarrel[strndCtr]);
-                        //Console.WriteLine("removing strand {0}", strndCtr);
+                        Console.WriteLine("removing strand {0}", strndCtr);
                     }
                     else strndCtr++;
 
@@ -1656,7 +1513,7 @@ namespace betaBarrelProgram
                         if (markForDeletion == true)
                         {
                             this.protoBarrel[strndCtr].RemoveAt(resCtr);
-                            //Console.WriteLine("removed a residue from Strand {0})", strndCtr);
+                            Console.WriteLine("removed a residue from Strand {0})", strndCtr);
                         }
                         else resCtr++;
                         //resCtr--;
@@ -1682,7 +1539,7 @@ namespace betaBarrelProgram
                         if (markForDeletion == true)
                         {
                             this.protoBarrel[strndCtr].RemoveAt(resCtr);
-                            //Console.WriteLine("removed a residue from Strand {0} because no nearby residues", strndCtr);
+                            Console.WriteLine("removed a residue from Strand {0} because no nearby residues", strndCtr);
                             //deletedSomething = true;
                         }
                         else resCtr++;

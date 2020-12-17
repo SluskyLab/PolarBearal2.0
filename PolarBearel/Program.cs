@@ -46,7 +46,7 @@ namespace betaBarrelProgram
         public static string SOLUBLE_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/soluble/";
 
         // curently testing poly barrels that decided to stop working - Ryan 12/15/2020
-        public static string TEST_DB_DIR = POLARBEARAL_DIR + "/DB/PolyBarrelsDB/";
+        public static string TEST_DB_DIR = POLARBEARAL_DIR + "/DB/PDBs/";
         public static string TEST_DB_file = POLARBEARAL_DIR + "/DB/TestDBList.txt";
         public static string TEST_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/test/";
 
@@ -355,14 +355,14 @@ namespace betaBarrelProgram
                 // default to mono method
                 else //if ("mono" == method)
                 {
-                    try//if(File.Exists(pdbFileName))
+                    if(File.Exists(pdbFileName))
                     {
                         Console.WriteLine("Generating mono protein");
                         Protein newProt = new MonoProtein(ref myAtomCat, 0, PDB);
                         Console.WriteLine("Generating mono barrel");
                         ThisBarrel = new MonoBarrel(newProt.Chains[0], newProt);
                     }
-                    catch
+                    else//catch
                     {
                         Console.WriteLine("Failed to run {0} using the mono methods\n", pdb);
                     }
