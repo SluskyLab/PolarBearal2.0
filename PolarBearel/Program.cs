@@ -410,17 +410,17 @@ namespace betaBarrelProgram
                 // use all method 
                 else if ("all" == method)
                 {
-                    try //if (File.Exists(pdbFileName))
-                    {
+                    //try //if (File.Exists(pdbFileName))
+                    //{
                         Console.WriteLine("all method for protein...");
                         newProt = new AllProtein(ref myAtomCat, PDB);
                         Console.WriteLine("all method for barrel...");
                         ThisBarrel = new AllBarrel(ref newProt);
-                    }
-                    catch
-                    {
-                        Console.WriteLine("Failed to run {0} using the all methods\n", pdb);
-                    }
+                    //}
+                    //catch
+                    //{
+                    //    Console.WriteLine("Failed to run {0} using the all methods\n", pdb);
+                    //}
                 }
                 // default to mono method
                 else //if ("mono" == method)

@@ -146,7 +146,7 @@ namespace betaBarrelProgram
                             this.Strands = myStrandGroup.BarrelStrands;
                             var group = myStrandGroup.GroupOfGroup.First(group => group.IsBarrel == true);
                             this.Ncentroid = group.Ncentroid;
-                            this.Ccentroid = group.Ncentroid;
+                            this.Ccentroid = group.Ccentroid;
                             this.CellipseCoords = group.CellipseCoords;
                             this.NellipseCoords = group.NellipseCoords;
                             this.Axis = group.Axis;
@@ -280,7 +280,7 @@ namespace betaBarrelProgram
             var chainCtr = 0;
 
             #region HardCoding
-            var PDBList = new List<string>() { "1E5P", "1R0U", "3PDF", "3FHH", "4E1T", "6TZK", "3QQ2", "1QTT", "4ALO", "4WFU", "1LFO", "3A2S", "4Q35", "1GL4" };//#Hard Coding# Use SSType for these
+            var PDBList = new List<string>() { "1E5P", "1R0U", "3PDF", "3FHH", "4E1T", "6TZK", "3QQ2", "1QTT", "4ALO", "4WFU", "1LFO", "3A2S", "4Q35", "1GL4", "2OOJ" };//#Hard Coding# Use SSType for these
             bool useSSType = PDBList.Contains(PdbName);
             //useSSType = true;//RYAN//trying to see if Rik's SS is taking forever
             if (PdbName == "1GL4")
@@ -306,23 +306,38 @@ namespace betaBarrelProgram
 
             if (PdbName == "2JOZ")
             {
-                var Add = new List<int>() { 59, 60, 61 };
+                var Add = new List<int>() { 59, 60, 61 }; //manually add DSSP
                 foreach (var SeqID in Add)
                 {
                     newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "E";
+                }
+            }
+
+            if (PdbName == "2A13")
+            {
+                var Add = new List<int>() { 119, 120 }; //manually add DSSP
+                foreach (var SeqID in Add)
+                {
+                    newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "E";
+                }
+
+                var Remove = new List<int>() { 148, 149 }; //manually remove DSSP
+                foreach (var SeqID in Remove)
+                {
+                    newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "";
                 }
             }
 
             if (PdbName == "3HPE")
             {
-                var Add = new List<int>() { 45, 46, 47 };
+                var Add = new List<int>() { 45, 46, 47 }; //manually add DSSP
                 foreach (var SeqID in Add)
                 {
                     newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "E";
                 }
             }
 
-            if (PdbName == "5IXG")
+            if (new List<string>() { "5IXG", "2RD7"}.Contains(this.PdbName))
             {
                 foreach (var res in newProt.Chains[0].Residues)
                 {
@@ -330,14 +345,13 @@ namespace betaBarrelProgram
                 }
             }
 
-
-            if (PdbName == "2RD7")
+            if (PdbName == "2OOJ")
             {
-                foreach (var res in newProt.Chains[0].Residues)
-                {
-                    res.DSSP = ""; //Remove strands from chain A
-                }
+                var Add = new List<int>() { 33, 99 };
+                var Remove = new List<int>() { 28, 29, 30, 31, 32, 89, 90, 93 };
+                modifySSType(ref newProt, Add, Remove);
             }
+
             #endregion
 
             foreach (var chain in newProt.Chains)
