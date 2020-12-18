@@ -100,40 +100,46 @@ namespace betaBarrelProgram
                           
                                 string[] splitLine = Array.FindAll<string>(((string)line).Split(
                                 new char[] { ' ', '\t', ',',';' }), delegate(string s) { return !String.IsNullOrEmpty(s); });
-                                for (int wordNum = 0; wordNum < splitLine.Count(); wordNum++)
+                            for (int wordNum = 0; wordNum < splitLine.Count(); wordNum++)
+                            {
+                                if (lineNum == 0)
                                 {
-                                    if (lineNum == 0)
+                                    if ((splitLine[wordNum][0].ToString() == "0" || splitLine[wordNum][0].ToString() == "1" || splitLine[wordNum][0].ToString() == "2" || splitLine[wordNum][0].ToString() == "3") && date == "0") date = splitLine[wordNum];
+                                }
+                                if (splitLine[wordNum] == "ORGANISM_SCIENTIFIC:" && organismName1 == "0")
+                                {
+                                    organismName1 = splitLine[wordNum + 1];
+                                    organismName2 = splitLine[wordNum + 2];
+                                }
+                                if (splitLine[wordNum] == "MUTATION:" && splitLine[wordNum + 1] == "YES") isMutated = true;
+                                if (splitLine[wordNum] == "MOLECULE:" && molecule.Count == 0)
+                                {
+                                    for (int wordNum1 = wordNum + 1; wordNum1 < splitLine.Count(); wordNum1++)
                                     {
-                                        if ((splitLine[wordNum][0].ToString() == "0" || splitLine[wordNum][0].ToString() == "1" || splitLine[wordNum][0].ToString() == "2" || splitLine[wordNum][0].ToString() == "3") && date == "0") date = splitLine[wordNum];
+                                        molecule.Add(splitLine[wordNum1]);
                                     }
-                                        if (splitLine[wordNum] == "ORGANISM_SCIENTIFIC:" && organismName1 == "0")
+
+                                }
+                                if (splitLine.Count() > 6 && splitLine[wordNum] == "AUTHOR" && splitLine[wordNum + 1] == "DETERMINED" && splitLine[wordNum + 2] == "BIOLOGICAL" && splitLine[wordNum + 3] == "UNIT:" && authorOlig == "0")
+                                {
+                                    authorOlig = splitLine[wordNum + 4];
+                                }
+                                if (splitLine.Count() > 6 && splitLine[wordNum] == "SOFTWARE" && splitLine[wordNum + 1] == "DETERMINED" && splitLine[wordNum + 2] == "QUATERNARY" && splitLine[wordNum + 3] == "STRUCTURE:" && compOlig == "0")
+                                {
+                                    compOlig = splitLine[wordNum + 4];
+                                }
+                                try { 
+                                    if (unpNum == "0" && splitLine[wordNum] == "UNP" && splitLine[wordNum + 2].Contains("_"))
                                     {
-                                        organismName1 = splitLine[wordNum + 1];
-                                        organismName2 = splitLine[wordNum + 2];
+                                    unpNum = splitLine[wordNum + 1];
+                                    unp = splitLine[wordNum + 2];
                                     }
-                                    if (splitLine[wordNum] == "MUTATION:" && splitLine[wordNum + 1] == "YES") isMutated = true;
-                                    if (splitLine[wordNum] == "MOLECULE:" && molecule.Count == 0)
-                                    {
-                                        for (int wordNum1 = wordNum+1; wordNum1 < splitLine.Count(); wordNum1++)
-                                        {
-                                            molecule.Add(splitLine[wordNum1]);
-                                        }
-                                       
-                                    }
-                                    if (splitLine.Count()>6 && splitLine[wordNum] == "AUTHOR" && splitLine[wordNum+1] == "DETERMINED"&&splitLine[wordNum+2] == "BIOLOGICAL"&&splitLine[wordNum+3] == "UNIT:" &&authorOlig == "0")
-                                    {
-                                        authorOlig = splitLine[wordNum + 4];
-                                    }
-                                    if (splitLine.Count()>6&& splitLine[wordNum] == "SOFTWARE" && splitLine[wordNum+1] == "DETERMINED"&&splitLine[wordNum+2] == "QUATERNARY"&&splitLine[wordNum+3] == "STRUCTURE:" &&compOlig == "0")
-                                    {
-                                        compOlig = splitLine[wordNum + 4];
-                                    }
-                                    if (unpNum=="0" && splitLine[wordNum] == "UNP" && splitLine[wordNum+2].Contains("_"))
-                                    {
-                                        unpNum = splitLine[wordNum + 1];
-                                        unp = splitLine[wordNum + 2];
-                                    }
-                                    
+                            }
+                                catch
+                                {
+                                    continue;
+                                }
+
                                 }
                             lineNum++;
                             
