@@ -125,7 +125,7 @@ namespace betaBarrelProgram
                 makeBarrelCircular(ref _myChain); // keeps out the beta strands that occlude the barrel
                 removeNonBarrelRes(ref _myChain);
 
-                if (PdbName.ToUpper() != "6H3I_A")// this big guy loses too much if passed threw the following code
+                if (PdbName.ToUpper() != "6H3I_A" && PdbName.ToUpper() != "6H3J")// the big guy (SprA) loses too much if passed threw the following code
                 {
                     //twice for 2VQI
                     makeBarrelCircular(ref _myChain);
@@ -173,7 +173,7 @@ namespace betaBarrelProgram
                 }
 
                 #endregion
-                //SharedFunctions.writePymolScriptForStrands(this.Strands, Global.OUTPUT_DIR, Global.DB_DIR, this.PdbName);// added to look at 6H3I_A 
+                SharedFunctions.writePymolScriptForStrands(this.Strands, Global.OUTPUT_DIR, Global.DB_DIR, this.PdbName);// added to look at SprA 
                 #region Rotate barrel to z-axis
                 this.AvgRadius = SharedFunctions.setRadius(this.Strands, this.Axis, this.Ccentroid, this.Ncentroid);
                 setCEllipseCoords(ref _myChain);
@@ -263,7 +263,7 @@ namespace betaBarrelProgram
                 //SharedFunctions.writePymolScriptForLoops(Loops, Global.OUTPUT_DIR, Global.MACMONODBDIR, ref _myChain, this.PdbName);
                 //SharedFunctions.findLoopsHBondingPartnersGeomOnly(Loops, Global.OUTPUT_DIR, ref _myChain, this.PdbName, false);
 
-                SharedFunctions.writePymolScriptForStrands(this.Strands, Global.OUTPUT_DIR, Global.DB_DIR, this.PdbName);
+                //REMPVE// SharedFunctions.writePymolScriptForStrands(this.Strands, Global.OUTPUT_DIR, Global.DB_DIR, this.PdbName);
 	            //writeAminoAcidsTypesToFile(ref _myChain, path);
 
 	            SharedFunctions.setInOut(this.Strands, path, this.PdbName, this.Axis, this.Ccentroid, this.Ncentroid);
@@ -538,7 +538,7 @@ namespace betaBarrelProgram
                     protoBarrel.Add(myStrand3);
 
                 }
-                //for (int x = 0; x < this.protoBarrel.Count; x++) { Console.WriteLine(x + "\t" + _myChain.Residues[this.protoBarrel[x][0]].SeqID + "\t" + _myChain.Residues[this.protoBarrel[x].Last()].SeqID); }
+                for (int x = 0; x < this.protoBarrel.Count; x++) { Console.WriteLine(x + "\t" + _myChain.Residues[this.protoBarrel[x][0]].SeqID + "\t" + _myChain.Residues[this.protoBarrel[x].Last()].SeqID); }
 
 	            if (PdbName.ToUpper() == "3RBH" || PdbName.ToUpper() == "4AFK") //Added 4afk 6-22-17 as replacement in v4 for 3rbh
 	            {
@@ -673,10 +673,16 @@ namespace betaBarrelProgram
                     protoBarrel.RemoveRange(11, 9);
                     protoBarrel[26].RemoveRange(protoBarrel[26].Count - 3, 3);
                 }
+                if (PdbName.ToUpper() == "6H3J")
+                {
+                    protoBarrel.RemoveRange(7, 9);
+                    protoBarrel.RemoveRange(11, 7);
+                    protoBarrel[6].RemoveRange(8, protoBarrel[6].Count - 8);
+                }
 
 
                 // re print strands to check changes
-                //for (int x = 0; x < this.protoBarrel.Count; x++) { Console.WriteLine(x + "\t" + _myChain.Residues[this.protoBarrel[x][0]].SeqID + "\t" + _myChain.Residues[this.protoBarrel[x].Last()].SeqID); }
+                for (int x = 0; x < this.protoBarrel.Count; x++) { Console.WriteLine(x + "\t" + _myChain.Residues[this.protoBarrel[x][0]].SeqID + "\t" + _myChain.Residues[this.protoBarrel[x].Last()].SeqID); }
 
             }//End of CreateStrands
 
