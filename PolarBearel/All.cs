@@ -313,6 +313,24 @@ namespace betaBarrelProgram
                 }
             }
 
+            if (PdbName == "3HPE")
+            {
+                var Add = new List<int>() { 45, 46, 47 };
+                foreach (var SeqID in Add)
+                {
+                    newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "E";
+                }
+            }
+
+            if (PdbName == "5IXG")
+            {
+                foreach (var res in newProt.Chains[0].Residues)
+                {
+                    res.DSSP = ""; //Remove strands from chain A
+                }
+            }
+
+
             if (PdbName == "2RD7")
             {
                 foreach (var res in newProt.Chains[0].Residues)
