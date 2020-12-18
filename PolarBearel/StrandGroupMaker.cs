@@ -90,14 +90,14 @@ namespace betaBarrelProgram
                     }
                     if (group.IsBarrel)
                     {
-                        BarrelStrands = rearrangeBarrel(group);
+                        rearrangeBarrel(group);
                         AssignDirection(group);
                         BarrelAxis(group);
                         LogStrandData(group);
-                        //foreach (var strand in group.StrandSet)
-                        //{
-                        //    BarrelStrands.Add(strand.StrandInTheGroup);
-                        //}
+                        foreach (var strand in group.StrandSet)
+                        {
+                            BarrelStrands.Add(strand.StrandInTheGroup);
+                        }
                         SharedFunctions.writePymolScriptForBarrelStrands(this.BarrelStrands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName);
                         //SharedFunctions.WritePymolScriptForInOutStrands(this.BarrelStrands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName, CCentroid, NCentroid);
                         break;
@@ -243,6 +243,22 @@ namespace betaBarrelProgram
             group.NellipseCoords = myNEllipse;
             #endregion
 
+            foreach (var coordinate in myCEllipse)
+            {
+                Console.WriteLine($"pseudoatom myCEllipse, pos=[{coordinate.X}, {coordinate.Y}, {coordinate.Z}]" +
+                    $"\nshow spheres, myCEllipse" +
+                    $"\ncolor red, myCEllipse " +
+                    $"");
+            }
+            foreach (var coordinate in myNEllipse)
+            {
+                Console.WriteLine($"pseudoatom myNEllipse, pos=[{coordinate.X}, {coordinate.Y}, {coordinate.Z}]" +
+                    $"\nshow spheres, myNEllipse" +
+                    $"\ncolor blue, myNEllipse " +
+                    $"");
+            }
+
+
             #region Calculate InOut
             //List<Strand> strandList = new List<Strand>();
             //foreach (var strand in group.StrandSet)
@@ -257,7 +273,7 @@ namespace betaBarrelProgram
             #endregion
         }
 
-        private List<Strand> rearrangeBarrel(GroupOfStrands group)
+        private void rearrangeBarrel(GroupOfStrands group)
         {
             Vector3 centroid = new Vector3((float)group.Centroid.X, (float)group.Centroid.Y, (float)group.Centroid.Z);
             List<Strand> strands = new List<Strand>();
@@ -279,20 +295,20 @@ namespace betaBarrelProgram
             Vector3 refCrossP = Vector3.Cross(reference, selectStrandDirection);
 
             var ctr = 0;
-            foreach (var strand in strands)
+            foreach (var strand in group.StrandSet)
             {
-                Vector3 strandCentroid = centroidCalculate(strand);
+                Vector3 strandCentroid = centroidCalculate(strand.StrandInTheGroup);
                 Vector3 strandDirection = strandCentroid - centroid;
                 Vector3 CrossP = Vector3.Cross(reference, strandDirection);
                 var refAngle = SharedFunctions.AngleBetween(CrossP, refCrossP);
                 if (refAngle > 90)
                 {
-                    strand.angle = 360 - strand.angle;
+                    strand.StrandInTheGroup.angle = 360 - strand.StrandInTheGroup.angle;
                 }
 
                 //Console.WriteLine($"pseudoatom strand{ctr}, pos=[{strandCentroid.X}, {strandCentroid.Y}, {strandCentroid.Z}]" +
                 //    $"\nshow spheres, strand{ctr}" +
-                //    $"\nlabel strand{ctr}, \"                    {strand.angle:000.##}\"" +
+                //    $"\nlabel strand{ctr}, \"                    {strand.StrandInTheGroup.angle:000.##}\"" +
                 //    $"");
                 //ctr++;
             }
@@ -300,13 +316,19 @@ namespace betaBarrelProgram
             //        Console.WriteLine($"pseudoatom centroid, pos=[{centroid.X}, {centroid.Y}, {centroid.Z}]" +
             //$"\nshow spheres, centroid");
 
-            strands.Sort((a, b) => a.angle.CompareTo(b.angle));
+            group.StrandSet.Sort((a, b) => a.StrandInTheGroup.angle.CompareTo(b.StrandInTheGroup.angle));
+
+            //foreach (var item in strands)
+            //{
+            //    Console.WriteLine(item.angle);
+            //}
+            
 
             int i = 0;
-            foreach (var strand in strands)
+            foreach (var strand in group.StrandSet)
             {
                 //Console.WriteLine($"{item.betaStrandNum} angle is {item.angle}");
-                strand.StrandNum = i;
+                strand.StrandInTheGroup.StrandNum = i;
                 i++;
             }
 
@@ -321,7 +343,7 @@ namespace betaBarrelProgram
                 };
                 return strandCentroid;
             }
-            return strands;
+            //return strands;
         }
 
         private void CheckIfBarrel(GroupOfStrands group)
