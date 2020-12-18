@@ -204,7 +204,7 @@ namespace betaBarrelProgram
                         string pdb = splitLine[0];
                         if (pdb != "IDs")
                         {
-                            string fileName = pdb.Substring(0, 4).ToUpper();
+                            string fileName = pdb.ToUpper(); //RYANpdb.Substring(0, 4).ToUpper();
 
                             PolarBearal polarRetest = new PolarBearal(fileName);
                             try { 
