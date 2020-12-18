@@ -154,7 +154,7 @@ namespace betaBarrelProgram
                             Console.WriteLine($"Protein {PdbName} Chain {chain.ChainName} has a Mono barrel with {myStrandGroup.BarrelStrands.Count} strands");
                             this.barrelType = "mono";
                             this.Success = true;
-                            LogBarrel(myStrandGroup);
+                            //LogBarrel(myStrandGroup);
 
                             break;
                         }
@@ -176,14 +176,14 @@ namespace betaBarrelProgram
                     Console.WriteLine($"Protein {PdbName} has a Poly barrel with {myStrandGroup.BarrelStrands.Count} strands");
                     this.barrelType = "poly";
                     this.Success = true;
-                    LogBarrel(myStrandGroup);
+                    //LogBarrel(myStrandGroup);
                 }
             }
             #endregion
 
             if (!isMonoFlag && !isPolyFlag)
             {
-                LogBarrel(null);
+                //LogBarrel(null);
 
             }
             else
@@ -327,6 +327,7 @@ namespace betaBarrelProgram
                     newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "";
                 }
             }
+
 
             if (PdbName == "3HPE")
             {

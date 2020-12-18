@@ -69,7 +69,8 @@ namespace betaBarrelProgram
                                                 "5GAQ", "6RB9", "3W9T", "5WC3",
                                                 "6RHV", "2R73", "2RD7", "5AZO", "3ANZ",
                                                 "4P1X", "5JZT",
-                                                "1QWD", "3S26", "3HPE", "1R0U", "2JOZ", "4XMC", "2OOJ"};//#Hard Coding# Manually select strands
+                                                "1QWD", "3S26", "3HPE", "1R0U", "2JOZ", "4XMC", "2OOJ",
+                                                "3KZA", "4R0B"};//#Hard Coding# Manually select strands
             bool ManualSelect = PDBList.Contains(PdbName);
             if (ManualSelect)
             {
@@ -112,11 +113,11 @@ namespace betaBarrelProgram
         {
             var pdbs = new Dictionary<string, int>() {  { "1O8V", 0 }, { "1IFC", 0 }, { "4UU3", 0 }, { "4GEY", 0 }, { "2HLV", 0 }, { "2R73", 0 }, 
                                                         { "2RD7", 0 }, { "1QWD", 0 }, { "3S26", 0 }, { "3HPE", 0 }, { "1R0U", 0 }, { "2JOZ", 0 }, 
-                                                        { "4XMC", 0 }, { "2OOJ", 0 },
+                                                        { "4XMC", 0 }, { "2OOJ", 0 }, { "3KZA", 0 }, { "4R0B", 0 },
                                                         { "2YNK", 1 }, { "5GAQ", 1 }, { "1GL4", 2 }, { "6RB9", 3 }, { "5JZT", 3 }, { "3W9T", 3 }
             };//PDB name and the group number.
 
-            if (new List<string>() { "2HLV", "2R73", "3S26" }.Contains(this.PdbName))
+            if (new List<string>() { "2HLV", "2R73", "3S26", "3KZA", "4R0B" }.Contains(this.PdbName))
             {
                 groupOfGroup[pdbs[this.PdbName]].StrandSet.RemoveAt(8);//Removing problem strand
             }
