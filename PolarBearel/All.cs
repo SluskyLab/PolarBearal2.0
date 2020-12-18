@@ -285,34 +285,39 @@ namespace betaBarrelProgram
             //useSSType = true;//RYAN//trying to see if Rik's SS is taking forever
             if (PdbName == "1GL4")
             {
-                //manually remove few SSTypes
-                var SeqIDList1 = new List<int>() { 471, 472, 473, 474, 475, 476, 477, 526, 527, 528, 529, 585, 586, 587 };
-                foreach (var SeqID in SeqIDList1)
+                var Remove = new List<int>() { 471, 472, 473, 474, 475, 476, 477, 526, 527, 528, 529, 585, 586, 587 };
+                var Add = new List<int>() { 425, 426, 538, 539, 607, 608 };
+                modifySSType(ref newProt, Add, Remove);
+            }
+
+            if (PdbName == "1E5P")
+            {
+                var Remove = new List<int>() { 135, 141 };
+                var Add = new List<int>() { 12, 13, 33, 34, 84, 85 };
+                modifySSType(ref newProt, Add, Remove);
+            }
+
+            if (PdbName == "1LFO")
+            {
+                var Remove = new List<int>();
+                var Add = new List<int>() { 5, 9, 10, 70 };
+                modifySSType(ref newProt, Add, Remove);
+            }
+
+            if (PdbName == "2JOZ")
+            {
+                var Add = new List<int>() { 59, 60, 61 };
+                foreach (var SeqID in Add)
                 {
-                    newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).SSType = "";
-                }
-                //manually add few SSTypes
-                var SeqIDList = new List<int>() { 425, 426 };
-                foreach (var SeqID in SeqIDList)
-                {
-                    newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).SSType = "B";
+                    newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "E";
                 }
             }
+
             if (PdbName == "2RD7")
             {
                 foreach (var res in newProt.Chains[0].Residues)
                 {
                     res.DSSP = ""; //Remove strands from chain A
-                }
-            }
-            if (PdbName == "3ANZ")
-            {
-                foreach (var chain in newProt.Chains)
-                {
-                    for (int i = 0; i < 1; i++)
-                    {
-                        Console.WriteLine("");
-                    }
                 }
             }
             #endregion
@@ -390,6 +395,21 @@ namespace betaBarrelProgram
                 }
             }
 
+            void modifySSType(ref Protein newProt, List<int> Add, List<int> Remove)
+            {
+                //manually remove few SSTypes
+                var SeqIDList1 = Remove;
+                foreach (var SeqID in SeqIDList1)
+                {
+                    newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).SSType = "";
+                }
+                //manually add few SSTypes
+                var SeqIDList = Add;
+                foreach (var SeqID in SeqIDList)
+                {
+                    newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).SSType = "B";
+                }
+            }
         }
 
 

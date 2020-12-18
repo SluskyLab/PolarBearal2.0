@@ -110,7 +110,7 @@ namespace betaBarrelProgram
 
         private void HardCode(List<GroupOfStrands> groupOfGroup)
         {
-            var pdbs = new Dictionary<string, int>() {  { "1O8V", 0 }, { "1IFC", 0 }, { "4UU3", 0 }, { "4GEY", 0 }, { "2HLV", 0 }, { "2R73", 0 }, { "2RD7", 0 },
+            var pdbs = new Dictionary<string, int>() {  { "1O8V", 0 }, { "1IFC", 0 }, { "4UU3", 0 }, { "4GEY", 0 }, { "2HLV", 0 }, { "2R73", 0 }, { "2RD7", 0 }, {"1QWD", 0},
                                                         { "2YNK", 1 }, { "5GAQ", 1 }, { "1GL4", 2 }, { "6RB9", 3 }, { "5JZT", 3 }, { "3W9T", 3 }
             };//PDB name and the group number.
 
