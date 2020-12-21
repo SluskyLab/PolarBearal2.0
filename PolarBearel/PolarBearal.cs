@@ -311,8 +311,11 @@ namespace betaBarrelProgram
         //uses a previously extracted barrel data to create a quick model of a barrel
         public PolarBearal(string PDBid)
         {
+            // soluble barrels using 'all' method do not look at Z, but mono and poly do
+            if (Global.METHOD == "all") { use_zone = false; }
+            else { use_zone = true; }
             try
-            { 
+            {
                 largestAltSeq = 0;
                 proteinID = PDBid;
                 totalProteins++;
