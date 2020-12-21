@@ -17,7 +17,7 @@ namespace betaBarrelProgram
         public static string PolarBearal_INPUT_DB_FILE = Global.DB_file; //Global.POLARBEARAL_DIR + "/DB/MonoDB_v5.txt"; //Global.MONO_DB_file;
 
         double zone = 13;
-        bool use_zone = true;// when true, only +-zone (a.k.a. membrane) is considered for (most?) outputs
+        bool use_zone = false;// when true, only +-zone (a.k.a. membrane) is considered for (most?) outputs
         static public void menu()
         {
             Console.WriteLine("1. Generate empty result files");
@@ -443,6 +443,11 @@ namespace betaBarrelProgram
         //extracts important data and add it to file for quicker extraction in future program runs
         public PolarBearal(ref Barrel myBarrel)
         {
+            // soluble barrels using 'all' method do not look at Z, but mono and poly do
+            if (Global.METHOD == "all"){ use_zone = false;}
+            else { use_zone = true;}
+
+
             numChains = myBarrel.Strands.Count;
             proteinID = myBarrel.PdbName;
             largestAltSeq = 0;
