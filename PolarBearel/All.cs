@@ -210,9 +210,15 @@ namespace betaBarrelProgram
                 }
 
 
-
-                SharedFunctions.setInOut(this.Strands, path, this.PdbName, this.Axis, this.Ccentroid, this.Ncentroid);
-                //SharedFunctions.setInOutM(this.Strands, Global.OUTPUT_DIR, this.PdbName, this.Ccentroid, this.Ncentroid);
+                if (PdbName=="2HLV")
+                {
+                    SharedFunctions.setInOut(this.Strands, path, this.PdbName, this.Axis, this.Ccentroid, this.Ncentroid);
+                }
+                else
+                {
+                    SharedFunctions.setInOutMin(this.Strands, Global.OUTPUT_DIR, this.PdbName, this.Ccentroid, this.Ncentroid);
+                }
+                
                 SharedFunctions.WritePymolScriptForInOutStrands(this.Strands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName, Ccentroid, Ncentroid);
                 this.AvgTilt = SharedFunctions.getTiltsByAA(this.Strands, path, this.PdbName, this.Axis, ref Global.AADict);
 
@@ -240,6 +246,8 @@ namespace betaBarrelProgram
                 }
                 SharedFunctions.writePymolScriptForBarrelStrands(this.Strands, Global.OUTPUT_DIR, Global.DB_DIR, this.PdbName);
             }
+
+            this.Success = true;
         }
 
 

@@ -243,20 +243,20 @@ namespace betaBarrelProgram
             group.NellipseCoords = myNEllipse;
             #endregion
 
-            foreach (var coordinate in myCEllipse)
-            {
-                Console.WriteLine($"pseudoatom myCEllipse, pos=[{coordinate.X}, {coordinate.Y}, {coordinate.Z}]" +
-                    $"\nshow spheres, myCEllipse" +
-                    $"\ncolor red, myCEllipse " +
-                    $"");
-            }
-            foreach (var coordinate in myNEllipse)
-            {
-                Console.WriteLine($"pseudoatom myNEllipse, pos=[{coordinate.X}, {coordinate.Y}, {coordinate.Z}]" +
-                    $"\nshow spheres, myNEllipse" +
-                    $"\ncolor blue, myNEllipse " +
-                    $"");
-            }
+            //foreach (var coordinate in myCEllipse)
+            //{
+            //    Console.WriteLine($"pseudoatom myCEllipse, pos=[{coordinate.X}, {coordinate.Y}, {coordinate.Z}]" +
+            //        $"\nshow spheres, myCEllipse" +
+            //        $"\ncolor red, myCEllipse " +
+            //        $"");
+            //}
+            //foreach (var coordinate in myNEllipse)
+            //{
+            //    Console.WriteLine($"pseudoatom myNEllipse, pos=[{coordinate.X}, {coordinate.Y}, {coordinate.Z}]" +
+            //        $"\nshow spheres, myNEllipse" +
+            //        $"\ncolor blue, myNEllipse " +
+            //        $"");
+            //}
 
 
             #region Calculate InOut
