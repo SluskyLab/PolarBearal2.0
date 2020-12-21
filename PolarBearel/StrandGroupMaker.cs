@@ -69,7 +69,8 @@ namespace betaBarrelProgram
                                                 "5GAQ", "6RB9", "3W9T", "5WC3",
                                                 "6RHV", "2R73", "2RD7", "5AZO", "3ANZ",
                                                 "4P1X", "5JZT",
-                                                "1QWD"};//#Hard Coding# Manually select strands
+                                                "1QWD", "3S26", "3HPE", "1R0U", "2JOZ", "4XMC", "2OOJ",
+                                                "3KZA", "4R0B"};//#Hard Coding# Manually select strands
             bool ManualSelect = PDBList.Contains(PdbName);
             if (ManualSelect)
             {
@@ -89,14 +90,14 @@ namespace betaBarrelProgram
                     }
                     if (group.IsBarrel)
                     {
-                        //Add direction assignment
+                        rearrangeBarrel(group);
+                        AssignDirection(group);
                         BarrelAxis(group);
                         LogStrandData(group);
-                        BarrelStrands = rearrangeBarrel(group);
-                        //foreach (var strand in group.StrandSet)
-                        //{
-                        //    BarrelStrands.Add(strand.StrandInTheGroup);
-                        //}
+                        foreach (var strand in group.StrandSet)
+                        {
+                            BarrelStrands.Add(strand.StrandInTheGroup);
+                        }
                         SharedFunctions.writePymolScriptForBarrelStrands(this.BarrelStrands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName);
                         //SharedFunctions.WritePymolScriptForInOutStrands(this.BarrelStrands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName, CCentroid, NCentroid);
                         break;
@@ -110,11 +111,13 @@ namespace betaBarrelProgram
 
         private void HardCode(List<GroupOfStrands> groupOfGroup)
         {
-            var pdbs = new Dictionary<string, int>() {  { "1O8V", 0 }, { "1IFC", 0 }, { "4UU3", 0 }, { "4GEY", 0 }, { "2HLV", 0 }, { "2R73", 0 }, { "2RD7", 0 },
+            var pdbs = new Dictionary<string, int>() {  { "1O8V", 0 }, { "1IFC", 0 }, { "4UU3", 0 }, { "4GEY", 0 }, { "2HLV", 0 }, { "2R73", 0 }, 
+                                                        { "2RD7", 0 }, { "1QWD", 0 }, { "3S26", 0 }, { "3HPE", 0 }, { "1R0U", 0 }, { "2JOZ", 0 }, 
+                                                        { "4XMC", 0 }, { "2OOJ", 0 }, { "3KZA", 0 }, { "4R0B", 0 },
                                                         { "2YNK", 1 }, { "5GAQ", 1 }, { "1GL4", 2 }, { "6RB9", 3 }, { "5JZT", 3 }, { "3W9T", 3 }
             };//PDB name and the group number.
 
-            if (new List<string>() { "2HLV", "2R73" }.Contains(this.PdbName))
+            if (new List<string>() { "2HLV", "2R73", "3S26", "3KZA", "4R0B" }.Contains(this.PdbName))
             {
                 groupOfGroup[pdbs[this.PdbName]].StrandSet.RemoveAt(8);//Removing problem strand
             }
@@ -128,48 +131,52 @@ namespace betaBarrelProgram
                 groupOfGroup[pdbs[this.PdbName]].StrandSet.RemoveAt(0);//Removing problem strand
                 groupOfGroup[pdbs[this.PdbName]].StrandSet.RemoveAt(0);//Removing problem strand
             }
+            if (this.PdbName == "4XMC")
+            {
+                groupOfGroup[pdbs[this.PdbName]].StrandSet.RemoveAt(5);//Removing problem strand
+            }
+
 
             if (new List<string>(pdbs.Keys).Contains(this.PdbName))
             {
                 Console.WriteLine($"Manually changing 'IsBarrel' {this.PdbName}");
                 var group = groupOfGroup[pdbs[this.PdbName]];
                 group.IsBarrel = true;
-                AssignDirection(group);
+            }
+            else 
+            {
+                Console.WriteLine($"Manually didn't change anything for {this.PdbName}");
             }
 
-            else if (this.PdbName == "")
-            {
-                Console.WriteLine($"Manually removing strand for {this.PdbName}");
-            }
+        }
 
-            void AssignDirection(GroupOfStrands group)
+        public void AssignDirection(GroupOfStrands group)
+        {
+            for (int i = 0; i < group.StrandSet.Count; i++)
             {
-                for (int i = 0; i < group.StrandSet.Count; i++)
+                if (i == 0)
                 {
-                    if (i == 0)
+                    group.StrandSet[0].DirectionAssigned = true;
+                }
+                else
+                {
+                    var strandOne = group.StrandSet[i - 1];
+                    var strandTwo = group.StrandSet[i];
+                    if (strandOne.DirectionAssigned = !strandTwo.DirectionAssigned)//check if either of the strands don't have a direction assigned
                     {
-                        group.StrandSet[0].DirectionAssigned = true;
-                    }
-                    else
-                    {
-                        var strandOne = group.StrandSet[i - 1];
-                        var strandTwo = group.StrandSet[i];
-                        if (strandOne.DirectionAssigned = !strandTwo.DirectionAssigned)//check if either of the strands don't have a direction assigned
+                        if (strandOne.DirectionAssigned == true) //Assign direction to the strand which doesn't have a direction yet
                         {
-                            if (strandOne.DirectionAssigned == true) //Assign direction to the strand which doesn't have a direction yet
-                            {
-                                CheckIfParallel(strandTwo, strandOne);
-                                strandTwo.DirectionAssigned = true;
-                            }
-                            else
-                            {
-                                CheckIfParallel(strandOne, strandTwo);
-                                strandOne.DirectionAssigned = true;
-                            }
+                            CheckIfParallel(strandTwo, strandOne);
+                            strandTwo.DirectionAssigned = true;
+                        }
+                        else
+                        {
+                            CheckIfParallel(strandOne, strandTwo);
+                            strandOne.DirectionAssigned = true;
                         }
                     }
-
                 }
+
             }
         }
 
@@ -236,6 +243,22 @@ namespace betaBarrelProgram
             group.NellipseCoords = myNEllipse;
             #endregion
 
+            //foreach (var coordinate in myCEllipse)
+            //{
+            //    Console.WriteLine($"pseudoatom myCEllipse, pos=[{coordinate.X}, {coordinate.Y}, {coordinate.Z}]" +
+            //        $"\nshow spheres, myCEllipse" +
+            //        $"\ncolor red, myCEllipse " +
+            //        $"");
+            //}
+            //foreach (var coordinate in myNEllipse)
+            //{
+            //    Console.WriteLine($"pseudoatom myNEllipse, pos=[{coordinate.X}, {coordinate.Y}, {coordinate.Z}]" +
+            //        $"\nshow spheres, myNEllipse" +
+            //        $"\ncolor blue, myNEllipse " +
+            //        $"");
+            //}
+
+
             #region Calculate InOut
             //List<Strand> strandList = new List<Strand>();
             //foreach (var strand in group.StrandSet)
@@ -250,38 +273,68 @@ namespace betaBarrelProgram
             #endregion
         }
 
-        private List<Strand> rearrangeBarrel(GroupOfStrands group)
+        private void rearrangeBarrel(GroupOfStrands group)
         {
             Vector3 centroid = new Vector3((float)group.Centroid.X, (float)group.Centroid.Y, (float)group.Centroid.Z);
             List<Strand> strands = new List<Strand>();
-            Vector3 firstCentroid = centroidCalculate(group.StrandSet[0]);
+            Vector3 firstCentroid = centroidCalculate(group.StrandSet[0].StrandInTheGroup);
             Vector3 reference = firstCentroid - centroid;
 
             foreach (var strand in group.StrandSet)
             {
-                Vector3 strandCentroid = centroidCalculate(strand);
+                Vector3 strandCentroid = centroidCalculate(strand.StrandInTheGroup);
+
                 Vector3 strandDirection = strandCentroid - centroid;
                 strand.StrandInTheGroup.angle = SharedFunctions.AngleBetween(reference, strandDirection);
-                Vector3 crossP = Vector3.Cross(reference, strandDirection);
-                if (crossP.Z > 0)
-                {
-                    strand.StrandInTheGroup.angle = 360 - strand.StrandInTheGroup.angle; //positive Z means more than halfway around circle from origin
-                }
+
                 strands.Add(strand.StrandInTheGroup);
             }
-            strands.Sort((a, b) => a.angle.CompareTo(b.angle));
+
+            Strand selectStrand = strands.Where(strand => (strand.angle > 60 && strand.angle < 130)).First();
+            Vector3 selectStrandDirection = centroidCalculate(selectStrand) - centroid;
+            Vector3 refCrossP = Vector3.Cross(reference, selectStrandDirection);
+
+            var ctr = 0;
+            foreach (var strand in group.StrandSet)
+            {
+                Vector3 strandCentroid = centroidCalculate(strand.StrandInTheGroup);
+                Vector3 strandDirection = strandCentroid - centroid;
+                Vector3 CrossP = Vector3.Cross(reference, strandDirection);
+                var refAngle = SharedFunctions.AngleBetween(CrossP, refCrossP);
+                if (refAngle > 90)
+                {
+                    strand.StrandInTheGroup.angle = 360 - strand.StrandInTheGroup.angle;
+                }
+
+                //Console.WriteLine($"pseudoatom strand{ctr}, pos=[{strandCentroid.X}, {strandCentroid.Y}, {strandCentroid.Z}]" +
+                //    $"\nshow spheres, strand{ctr}" +
+                //    $"\nlabel strand{ctr}, \"                    {strand.StrandInTheGroup.angle:000.##}\"" +
+                //    $"");
+                //ctr++;
+            }
+
+            //        Console.WriteLine($"pseudoatom centroid, pos=[{centroid.X}, {centroid.Y}, {centroid.Z}]" +
+            //$"\nshow spheres, centroid");
+
+            group.StrandSet.Sort((a, b) => a.StrandInTheGroup.angle.CompareTo(b.StrandInTheGroup.angle));
+
+            //foreach (var item in strands)
+            //{
+            //    Console.WriteLine(item.angle);
+            //}
+            
 
             int i = 0;
-            foreach (var strand in strands)
+            foreach (var strand in group.StrandSet)
             {
                 //Console.WriteLine($"{item.betaStrandNum} angle is {item.angle}");
-                strand.StrandNum = i;
+                strand.StrandInTheGroup.StrandNum = i;
                 i++;
             }
 
-            Vector3 centroidCalculate(OneStrand oneStrand)
+            Vector3 centroidCalculate(Strand Strand)
             {
-                var caList = oneStrand.StrandInTheGroup.Select(residue => residue.BackboneCoords["CA"]).ToList();
+                var caList = Strand.Select(residue => residue.BackboneCoords["CA"]).ToList();
                 Vector3 strandCentroid = new Vector3
                 {
                     X = caList.Sum(ca => ca.X) / caList.Count,
@@ -290,7 +343,7 @@ namespace betaBarrelProgram
                 };
                 return strandCentroid;
             }
-            return strands;
+            //return strands;
         }
 
         private void CheckIfBarrel(GroupOfStrands group)
@@ -542,21 +595,19 @@ namespace betaBarrelProgram
                         {
                             strandOne.RightNeighbors.Add(strandTwo.StrandInTheGroup);
                         }
-                        if (strandOne.DirectionAssigned = !strandTwo.DirectionAssigned)//check if either of the strands don't have a direction assigned
-                        {
-                            if (strandOne.DirectionAssigned == true) //Assign direction to the strand which doesn't have a direction yet
-                            {
-                                CheckIfParallel(strandTwo, strandOne);
-                                strandTwo.DirectionAssigned = true;
-                            }
-                            else
-                            {
-                                CheckIfParallel(strandOne, strandTwo);
-                                strandOne.DirectionAssigned = true;
-                            }
-                        }
-
-
+                        //if (strandOne.DirectionAssigned = !strandTwo.DirectionAssigned)//check if either of the strands don't have a direction assigned
+                        //{
+                        //    if (strandOne.DirectionAssigned == true) //Assign direction to the strand which doesn't have a direction yet
+                        //    {
+                        //        CheckIfParallel(strandTwo, strandOne);
+                        //        strandTwo.DirectionAssigned = true;
+                        //    }
+                        //    else
+                        //    {
+                        //        CheckIfParallel(strandOne, strandTwo);
+                        //        strandOne.DirectionAssigned = true;
+                        //    }
+                        //} //12/18/2020 - Removing strand assignment here. will implement it elsewhere.
 
                     }
 

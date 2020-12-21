@@ -50,9 +50,9 @@ namespace betaBarrelProgram
         public static string TEST_DB_file = POLARBEARAL_DIR + "/DB/TestDBList.txt";
         public static string TEST_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/test/";
 
-        // default to comprensive input and outputt
+        // default to comprensive input and output
         public static string DB_DIR = POLARBEARAL_DIR + "/DB/PDBs/";
-        public static string OUTPUT_DIR = POLARBEARAL_DIR + "/Output/all/";
+        public static string OUTPUT_DIR = POLARBEARAL_DIR + "/Output/";
         public static string DB_file = POLARBEARAL_DIR + "/DB/AllDBList.txt";
         public static string METHOD = POLARBEARAL_DIR + "mono";
 
@@ -90,7 +90,7 @@ namespace betaBarrelProgram
             DB_DIR = TEST_DB_DIR;
             DB_file = TEST_DB_file;
             OUTPUT_DIR = TEST_OUTPUT_DIR;
-            METHOD = "mono";
+            METHOD = "all";
         }
 
         public static void change_dataset()
@@ -211,12 +211,12 @@ namespace betaBarrelProgram
         static void Main(string[] args)
         {
             DateTime startTime = DateTime.Now;
-            using (StreamWriter log = File.AppendText(Global.OUTPUT_DIR + "log.txt"))
-            {
-                log.WriteLine("working with db ({0})", DateTime.Now);
-                //log.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", "PdbName", "Success", "barrelType", "chainID", "numberOfStrands");
-            }
-            
+            //using (StreamWriter log = File.AppendText(Global.OUTPUT_DIR + "log.txt"))
+            //{
+            //    log.WriteLine("working with db ({0})", DateTime.Now);
+            //    //log.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", "PdbName", "Success", "barrelType", "chainID", "numberOfStrands");
+            //}
+
             string choice = "";
 
             string method_input = "3";
@@ -416,12 +416,12 @@ namespace betaBarrelProgram
                         newProt = new AllProtein(ref myAtomCat, PDB);
                         Console.WriteLine("all method for barrel...");
                         ThisBarrel = new AllBarrel(ref newProt);
-                    }
-                    catch
-                    {
-                        Console.WriteLine("Failed to run {0} using the all methods\n", pdb);
-                    }
                 }
+                    catch
+                {
+                    Console.WriteLine("Failed to run {0} using the all methods\n", pdb);
+                }
+            }
                 // default to mono method
                 else //if ("mono" == method)
                 {
