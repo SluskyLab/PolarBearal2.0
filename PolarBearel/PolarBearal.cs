@@ -16,8 +16,8 @@ namespace betaBarrelProgram
         public static string PolarBearal_OUTPUT_DIR = Global.OUTPUT_DIR + "PolarBearal/";
         public static string PolarBearal_INPUT_DB_FILE = Global.DB_file; //Global.POLARBEARAL_DIR + "/DB/MonoDB_v5.txt"; //Global.MONO_DB_file;
 
-        double zone = 13;
-        bool use_zone = false;// when true, only +-zone (a.k.a. membrane) is considered for (most?) outputs
+        double zone = 13;// +-zone (a.k.a. membrane) is considered when use_zone==true
+
         static public void menu()
         {
             Console.WriteLine("1. Generate empty result files");
@@ -233,39 +233,58 @@ namespace betaBarrelProgram
             string file = @"PolarBearalResults.txt";
             using (StreamWriter output = File.AppendText(PolarBearal_OUTPUT_DIR + file))
             {
-                output.Write("\n\nProteins:\t{0} \t\t Chains:\t{1} \t\t AAs:\t{2}", PolarBearal._totalProteins, PolarBearal._totalChains, PolarBearal._totalAAs);
-
-                output.Write("\n\nSequence Length: \t\t 1 \t 2 \t 3 \t 4 \t 5 \t 6 \t 7 \t 8 \t 9 \t 10 \t 11 \t 12 \t 13 \t 14 \t 15 \t 16 \t 17 \t 18");
-                output.Write("\nTotals \t\t {0} \t {1} \t {2} \t {3} \t {4} \t {5} \t {6} \t {7} \t {8} \t {9} \t {10} \t {11} \t {12} \t {13} \t {14} \t {15} \t {16} \t {17}", PolarBearal._seqCount[1], PolarBearal._seqCount[2], PolarBearal._seqCount[3], PolarBearal._seqCount[4], PolarBearal._seqCount[5], PolarBearal._seqCount[6], PolarBearal._seqCount[7], PolarBearal._seqCount[8], PolarBearal.seqCount[9], PolarBearal._seqCount[10], PolarBearal._seqCount[11], PolarBearal._seqCount[12], PolarBearal._seqCount[13], PolarBearal._seqCount[14], PolarBearal._seqCount[15], PolarBearal._seqCount[16], PolarBearal._seqCount[17], PolarBearal._seqCount[18]);
+                output.Write("\n\nProteins:\t{0} \t\t Strands:\t{1} \t\t AAs:\t{2} \t\t used AAs:\t{3}", PolarBearal._totalProteins, PolarBearal._totalStrands, PolarBearal._totalAAs, PolarBearal._usedAAs);
                 output.Write("\n\n\n");
+
+                //output.Write("\n\nAltH Seq. lengths: \t\t 1 \t 2 \t 3 \t 4 \t 5 \t 6 \t 7 \t 8 \t 9 \t 10 \t 11 \t 12 \t 13 \t 14 \t 15 \t 16 \t 17 \t 18");
+                //output.Write("\nTotals \t\t {0} \t {1} \t {2} \t {3} \t {4} \t {5} \t {6} \t {7} \t {8} \t {9} \t {10} \t {11} \t {12} \t {13} \t {14} \t {15} \t {16} \t {17}", PolarBearal._seqCount[1], PolarBearal._seqCount[2], PolarBearal._seqCount[3], PolarBearal._seqCount[4], PolarBearal._seqCount[5], PolarBearal._seqCount[6], PolarBearal._seqCount[7], PolarBearal._seqCount[8], PolarBearal.seqCount[9], PolarBearal._seqCount[10], PolarBearal._seqCount[11], PolarBearal._seqCount[12], PolarBearal._seqCount[13], PolarBearal._seqCount[14], PolarBearal._seqCount[15], PolarBearal._seqCount[16], PolarBearal._seqCount[17], PolarBearal._seqCount[18]);
+                //output.Write("\n\n\n");
 
                 int num = 0;
                 output.Write("Strand Sizes:\n");
+                output.Write("Length\t");
                 foreach (int i in PolarBearal._strandSizes) output.Write("{0}\t", num++);
-                output.Write("\n");
+                output.Write("\nObserved\t");
                 foreach (int i in PolarBearal._strandSizes) output.Write("{0}\t", i);
                 output.Write("\n\n\n");
 
                 num = 0;
-                output.Write("Alternating Sequence Sizes:\n");
+                output.Write("Alternating Direction Seq. Lengths:\n");
+                output.Write("Length\t");
                 foreach (int i in PolarBearal._AlternatingInOutSeqLengths) output.Write("{0}\t", num++);
-                output.Write("\n");
+                output.Write("\nObserved\t");
                 foreach (int i in PolarBearal._AlternatingInOutSeqLengths) output.Write("{0}\t", i);
+                output.Write("\n\n\n");
 
-                output.Write("\n\n");
+                num = 0;
+                output.Write("Alternating Hydrophobicity Seq. Lengths:\n");
+                output.Write("Length\t");
+                foreach (int i in PolarBearal._AlternatingPolNonPSeqLengths) output.Write("{0}\t", num++);
+                output.Write("\nObserved\t");
+                foreach (int i in PolarBearal._AlternatingPolNonPSeqLengths) output.Write("{0}\t", i);
+                output.Write("\n\n\n");
+                num = 0;
+                output.Write("Alternating Direction and Hydrophobicity Seq. Lengths:\n");
+                output.Write("Length\t");
+                foreach (int i in PolarBearal._AlternatingBothSeqLengths ) output.Write("{0}\t", num++);
+                output.Write("\nObserved\t");
+                foreach (int i in PolarBearal._AlternatingBothSeqLengths) output.Write("{0}\t", i);
+                output.Write("\n\n\n");
+
+                output.Write("AA directions\t");
                 output.Write("\n\t\tL \tW \tP \tV \tI \tF \tY \tH \tA \tM \tG \tT \tQ \tD \tN \tK \tS \tR \tE \tC");
-                output.Write("\n\t");
+                output.Write("\nTotal\t");
                 foreach (int i in __aa) output.Write("{0}\t", i);
-                output.Write("\n\t");
+                output.Write("\nInward\t");
                 foreach (int i in _aaInward) output.Write("{0}\t", i);
-                output.Write("\n\t");
+                output.Write("\nOutward\t");
                 foreach (int i in _aaOutward) output.Write("{0}\t", i);
-                output.Write("\n\n\t");
-                foreach (int i in _aaDevInward) output.Write("{0}\t", i);
-                output.Write("\n\t");
-                foreach (int i in _aaDevOutward) output.Write("{0}\t", i);
+                //output.Write("\n\n\t");
+                //foreach (int i in _aaDevInward) output.Write("{0}\t", i);
+                //output.Write("\n\t");
+                //foreach (int i in _aaDevOutward) output.Write("{0}\t", i);
 
-
+                /*
                 output.Write("\n\n");
                 output.Write("\n\t\tL \tW \tP \tV \tI \tF \tY \tH \tA \tM \tG \tT \tQ \tD \tN \tK \tS \tR \tE \tC");
                 output.Write("\n");
@@ -290,7 +309,7 @@ namespace betaBarrelProgram
                 output.Write("aax3\t");
                 foreach (int i in _aap3) output.Write("{0}\t", i);
                 output.Write("\n");
-
+                */
 
 
             }
@@ -344,7 +363,7 @@ namespace betaBarrelProgram
 
                     aa tempaa = new aa(preaa[1]);
 
-                    if (preaa[2] == "True")
+                    if (preaa[2].ToLower() == "true")
                     {
                         tempaa.Inward = true;
                     }
@@ -359,7 +378,7 @@ namespace betaBarrelProgram
 
                     tempaa.angle = Double.Parse(preaa[6]);
                     //Console.Write(preaa[0] + ":" + preaa[1] + "," + preaa[2] + "," + preaa[3] + "," + preaa[4] + "\n");
-                    if (use_zone)
+                    /*if (use_zone)
                     {
                         if (tempaa.height > -zone && tempaa.height < zone)
                         {
@@ -372,14 +391,14 @@ namespace betaBarrelProgram
                         }
                     }
                     else
-                    {
+                    {*/
                         chain.Enqueue(tempaa);
                         file = @"DisplayAngles.txt";
                         using (StreamWriter output = File.AppendText(PolarBearal_OUTPUT_DIR + file))
                         {
                             output.Write("\n{0}\t{1}\t{2}", tempaa.m_aa_ID, tempaa.angle, tempaa.Inward);
                         }
-                    }
+                    //}
                 }
 
                 simpleBarrel[curChain] = chain.ToArray();
@@ -391,11 +410,14 @@ namespace betaBarrelProgram
                 PinNoutByProtein();
                 //update all db counts since attempt has successfullly completed
                 _totalProteins = totalProteins;
-                _totalChains = totalChains;
+                _totalStrands = totalStrands;
                 _totalAAs = totalAAs;
+                _usedAAs = usedAAs;
                 _seqCount = seqCount;
                 _strandSizes = strandSizes;
                 _AlternatingInOutSeqLengths = AlternatingInOutSeqLengths;
+                _AlternatingPolNonPSeqLengths = AlternatingPolNonPSeqLengths;
+                _AlternatingBothSeqLengths = AlternatingBothSeqLengths;
                 __aa = _aa;
                 _aaInward = aaInward;
                 _aaDevInward = aaDevInward;
@@ -417,11 +439,14 @@ namespace betaBarrelProgram
             {
                 //revert all db counts to what they were at the end of last successful attempt
                 totalProteins = _totalProteins;
-                totalChains = _totalChains;
+                totalStrands = _totalStrands;
                 totalAAs = _totalAAs;
+                usedAAs = _usedAAs;
                 seqCount = _seqCount;
                 strandSizes = _strandSizes;
                 AlternatingInOutSeqLengths = _AlternatingInOutSeqLengths;
+                AlternatingPolNonPSeqLengths = _AlternatingPolNonPSeqLengths;
+                AlternatingBothSeqLengths = _AlternatingBothSeqLengths;
                 _aa = __aa;
                 aaInward = _aaInward;
                 aaDevInward = _aaDevInward;
@@ -673,7 +698,7 @@ namespace betaBarrelProgram
         //For normal calculations
         public void PolarBearalCalculations()
         {
-            totalChains += simpleBarrel.Count();
+            totalStrands += simpleBarrel.Count();
             for (int i = 0; i < simpleBarrel.Length; i++)
             {
                 strandSizes[simpleBarrel[i].Length]++;
@@ -717,7 +742,8 @@ namespace betaBarrelProgram
                 sw.Write("\n");
             }
 
-            AlternatingFacing();
+            //AlternatingFacing();
+            AlternatingSequenceLengths();
         }
 
         //converts amino acid 1 letter ID into associated interger
@@ -914,6 +940,77 @@ namespace betaBarrelProgram
             }
         }
 
+        // get lengths of alternating direction and hydrophobicity seq. (new cleaner version of AlternatingFacing
+        void AlternatingSequenceLengths()
+        {
+            bool prevAAInward = true;
+            double prevAAHeight = 0.0;
+            char prevAAPol = 'P';
+            int numStrandAAs, altDirSeqLen, altHydSeqLen, altBothSeqLen;
+
+
+            foreach (aa[] strand in this.simpleBarrel)
+            {
+                numStrandAAs = 0;
+                altDirSeqLen = 0;
+                altHydSeqLen = 0;
+                altBothSeqLen = 0;
+
+                foreach (aa amino in strand)
+                {
+                    totalAAs++;
+                    if (!use_zone || (amino.height > -zone && amino.height < zone))
+                    {
+                        usedAAs++;
+                        if (numStrandAAs == 0)
+                            {
+                                altDirSeqLen++;
+                                altHydSeqLen++;
+                                altBothSeqLen++;
+                            }
+                            else
+                            {
+                                // count alternating direction sequences
+                                if (amino.Inward != prevAAInward) {altDirSeqLen++;}
+                                else
+                                {
+                                    // failed to alternate, so add previous alternating direction sequence to static counts and reset 
+                                    AlternatingInOutSeqLengths[altDirSeqLen]++;
+                                    altDirSeqLen = 1;
+                                }
+
+                                // count alternating hydrophobicity sequences
+                                if (amino.mPolarity != prevAAPol) {altHydSeqLen++;}
+                                else
+                                {
+                                    // failed to alternate, so add previous alternating direction sequence to static counts and reset 
+                                    AlternatingPolNonPSeqLengths[altHydSeqLen]++;
+                                    altHydSeqLen = 1;
+                                }
+
+                                // count alternating direction hydrophobicity sequences
+                                if ((amino.mPolarity != prevAAPol) && (amino.Inward != prevAAInward)) { altBothSeqLen++; }
+                                else
+                                {
+                                    // failed to alternate, so add previous alternating direction sequence to static counts and reset 
+                                    AlternatingBothSeqLengths[altBothSeqLen]++;
+                                    altBothSeqLen = 1;
+                                }
+                        }
+                        
+                    }
+
+                    prevAAInward = amino.Inward;
+                    prevAAHeight = amino.height;
+                    prevAAPol = amino.mPolarity;
+                    numStrandAAs++;
+                }
+                AlternatingInOutSeqLengths[altDirSeqLen]++;
+                AlternatingPolNonPSeqLengths[altHydSeqLen]++;
+                AlternatingBothSeqLengths[altBothSeqLen]++;
+            }
+        }
+
         //member class aa
         class aa
         {
@@ -968,8 +1065,8 @@ namespace betaBarrelProgram
         int numChains, largestAltSeq;
         // probably a better way to do this, but i duplicated all the following variables so that they
         // can be reverted to previous successful attempt should current attempt fail (so only working barrels in db are counted)
-        public static int totalProteins = 0, totalChains = 0, totalAAs = 0;
-        public static int _totalProteins = 0, _totalChains = 0, _totalAAs = 0;
+        public static int totalProteins = 0, totalStrands = 0, totalAAs = 0, usedAAs=0;
+        public static int _totalProteins = 0, _totalStrands = 0, _totalAAs = 0, _usedAAs=0;
 
         public static int[] seqCount = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         public static int[] _seqCount = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -998,6 +1095,10 @@ namespace betaBarrelProgram
         public static int[] _ZN = new int[150];
         public static int[] AlternatingInOutSeqLengths = new int[100];
         public static int[] _AlternatingInOutSeqLengths = new int[100];
+        public static int[] AlternatingPolNonPSeqLengths = new int[100];
+        public static int[] _AlternatingPolNonPSeqLengths = new int[100];
+        public static int[] AlternatingBothSeqLengths = new int[100];
+        public static int[] _AlternatingBothSeqLengths = new int[100];
         public static int[] examineZP = new int[125];
         public static int[] _examineZP = new int[125];
         public static int[] examineZN = new int[125];
@@ -1018,5 +1119,7 @@ namespace betaBarrelProgram
         public static int[] _aan2 = new int[21];
         public static int[] _aap3 = new int[22];
         public static int[] _aan3 = new int[22];
+
+        public static bool use_zone = true;
     }
 }
