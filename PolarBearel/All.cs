@@ -335,11 +335,11 @@ namespace betaBarrelProgram
                     newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "E";
                 }
 
-                var Remove = new List<int>() { 148, 149 }; //manually remove DSSP
-                foreach (var SeqID in Remove)
-                {
-                    newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "";
-                }
+                //var Remove = new List<int>() { 148, 149 }; //manually remove DSSP
+                //foreach (var SeqID in Remove)
+                //{
+                //    newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "";
+                //}
             }
 
             if (new List<string>() { "2C9J", "2GW3", "2H5O", "2RH7", "2WIQ", "3PIB" }.Contains(this.PdbName))
