@@ -320,6 +320,13 @@ namespace betaBarrelProgram
                 modifySSType(ref newProt, Add, Remove);
             }
 
+            if (PdbName == "1R0U")
+            {
+                var Add = new List<int>() { 2, 3, 4, 50, 51, 129 };
+                var Remove = new List<int>() { 71, 81, 92, 108, 111 };
+                modifySSType(ref newProt, Add, Remove);
+            }
+
             if (PdbName == "2A13")
             {
                 var Add = new List<int>() { 119, 120 }; //manually add DSSP
@@ -412,6 +419,13 @@ namespace betaBarrelProgram
                 {
                     newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "E";
                 }
+            }
+
+            if (PdbName == "4WFU")
+            {
+                var Add = new List<int>() { 38, 39, 40, 72, 73, 85, 90, 91, 92, 110 };
+                var Remove = new List<int>() { 24, 25, 36, 82, 109, 119 };
+                modifySSType(ref newProt, Add, Remove);
             }
 
             if (new List<string>() { "5IXG", "2RD7"}.Contains(this.PdbName))
