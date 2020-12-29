@@ -166,6 +166,22 @@ namespace betaBarrelProgram
                                         newLine = char1 + "\t" + char4 + "\t" + char2 + "\t" + char7 + "\t" + char8 + "\t" + char9 + "\t" + char3 + "\t" + char5 + "\t" + char6 + "\t" + char10;
                                         file.WriteLine(newLine);
 
+                                        #region Amino Acid Pair
+                                        try
+                                        {
+                                            SharedFunctions.AminoAcidPairs(myBarrel.Strands, Global.OUTPUT_DIR, Global.DB_DIR, myBarrel.PdbName);
+                                        }
+                                        catch (Exception exception)
+                                        {
+                                            Console.WriteLine("Failed to make pairs");
+                                            string fileLocation3 = PolarBearal_OUTPUT_DIR + "AAPairErrorLog.txt";
+                                            using (StreamWriter file3 = new StreamWriter(fileLocation3, append: true))
+                                            {
+                                                string newLine3 = myBarrel.PdbName + "\t" + exception.InnerException + exception.Message + "\t" + exception.StackTrace +  "\t" + exception.Source + "\t" + exception.Data + "\n";
+                                                file3.WriteLine(newLine3);
+                                            }
+                                        }
+                                        #endregion
                                     }
                                 }
                                 //Console.WriteLine("Number of Proteins: {0} \t AAs: {1} \t Double Checked Directions: {2}", totalProteins, totalAAs, numDoubleChecks);

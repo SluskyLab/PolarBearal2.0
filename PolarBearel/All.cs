@@ -199,15 +199,15 @@ namespace betaBarrelProgram
                 this.StrandLength = SharedFunctions.getStrandLengths(this.Strands, path, this.PdbName);
                 //this.PrevTwists = SharedFunctions.writeTwists(this.Strands, Global.OUTPUT_DIR, this.PdbName);
 
-                try
-                {
-                    SharedFunctions.AminoAcidPairs(Strands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName);
-                }
-                catch (Exception)
-                {
+                //try
+                //{
+                //    SharedFunctions.AminoAcidPairs(Strands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName);
+                //}
+                //catch (Exception)
+                //{
 
-                    Console.WriteLine("Failed to make pairs");
-                }
+                //    Console.WriteLine("Failed to make pairs");
+                //}
 
 
                 if (PdbName=="2HLV")
@@ -335,11 +335,11 @@ namespace betaBarrelProgram
                     newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "E";
                 }
 
-                //var Remove = new List<int>() { 148, 149 }; //manually remove DSSP
-                //foreach (var SeqID in Remove)
-                //{
-                //    newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "";
-                //}
+                var Remove = new List<int>() { 148, 149 }; //manually remove DSSP
+                foreach (var SeqID in Remove)
+                {
+                    newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "";
+                }
             }
 
             if (new List<string>() { "2C9J", "2GW3", "2H5O", "2RH7", "2WIQ", "3PIB" }.Contains(this.PdbName))

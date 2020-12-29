@@ -137,7 +137,7 @@ namespace betaBarrelProgram
                 //string[] colors = { "white", "red", "orange", "purple", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple" };
                 string[] colors = { "red", "yellow", "green", "cyan", "blue", "magenta" };//, "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta", "red", "yellow", "green", "cyan", "blue", "magenta" };
                 string pdb_file = DBdirectory + pdbName + ".pdb";
-                file.WriteLine("cmd.load(\"{0}\")", pdb_file);
+                file.WriteLine("cmd.load(r\"{0}\")", pdb_file);
                 file.WriteLine("cmd.hide(\"everything\", \"all\")");
                 file.WriteLine("cmd.color(\"grey50\",\"all\")");
 
