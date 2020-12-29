@@ -2645,7 +2645,7 @@ namespace betaBarrelProgram
                         if (weakHBondDist2 < weakHBondLimit)
                         {
                             weakHBondList.Add(new Tuple<Res, Res>(residue1, residue2));
-                            //if (!HydrogenList.ContainsKey(residue2))
+                            if (!HydrogenList.ContainsKey(residue2))
                             {
                                 HydrogenList.Add(residue2, hydrogenOfCA2);
                             }
@@ -2657,7 +2657,7 @@ namespace betaBarrelProgram
                         if (weakHBondDist1 < weakHBondLimit)
                         {
                             weakHBondList.Add(new Tuple<Res, Res>(residue2, residue1));
-                            //if (!HydrogenList.ContainsKey(residue1))
+                            if (!HydrogenList.ContainsKey(residue1))
                             {
                                 HydrogenList.Add(residue1, hydrogenOfCA1);
                             }
@@ -2669,7 +2669,7 @@ namespace betaBarrelProgram
                         Vector3 RGroup1;
                         Vector3 RGroup2;
 
-                        if (residue1.ThreeLetCode == "GLY")
+                        if (!(residue1.Atoms.Any(i => i.AtomName == "CB")))
                         {
                             RGroup1 = findRGroupOfGly(residue1);
                         }
@@ -2678,7 +2678,7 @@ namespace betaBarrelProgram
                             RGroup1 = residue1.Atoms.First(i => i.AtomName == "CB").Coords;
                         }
 
-                        if (residue2.ThreeLetCode == "GLY")
+                        if (!(residue2.Atoms.Any( i => i.AtomName == "CB")))
                         {
                             RGroup2 = findRGroupOfGly(residue2);
                         }
