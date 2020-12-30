@@ -15,6 +15,7 @@ using betaBarrelProgram.BarrelStructures;
 using System.Linq;
 using System.Numerics;
 using System.Collections;
+using System.IO;
 
 namespace betaBarrelProgram
 {
@@ -168,11 +169,29 @@ namespace betaBarrelProgram
 	                    this.Strands.Add(newStrand);
 	                }
 	            }
-	            #endregion
+				#endregion
 
-	            #region Rotate barrel so axis is on z-axis
+				#region Amino Acid Pair
+				try
+				{
+					SharedFunctions.AminoAcidPairs(this.Strands, Global.OUTPUT_DIR, Global.DB_DIR, this.PdbName);
+				}
+				catch (Exception exception)
+				{
+					Console.WriteLine("Failed to make pairs");
+					string fileLocation = Global.OUTPUT_DIR + "AAPairErrorLog.txt";
+					using (StreamWriter file = new StreamWriter(fileLocation, append: true))
+					{
+						string newLine = this.PdbName + "\t" + exception.InnerException + exception.Message + "\t" + exception.StackTrace + "\t" + exception.Source + "\t" + exception.Data + "\n";
+						file.WriteLine(newLine);
+					}
+				}
+				#endregion
 
-	            getEllipseCoords(outwardStrands);
+
+				#region Rotate barrel so axis is on z-axis
+
+				getEllipseCoords(outwardStrands);
 
 	            this.Axis = this.Ccentroid - this.Ncentroid;
 	            this.AvgRadius = SharedFunctions.setRadius(this.Strands, this.Axis, this.Ccentroid, this.Ncentroid);
