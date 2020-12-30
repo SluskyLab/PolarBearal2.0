@@ -992,7 +992,7 @@ namespace betaBarrelProgram
 
             public void setBottom(ref Chain _myChain)
             {
-                double adjuster = 12;
+                double adjuster = 12.5;
                 //double adjuster = .0962 * this.Axis.Length() + 8.3358;
                 //double adjuster = 11.75;
                 // if (this.Axis.Length() < 30) adjuster = 11;

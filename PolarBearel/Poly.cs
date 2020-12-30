@@ -1038,47 +1038,29 @@ namespace betaBarrelProgram
 	            getEllipseCoords(outPDBs);
 	        }
 
-	        public void centerZ(List<string> out_ins, List<string> out_pdbs, PolyProtein _myProtein)
-	        {
-	            float factor;
-	            double avgZ = (this.Ncentroid.Z + this.Ccentroid.Z) / 2;
-	            getEllipseCoords(out_pdbs);
-	            if (out_ins.Contains(this.PdbName.ToUpper()) == true) factor = this.Ncentroid.Z + (float)12.5;
-	            else factor = this.Ccentroid.Z - (float)12.5;
+			public void centerZ(List<string> out_ins, List<string> out_pdbs, PolyProtein _myProtein)
+			{
+				float factor;
+				getEllipseCoords(out_pdbs);
+				if (out_ins.Contains(this.PdbName.ToUpper()) == true) factor = this.Ncentroid.Z + (float)12.5;
+				else factor = this.Ccentroid.Z - (float)12.5;
 
-	            for (int chain = 0; chain < _myProtein.Chains.Count; chain++)
-	            {
-	                foreach (Res res in _myProtein.Chains[chain])
-	                {
-	                    foreach (Atom atom in res)
-	                    {
-	                        Vector3 newCoords = new Vector3(atom.Coords.X, atom.Coords.Y, atom.Coords.Z - factor);
-	                        atom.Coords = newCoords;
-	                        if (atom.AtomName == "CA" || atom.AtomName == "C" || atom.AtomName == "N" || atom.AtomName == "O")
-	                        {
-	                            res.BackboneCoords[atom.AtomName] = atom.Coords;
-	                        }
-	                    }
-	                }
-	            }
-
-	            /*foreach (Strand strand in this.Strands)
-	            {
-	                foreach (Res res in strand)
-	                {
-	                    foreach (Atom atom in res)
-	                    {
-	                        //Vector3 newCoords = new Vector3(atom.Coords.X, atom.Coords.Y, atom.Coords.Z - (avgZ));
-	                        Vector3 newCoords = new Vector3(atom.Coords.X, atom.Coords.Y, atom.Coords.Z - factor);
-	                        atom.Coords = newCoords;
-	                        if (atom.AtomName == "CA" || atom.AtomName == "C" || atom.AtomName == "N" || atom.AtomName == "O")
-	                        {
-	                            res.BackboneCoords[atom.AtomName] = atom.Coords;
-	                        }
-	                    }
-	                }
-	            }*/
-	        }
+				for (int chain = 0; chain < _myProtein.Chains.Count; chain++)
+				{
+					foreach (Res res in _myProtein.Chains[chain])
+					{
+						foreach (Atom atom in res)
+						{
+							Vector3 newCoords = new Vector3(atom.Coords.X, atom.Coords.Y, atom.Coords.Z - factor);
+							atom.Coords = newCoords;
+							if (atom.AtomName == "CA" || atom.AtomName == "C" || atom.AtomName == "N" || atom.AtomName == "O")
+							{
+								res.BackboneCoords[atom.AtomName] = atom.Coords;
+							}
+						}
+					}
+				}
+			}
 
 	        public void sortStrandsAroundEllipse()
 	        {
