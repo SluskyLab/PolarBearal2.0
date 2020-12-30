@@ -45,11 +45,11 @@ namespace betaBarrelProgram
         public static string SOLUBLE_DB_file = POLARBEARAL_DIR + "/DB/SolubleDBList.txt";
         public static string SOLUBLE_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/soluble/";
 
-        // curently testing poly barrels that decided to stop working - Ryan 12/15/2020
-        public static string TEST_DB_DIR = POLARBEARAL_DIR + "/DB/PDBs/";
+        // change method and TEST_DB_DIR to test subsets of PDBs with mono, poly, and all methods
         public static string TEST_DB_file = POLARBEARAL_DIR + "/DB/TestDBList.txt";
         public static string TEST_OUTPUT_DIR = POLARBEARAL_DIR + "/Output/test/";
-
+        public static string TEST_DB_DIR = POLARBEARAL_DIR + "/DB/PolyBarrelsDB/";
+        public static string TEST_METHOD = "poly";
         // default to comprensive input and output
         public static string DB_DIR = POLARBEARAL_DIR + "/DB/PDBs/";
         public static string OUTPUT_DIR = POLARBEARAL_DIR + "/Output/";
@@ -90,7 +90,7 @@ namespace betaBarrelProgram
             DB_DIR = TEST_DB_DIR;
             DB_file = TEST_DB_file;
             OUTPUT_DIR = TEST_OUTPUT_DIR;
-            METHOD = "poly";
+            METHOD = TEST_METHOD;
         }
 
         public static void change_dataset()

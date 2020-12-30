@@ -1232,7 +1232,7 @@ namespace betaBarrelProgram
                 axis1 = Vector3.Transform(this.Axis, rotationMatrixZ);
 
                 double theta = Math.Atan(axis1.X / axis1.Z);
-                if (0 == this.Axis.Z) { theta = 0; }
+                //if (0 == this.Axis.Z) { theta = 0; }
                 Matrix4x4 rotationMatrixYT = new Matrix4x4((float)Math.Cos(theta), 0, -1 * (float)Math.Sin(theta), 0, 0, 1, 0, 0, (float)Math.Sin(theta), 0, (float)Math.Cos(theta), 0, 0, 0, 0, 0);
                 Matrix4x4 rotationMatrixY = new Matrix4x4((float)Math.Cos(theta), 0, (float)Math.Sin(theta), 0, 0, 1, 0, 0, -1 * (float)Math.Sin(theta), 0, (float)Math.Cos(theta), 0, 0, 0, 0, 0);
 

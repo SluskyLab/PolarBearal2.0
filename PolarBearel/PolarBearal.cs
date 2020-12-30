@@ -16,7 +16,7 @@ namespace betaBarrelProgram
         public static string PolarBearal_OUTPUT_DIR = Global.OUTPUT_DIR + "PolarBearal/";
         public static string PolarBearal_INPUT_DB_FILE = Global.DB_file; //Global.POLARBEARAL_DIR + "/DB/MonoDB_v5.txt"; //Global.MONO_DB_file;
 
-        double zone = 12.5;// +-zone (a.k.a. membrane) is considered when use_zone==true
+        double zone = 13;// +-zone (a.k.a. membrane) is considered when use_zone==true
 
         static public void menu()
         {
@@ -134,10 +134,11 @@ namespace betaBarrelProgram
                 {
                     String line;
                     string fileLocation2 = PolarBearal_OUTPUT_DIR + "AllBarrelChar.txt";
-                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation2))
+                    using (System.IO.StreamWriter AllBarrel_output = new System.IO.StreamWriter(fileLocation2))
                     {
-                        string newLine = "PDB" + "\t\t" + "Total Strands" +"\t" + "Length" + "\t" + "AvgLength" + "\t" + "MinLength" + "\t" + "MaxLength" + "\t" + "Radius" + "\t" + "Barrel Tilt";
-                        file.WriteLine(newLine);
+                        //string newLine = "PDB" + "\t\t" + "Total Strands" +"\t" + "Length" + "\t" + "AvgLength" + "\t" + "MinLength" + "\t" + "MaxLength" + "\t" + "Radius" + "\t" + "Barrel Tilt";
+                        //file.WriteLine(newLine);
+                        AllBarrel_output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}", "PDB", "total_strands", "strand_cnt", "avg_length", "min_length", "max_length", "avg_radius", "avg_tilt", "shear_num");
                         // Read and display lines from the file until the end of the file is reached.
                         while ((line = sr.ReadLine()) != null)
                         {
@@ -149,34 +150,23 @@ namespace betaBarrelProgram
                                 string fileName = pdb;
                                 //string fileName = pdb + ".pdb";
                                 Barrel myBarrel = Program.runThisBetaBarrel(pdb, Global.METHOD);
+
+                                SharedFunctions.LogBarrel(ref myBarrel, Global.METHOD);
+                                PolarBearal roar = new PolarBearal(ref myBarrel);
+
+                                string PDB = myBarrel.PdbName;
+                                string total_strands = myBarrel.Axis.Length().ToString();
+                                string avg_length = myBarrel.StrandLength.Average().ToString();
+                                string min_length = myBarrel.StrandLength.Min().ToString();
+                                string max_length = myBarrel.StrandLength.Max().ToString();
+                                string avg_radius = myBarrel.AvgRadius.ToString();
+                                string strand_cnt = myBarrel.Strands.Count.ToString();
+                                string avg_tilt = myBarrel.AvgTilt.ToString();
+                                string shear_num = myBarrel.ShearNum.ToString();
                                 
-                                //try
-                                //{
-                                    SharedFunctions.LogBarrel(ref myBarrel, Global.METHOD);
-                                    if (myBarrel.Success)
-                                    {
-                                        PolarBearal roar = new PolarBearal(ref myBarrel);
+                                AllBarrel_output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}", PDB, total_strands, strand_cnt, avg_length, min_length, max_length, avg_radius, avg_tilt, shear_num);
 
-                                        string char1 = myBarrel.PdbName;
-                                        string char2 = myBarrel.Axis.Length().ToString();
-                                        string char7 = myBarrel.StrandLength.Average().ToString();
-                                        string char8 = myBarrel.StrandLength.Min().ToString();
-                                        string char9 = myBarrel.StrandLength.Max().ToString();
-                                        string char3 = myBarrel.AvgRadius.ToString();
-                                        string char4 = myBarrel.Strands.Count.ToString();
-                                        string char5 = myBarrel.AvgTilt.ToString();
-                                        string char6 = myBarrel.ShearNum.ToString();
-                                        string char10 = "-999";// myBarrel.PrevTwists.Average().ToString();
-                                        newLine = char1 + "\t" + char4 + "\t" + char2 + "\t" + char7 + "\t" + char8 + "\t" + char9 + "\t" + char3 + "\t" + char5 + "\t" + char6 + "\t" + char10;
-                                        file.WriteLine(newLine);
-
-                                    }
-                                //}
-                                //Console.WriteLine("Number of Proteins: {0} \t AAs: {1} \t Double Checked Directions: {2}", totalProteins, totalAAs, numDoubleChecks);
-                                //catch
-                                //{
-                                //    Console.WriteLine("Failed polarbearel creation for {0}", pdb);
-                                //}
+                                
                             }
                         }
                     }
@@ -211,15 +201,6 @@ namespace betaBarrelProgram
                             string fileName = pdb.ToUpper(); //RYANpdb.Substring(0, 4).ToUpper();
 
                             PolarBearal polarRetest = new PolarBearal(fileName);
-                            try { 
-                            
-                            //PolarBearal polarRetest = new PolarBearal(fileName);
-                            }
-                            catch
-                            {
-
-                                Console.WriteLine("Failed to run polarbearal results for {0}", pdb);
-                            }
                         }
                     }
                 }
