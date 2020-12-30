@@ -16,7 +16,7 @@ namespace betaBarrelProgram
         public static string PolarBearal_OUTPUT_DIR = Global.OUTPUT_DIR + "PolarBearal/";
         public static string PolarBearal_INPUT_DB_FILE = Global.DB_file; //Global.POLARBEARAL_DIR + "/DB/MonoDB_v5.txt"; //Global.MONO_DB_file;
 
-        double zone = 13;// +-zone (a.k.a. membrane) is considered when use_zone==true
+        double zone = 12.5;// +-zone (a.k.a. membrane) is considered when use_zone==true
 
         static public void menu()
         {
@@ -104,7 +104,11 @@ namespace betaBarrelProgram
             {
                 System.IO.Directory.CreateDirectory(output_sub_dir);
             }
-
+            output_sub_dir = PolarBearal_OUTPUT_DIR + "betaBarrelStrands_MembraneRegionOnly";
+            if (!System.IO.Directory.Exists(output_sub_dir))
+            {
+                System.IO.Directory.CreateDirectory(output_sub_dir);
+            }
             //create (or recreate) blank result files with headers
             using (StreamWriter output = new System.IO.StreamWriter(PolarBearal_OUTPUT_DIR + "PolarBearalResults.txt")) { }
             using (System.IO.StreamWriter output = new System.IO.StreamWriter(PolarBearal_OUTPUT_DIR + "ExamineZ.txt")) { }
@@ -428,16 +432,16 @@ namespace betaBarrelProgram
         public PolarBearal(ref Barrel myBarrel)
         {
             // soluble barrels using 'all' method do not look at Z, but mono and poly do
-            if (Global.METHOD == "all"){ use_zone = false;}
-            else { use_zone = true;}
+            if (Global.METHOD == "all") { use_zone = false; }
+            else { use_zone = true; }
 
 
-            
+
             proteinID = myBarrel.PdbName;
             largestAltSeq = 0;
             totalProteins++;
 
-            
+
 
             string use_chain = myBarrel.Strands[0].ChainName;
             numStrands = 0;
@@ -538,6 +542,37 @@ namespace betaBarrelProgram
                         _angle = simpleBarrel[curStrand][cur_aa].angle;
 
                         output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}", _pdb, _pdb_strands, _res, _res_num, _seqID, _res_strand, _res_ca_x, _res_ca_y, _res_ca_z, _inward, _angle);
+                    }
+                }
+            }
+            if (true == use_zone)
+            { 
+                file = @"betaBarrelStrands_MembraneRegionOnly/" + proteinID + "_MembRegionStrandResData.txt";
+                using (System.IO.StreamWriter output = new System.IO.StreamWriter(PolarBearal_OUTPUT_DIR + file))
+                {
+                    output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}", "_pdb", "_pdb_strands", "_res", "_res_num", "_seqID", "_res_strand", "_res_ca_x", "_res_ca_y", "_res_ca_z", "_inward", "_angle");
+                    for (int curStrand = 0; curStrand < simpleBarrel.GetLength(0); curStrand++)
+                    {
+                        //add aa
+                        for (int cur_aa = 0; cur_aa < simpleBarrel[curStrand].Length; cur_aa++)
+                        {
+                            _res_ca_z = simpleBarrel[curStrand][cur_aa].height;
+                            if (_res_ca_z > -zone && _res_ca_z < zone)
+                                {
+                                _pdb = proteinID;
+                                _pdb_strands = simpleBarrel.GetLength(0);
+                                _res = simpleBarrel[curStrand][cur_aa].m_aa_ID;
+                                _res_num = simpleBarrel[curStrand][cur_aa].ResNum + 1;
+                                _seqID = simpleBarrel[curStrand][cur_aa].SeqID;
+                                _res_strand = curStrand + 1;
+                                _res_ca_x = simpleBarrel[curStrand][cur_aa].X;
+                                _res_ca_y = simpleBarrel[curStrand][cur_aa].Y;
+                                _inward = simpleBarrel[curStrand][cur_aa].Inward;
+                                _angle = simpleBarrel[curStrand][cur_aa].angle;
+
+                                output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}", _pdb, _pdb_strands, _res, _res_num, _seqID, _res_strand, _res_ca_x, _res_ca_y, _res_ca_z, _inward, _angle);
+                            }
+                        }
                     }
                 }
             }
