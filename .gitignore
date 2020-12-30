@@ -16,6 +16,7 @@ DB/
 Output/
 prevDB/
 prevOutput/
+python/examineBarrels.py
 # Mac bundle stuff
 *.dmg
 *.app

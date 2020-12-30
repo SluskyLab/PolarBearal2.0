@@ -199,15 +199,22 @@ namespace betaBarrelProgram
                 this.StrandLength = SharedFunctions.getStrandLengths(this.Strands, path, this.PdbName);
                 //this.PrevTwists = SharedFunctions.writeTwists(this.Strands, Global.OUTPUT_DIR, this.PdbName);
 
-                //try
-                //{
-                //    SharedFunctions.AminoAcidPairs(Strands, Global.OUTPUT_DIR, Global.DB_DIR, PdbName);
-                //}
-                //catch (Exception)
-                //{
-
-                //    Console.WriteLine("Failed to make pairs");
-                //}
+                #region Amino Acid Pair
+                try
+                {
+                    SharedFunctions.AminoAcidPairs(this.Strands, Global.OUTPUT_DIR, Global.DB_DIR, this.PdbName);
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine("Failed to make pairs");
+                    string fileLocation3 = Global.OUTPUT_DIR + "AAPairErrorLog.txt";
+                    using (StreamWriter file3 = new StreamWriter(fileLocation3, append: true))
+                    {
+                        string newLine3 = this.PdbName + "\t" + exception.InnerException + exception.Message + "\t" + exception.StackTrace + "\t" + exception.Source + "\t" + exception.Data + "\n";
+                        file3.WriteLine(newLine3);
+                    }
+                }
+                #endregion
 
 
                 if (PdbName=="2HLV")
