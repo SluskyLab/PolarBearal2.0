@@ -529,7 +529,7 @@ namespace betaBarrelProgram
             file = @"betaBarrelStrands/" + proteinID + ".txt";
             using (System.IO.StreamWriter output = new System.IO.StreamWriter(PolarBearal_OUTPUT_DIR + file))
             {
-                output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", "_pdb", "_pdb_strands", "_res", "_res_num", "_seqID", "_res_strand", "_res_ca_x", "_res_ca_y", "_res_ca_z", "_inward", "_angle", "_chain");
+                output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}", "_pdb", "_pdb_strands", "_res", "_res_num", "_seqID", "_res_strand", "_res_ca_x", "_res_ca_y", "_res_ca_z", "_inward", "_angle", "_chain");
                 for (int curStrand = 0; curStrand < simpleBarrel.GetLength(0); curStrand++)
                 {
                     //add aa
@@ -547,7 +547,7 @@ namespace betaBarrelProgram
                         _inward = simpleBarrel[curStrand][cur_aa].Inward;
                         _angle = simpleBarrel[curStrand][cur_aa].angle;
                         _chain = simpleBarrel[curStrand][cur_aa].chain;
-                        output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", _pdb, _pdb_strands, _res, _res_num, _seqID, _res_strand, _res_ca_x, _res_ca_y, _res_ca_z, _inward, _angle, _chain);
+                        output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}", _pdb, _pdb_strands, _res, _res_num, _seqID, _res_strand, _res_ca_x, _res_ca_y, _res_ca_z, _inward, _angle, _chain);
                     }
                 }
             }
@@ -558,7 +558,7 @@ namespace betaBarrelProgram
             file = @"betaBarrelStrands_UseForCalc/" + proteinID + "_LimitedBarrelStrandResidues.txt";
             using (System.IO.StreamWriter output = new System.IO.StreamWriter(PolarBearal_OUTPUT_DIR + file))
             {
-                output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", "_pdb", "_pdb_strands", "_res", "_res_num", "_seqID", "_res_strand", "_res_ca_x", "_res_ca_y", "_res_ca_z", "_inward", "_angle", "_chain");
+                output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}", "_pdb", "_pdb_strands", "_res", "_res_num", "_seqID", "_res_strand", "_res_ca_x", "_res_ca_y", "_res_ca_z", "_inward", "_angle", "_chain");
                 for (int curStrand = 0; curStrand < simpleBarrel.GetLength(0); curStrand++)
                 {
                     _chain = simpleBarrel[curStrand][0].chain;
@@ -583,7 +583,7 @@ namespace betaBarrelProgram
                                 _inward = simpleBarrel[curStrand][cur_aa].Inward;
                                 _angle = simpleBarrel[curStrand][cur_aa].angle;
                                 _chain = simpleBarrel[curStrand][cur_aa].chain;
-                                output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", _pdb, _pdb_strands, _res, _res_num, _seqID, _res_strand, _res_ca_x, _res_ca_y, _res_ca_z, _inward, _angle, _chain);
+                                output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}", _pdb, _pdb_strands, _res, _res_num, _seqID, _res_strand, _res_ca_x, _res_ca_y, _res_ca_z, _inward, _angle, _chain);
                             }
                         }
                     }
