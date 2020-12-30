@@ -90,7 +90,7 @@ namespace betaBarrelProgram
             DB_DIR = TEST_DB_DIR;
             DB_file = TEST_DB_file;
             OUTPUT_DIR = TEST_OUTPUT_DIR;
-            METHOD = "all";
+            METHOD = "poly";
         }
 
         public static void change_dataset()
