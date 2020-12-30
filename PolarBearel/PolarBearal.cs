@@ -104,7 +104,7 @@ namespace betaBarrelProgram
             {
                 System.IO.Directory.CreateDirectory(output_sub_dir);
             }
-            output_sub_dir = PolarBearal_OUTPUT_DIR + "betaBarrelStrands_MembraneRegionOnly";
+            output_sub_dir = PolarBearal_OUTPUT_DIR + "betaBarrelStrands_UseForCalc";
             if (!System.IO.Directory.Exists(output_sub_dir))
             {
                 System.IO.Directory.CreateDirectory(output_sub_dir);
@@ -447,8 +447,10 @@ namespace betaBarrelProgram
             numStrands = 0;
             for (int curStrand = 0; curStrand < myBarrel.Strands.Count; curStrand++)
             {
-                // only save data for one chain to avoid overcounting poly-barrels
-                if (use_chain == myBarrel.Strands[curStrand].ChainName) numStrands++;
+                // only save data for one chain to avoid overcounting poly-barrels (except for 2 poly exceptions)
+                if (myBarrel.PdbName.ToUpper() == "4TW1" & (myBarrel.Strands[curStrand].ChainName == "E" | myBarrel.Strands[curStrand].ChainName == "F") ) numStrands++;
+                else if(myBarrel.PdbName.ToUpper() == "3B07" & (myBarrel.Strands[curStrand].ChainName == "A" | myBarrel.Strands[curStrand].ChainName == "B")) numStrands++;
+                else if (use_chain == myBarrel.Strands[curStrand].ChainName) numStrands++;
             }
             //2D array to store data;[strand number] [amino acid number]
             simpleBarrel = new aa[numStrands][];
@@ -458,7 +460,9 @@ namespace betaBarrelProgram
             foreach (Strand s in myBarrel)
             {
                 // only save data for one chain to avoid overcounting poly-barrels
-                if (use_chain == s.ChainName)
+                if ((myBarrel.PdbName.ToUpper() == "4TW1" & (s.ChainName == "E" | s.ChainName == "F")) |
+                    (myBarrel.PdbName.ToUpper() == "3B07" & (s.ChainName == "A" | s.ChainName == "B")) |
+                    (use_chain == s.ChainName))
                 {
                     simpleBarrel[strand_ctr] = new aa[s.Residues.Count()];
                     //add aa
@@ -473,6 +477,7 @@ namespace betaBarrelProgram
                         simpleBarrel[strand_ctr][aa_cnt].X = cur_aa.BackboneCoords["CA"].X;
                         simpleBarrel[strand_ctr][aa_cnt].Y = cur_aa.BackboneCoords["CA"].Y;
                         simpleBarrel[strand_ctr][aa_cnt].height = cur_aa.BackboneCoords["CA"].Z;
+                        simpleBarrel[strand_ctr][aa_cnt].chain = cur_aa.ChainName;
 
                         simpleBarrel[strand_ctr][aa_cnt].angle = SharedFunctions.AngleBetween(cur_aa.BackboneCoords["CA"] - ((cur_aa.BackboneCoords["N"] + cur_aa.BackboneCoords["C"]) / 2), myBarrel.Axis);
                         aa_cnt++;
@@ -485,6 +490,7 @@ namespace betaBarrelProgram
             using (System.IO.StreamWriter output = new System.IO.StreamWriter(PolarBearal_OUTPUT_DIR + file))
             {
                 for (int curStrand = 0; curStrand < simpleBarrel.GetLength(0); curStrand++)
+
                 {
                     //add aa
                     for (int cur_aa = 0; cur_aa < simpleBarrel[curStrand].Length; cur_aa++)
@@ -519,11 +525,11 @@ namespace betaBarrelProgram
             double _res_ca_z;
             bool _inward;
             double _angle;
-
+            string _chain;
             file = @"betaBarrelStrands/" + proteinID + ".txt";
             using (System.IO.StreamWriter output = new System.IO.StreamWriter(PolarBearal_OUTPUT_DIR + file))
             {
-                output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}", "_pdb", "_pdb_strands", "_res", "_res_num", "_seqID", "_res_strand", "_res_ca_x", "_res_ca_y", "_res_ca_z", "_inward", "_angle");
+                output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", "_pdb", "_pdb_strands", "_res", "_res_num", "_seqID", "_res_strand", "_res_ca_x", "_res_ca_y", "_res_ca_z", "_inward", "_angle", "_chain");
                 for (int curStrand = 0; curStrand < simpleBarrel.GetLength(0); curStrand++)
                 {
                     //add aa
@@ -540,25 +546,32 @@ namespace betaBarrelProgram
                         _res_ca_z = simpleBarrel[curStrand][cur_aa].height;
                         _inward = simpleBarrel[curStrand][cur_aa].Inward;
                         _angle = simpleBarrel[curStrand][cur_aa].angle;
-
-                        output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}", _pdb, _pdb_strands, _res, _res_num, _seqID, _res_strand, _res_ca_x, _res_ca_y, _res_ca_z, _inward, _angle);
+                        _chain = simpleBarrel[curStrand][cur_aa].chain;
+                        output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", _pdb, _pdb_strands, _res, _res_num, _seqID, _res_strand, _res_ca_x, _res_ca_y, _res_ca_z, _inward, _angle, _chain);
                     }
                 }
             }
-            if (true == use_zone)
-            { 
-                file = @"betaBarrelStrands_MembraneRegionOnly/" + proteinID + "_MembRegionStrandResData.txt";
-                using (System.IO.StreamWriter output = new System.IO.StreamWriter(PolarBearal_OUTPUT_DIR + file))
+            // The following file can be used to only output residues that we want to use for calculations for soluble vs. membrane barrel paper
+            // soluble = all strand residues
+            // mono = strand residues within membrane region
+            // poly = non-repeating strand residues within membrane region
+            file = @"betaBarrelStrands_UseForCalc/" + proteinID + "_LimitedBarrelStrandResidues.txt";
+            using (System.IO.StreamWriter output = new System.IO.StreamWriter(PolarBearal_OUTPUT_DIR + file))
+            {
+                output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", "_pdb", "_pdb_strands", "_res", "_res_num", "_seqID", "_res_strand", "_res_ca_x", "_res_ca_y", "_res_ca_z", "_inward", "_angle", "_chain");
+                for (int curStrand = 0; curStrand < simpleBarrel.GetLength(0); curStrand++)
                 {
-                    output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}", "_pdb", "_pdb_strands", "_res", "_res_num", "_seqID", "_res_strand", "_res_ca_x", "_res_ca_y", "_res_ca_z", "_inward", "_angle");
-                    for (int curStrand = 0; curStrand < simpleBarrel.GetLength(0); curStrand++)
+                    _chain = simpleBarrel[curStrand][0].chain;
+                    if ((myBarrel.PdbName.ToUpper() == "4TW1" & (_chain == "E" | _chain == "F")) |
+                    (myBarrel.PdbName.ToUpper() == "3B07" & (_chain == "A" | _chain == "B")) |
+                    (use_chain == _chain))
                     {
                         //add aa
                         for (int cur_aa = 0; cur_aa < simpleBarrel[curStrand].Length; cur_aa++)
                         {
                             _res_ca_z = simpleBarrel[curStrand][cur_aa].height;
-                            if (_res_ca_z > -zone && _res_ca_z < zone)
-                                {
+                            if (!use_zone || (_res_ca_z > -zone && _res_ca_z < zone))
+                            {
                                 _pdb = proteinID;
                                 _pdb_strands = simpleBarrel.GetLength(0);
                                 _res = simpleBarrel[curStrand][cur_aa].m_aa_ID;
@@ -569,13 +582,14 @@ namespace betaBarrelProgram
                                 _res_ca_y = simpleBarrel[curStrand][cur_aa].Y;
                                 _inward = simpleBarrel[curStrand][cur_aa].Inward;
                                 _angle = simpleBarrel[curStrand][cur_aa].angle;
-
-                                output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}", _pdb, _pdb_strands, _res, _res_num, _seqID, _res_strand, _res_ca_x, _res_ca_y, _res_ca_z, _inward, _angle);
+                                _chain = simpleBarrel[curStrand][cur_aa].chain;
+                                output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", _pdb, _pdb_strands, _res, _res_num, _seqID, _res_strand, _res_ca_x, _res_ca_y, _res_ca_z, _inward, _angle, _chain);
                             }
                         }
                     }
                 }
             }
+            
         }
 
 
@@ -1038,6 +1052,7 @@ namespace betaBarrelProgram
                 ResNum = -100;
                 SeqID = -100;
                 height = -100;
+                chain = "";
             }
 
             //assigns polarity from amino acid ID
@@ -1061,6 +1076,7 @@ namespace betaBarrelProgram
 
             //member variables
             public string m_aa_ID;//stores amino acid's 3 letter abreviation
+            public string chain;// stores chainID for this aa
             public char mPolarity;//should be P,N, or U(represent unassigned polarity}
             public bool Inward;//is true if amino acid is facing inward, false if facing outward
             public int ResNum;//residue number in protein
