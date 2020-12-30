@@ -128,7 +128,7 @@ namespace betaBarrelProgram
 	            this.PdbName = _myProtein.PdbName;
 				this.Success = true;//need to actually check this at some point, but variable is currently only for all method
 				List<string> outwardStrands = new List<string> { "4MT4", "4K7R", "4MT0", "3D5K", "1EK9", "1YC9", "2LME", "3X2R", "2GR7", "5AZP", "5AZS" }; //This set of pdb ID's have Astrand0 that point outwards of the cell
-	            List<string> outside_insertion = new List<string> { "7AHL", "1UUN", "3W9T", "4H56", "4TW1", "3B07", "3O44", "5GAQ", "3J9C" }; //These are the set of exterior inserted barrels for scaling Z-coords appropriately
+	            List<string> outside_insertion = new List<string> { "7AHL", "1UUN", "3W9T", "4H56", "4TW1", "3B07", "3O44", "5GAQ", "3J9C", "6RB9", "6UWR" }; //These are the set of exterior inserted barrels for scaling Z-coords appropriately
 
 	            #region Use this to output any info about chains you need before starting to create strands and alter information
 	            string fileLocation2 = outputDirectory + "PhiPsiAngles/" + this.PdbName + ".txt";
@@ -203,10 +203,11 @@ namespace betaBarrelProgram
 	            this.Axis = this.Ccentroid - this.Ncentroid;
 
 	            this.StrandLength = SharedFunctions.getStrandLengths(this.Strands, outputDirectory, this.PdbName);
-            
-	            #endregion
-            
-	            /*string fileLocation12 = outputDirectory + "ZCoords\\AllCoords_" + this.PdbName + ".txt";
+
+				#endregion
+
+				SharedFunctions.create_dir(outputDirectory + "ZCoords");
+				string fileLocation12 = outputDirectory + "ZCoords/AllCoords_" + this.PdbName + ".txt";
 	            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation12))
 	            {
 	                string newLine = "Res" + "\t" + "Num" + "\t" + "Strand" + "\t" + "Chain" + "\t" + "Z-coord";
@@ -221,9 +222,10 @@ namespace betaBarrelProgram
 	                        }
 	                    }
 	                }
-	            }*/
+	            }
 
-	            /*string fileLocation6 = outputDirectory + "\\Renumb\\XYZCoords_" + this.PdbName + ".txt";
+				SharedFunctions.create_dir(outputDirectory + "Renumb");
+				string fileLocation6 = outputDirectory + "Renumb/XYZCoords_" + this.PdbName + ".txt";
 	            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileLocation6))
 	            {
 	                string newLine = "Res" + "\t" + "Num" + "\t" + "Chain" + "\t" + "Z-coord";
@@ -239,7 +241,7 @@ namespace betaBarrelProgram
 	                        }
 	                    }
 	                }
-	            }*/
+	            }
 	            SharedFunctions.setInOut(this.Strands, outputDirectory, this.PdbName, this.Axis, this.Ccentroid, this.Ncentroid);
 	            SharedFunctions.writePymolScriptForStrands(this.Strands, outputDirectory, Global.DB_DIR, this.PdbName);
 	            //writeAminoAcidsTypesToFile(ref _myProtein, outputDirectory);
@@ -929,6 +931,7 @@ namespace betaBarrelProgram
 				double length = this.Axis.Length();
 
 				double psi = Math.Atan(this.Axis.Y / this.Axis.X);
+				if (0 == this.Axis.X) {psi = 0; }
 				Matrix4x4 rotationMatrixZT = new Matrix4x4((float)Math.Cos(psi), (float)Math.Sin(psi), 0, 0, -1 * (float)Math.Sin(psi), (float)Math.Cos(psi), 0, 0, 0, 0, 1, 0, 0, 0, 0, 0);
 				Matrix4x4 rotationMatrixZ = new Matrix4x4((float)Math.Cos(psi), -1 * (float)Math.Sin(psi), 0, 0, (float)Math.Sin(psi), (float)Math.Cos(psi), 0, 0, 0, 0, 1, 0, 0, 0, 0, 0);
 				Vector3 axis1 = new Vector3();
