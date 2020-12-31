@@ -279,7 +279,7 @@ namespace betaBarrelProgram
         private void rearrangeBarrel(GroupOfStrands group)
         {
 
-            if (new List<string>() { "1DZJ", "1E5P", "1MDC", "1ROU", "2FR2", "2ICH", "2L5P", "2OOJ", "3HPE", "3SAO", "4ALO", "4AW8", "4WFU", "5EZ2", "5GGE",  }.Contains(this.PdbName))
+            if (new List<string>() { "1DZJ", "1E5P", "1MDC", "1R0U", "2FR2", "2ICH", "2L5P", "2OOJ", "2Q03", "3IA8", "3HPE", "3SAO", "4ALO", "4AW8", "4WFU", "5EZ2", "5GGE",  }.Contains(this.PdbName))
             {
                 group.StrandSet.Sort((a, b) => a.StrandInTheGroup.ResNumStart.CompareTo(b.StrandInTheGroup.ResNumStart));
             }

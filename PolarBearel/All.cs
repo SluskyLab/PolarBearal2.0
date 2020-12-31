@@ -385,6 +385,16 @@ namespace betaBarrelProgram
                 }
             }
 
+
+            if (PdbName == "2HPW")
+            {
+                var Add = new List<int>() { 145, 146, 147, 148 }; //manually add DSSP
+                foreach (var SeqID in Add)
+                {
+                    newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "E";
+                }
+            }
+
             if (PdbName == "2ICR")
             {
                 var Add = new List<int>() { 146, 147 }; //manually add DSSP
@@ -405,8 +415,8 @@ namespace betaBarrelProgram
 
             if (PdbName == "2OOJ")
             {
-                var Add = new List<int>() { 33, 99 };
-                var Remove = new List<int>() { 28, 29, 30, 31, 32, 89, 90, 93 };
+                var Add = new List<int>() {  99 }; //31, 33,
+                var Remove = new List<int>() { 89, 90, 93 };
                 modifySSType(ref newProt, Add, Remove);
             }
 
@@ -461,18 +471,18 @@ namespace betaBarrelProgram
                 }
             }
 
-            if (PdbName == "4RYS")
+            if (PdbName == "4H6B")
             {
-                var Add = new List<int>() { 144, 145, 146, 147 }; //manually add DSSP
+                var Add = new List<int>() { 54, 55 }; //manually add DSSP
                 foreach (var SeqID in Add)
                 {
                     newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "E";
                 }
             }
 
-            if (PdbName == "4H6B")
+            if (PdbName == "4RYS")
             {
-                var Add = new List<int>() { 54, 55 }; //manually add DSSP
+                var Add = new List<int>() { 144, 145, 146, 147 }; //manually add DSSP
                 foreach (var SeqID in Add)
                 {
                     newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "E";
