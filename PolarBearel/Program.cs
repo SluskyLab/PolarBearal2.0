@@ -476,6 +476,16 @@ namespace betaBarrelProgram
                             splitLine[0] = "ATOM";
                             splitLine[3] = "MET";
                         }
+                        if (splitLine[0] == "HETATM" && splitLine[3] == "AMSE")
+                        {
+                            splitLine[0] = "ATOM";
+                            splitLine[3] = "AMET";
+                        }
+                        if (splitLine[0] == "HETATM" && splitLine[3] == "BMSE")
+                        {
+                            splitLine[0] = "ATOM";
+                            splitLine[3] = "BMET";
+                        }
                         if (splitLine[0] == "HETATM" && splitLine[3] == "CSO")
                         {
                             splitLine[0] = "ATOM";

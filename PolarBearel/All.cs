@@ -415,7 +415,7 @@ namespace betaBarrelProgram
 
             if (PdbName == "2OOJ")
             {
-                var Add = new List<int>() {  99 }; //31, 33,
+                var Add = new List<int>() { 31, 32, 33, 99 };
                 var Remove = new List<int>() { 89, 90, 93 };
                 modifySSType(ref newProt, Add, Remove);
             }
