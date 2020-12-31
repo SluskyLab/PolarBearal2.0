@@ -445,6 +445,31 @@ namespace betaBarrelProgram
                 }
             }
 
+            if (PdbName == "4ALO")
+            {
+                var Add = new List<int>() { 37, 38, 39, 40, 41, 51, 52 };
+                var Remove = new List<int>() { 165, 166, 167, 168};
+                modifySSType(ref newProt, Add, Remove);
+            }
+
+            if (PdbName == "4HE4")
+            {
+                var Add = new List<int>() { 142, 143, 144, 145 }; //manually add DSSP
+                foreach (var SeqID in Add)
+                {
+                    newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "E";
+                }
+            }
+
+            if (PdbName == "4RYS")
+            {
+                var Add = new List<int>() { 144, 145, 146, 147 }; //manually add DSSP
+                foreach (var SeqID in Add)
+                {
+                    newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "E";
+                }
+            }
+
             if (PdbName == "4H6B")
             {
                 var Add = new List<int>() { 54, 55 }; //manually add DSSP

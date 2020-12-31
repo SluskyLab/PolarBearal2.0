@@ -3022,7 +3022,7 @@ namespace betaBarrelProgram
                 file.WriteLine("from pymol import cmd, stored"); //For MacPyMOL
                 //string[] colors = { "white", "red", "orange", "purple", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "red", "orange", "yellow", "green", "cyan", "blue", "purple" };
 
-                string[] primaryColors = { "red", "green", "orange", "teal", "yellow", "blue" };
+                string[] primaryColors = { "red", "orange", "yellow", "green", "teal", "blue", "purpleblue", "purple" };
                 int n = primaryColors.Length;
                 var colors = new List<string>();
                 for (int i = 0; i < strandlist.Count; i++)

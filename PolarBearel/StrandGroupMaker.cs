@@ -278,75 +278,98 @@ namespace betaBarrelProgram
 
         private void rearrangeBarrel(GroupOfStrands group)
         {
-            Vector3 centroid = new Vector3((float)group.Centroid.X, (float)group.Centroid.Y, (float)group.Centroid.Z);
-            List<Strand> strands = new List<Strand>();
-            Vector3 firstCentroid = centroidCalculate(group.StrandSet[0].StrandInTheGroup);
-            Vector3 reference = firstCentroid - centroid;
 
-            foreach (var strand in group.StrandSet)
+            if (new List<string>() { "1DZJ", "1E5P", "1MDC", "1ROU", "2FR2", "2ICH", "2L5P", "2OOJ", "3HPE", "3SAO", "4ALO", "4AW8", "4WFU", "5EZ2", "5GGE",  }.Contains(this.PdbName))
             {
-                Vector3 strandCentroid = centroidCalculate(strand.StrandInTheGroup);
-
-                Vector3 strandDirection = strandCentroid - centroid;
-                strand.StrandInTheGroup.angle = SharedFunctions.AngleBetween(reference, strandDirection);
-
-                strands.Add(strand.StrandInTheGroup);
+                group.StrandSet.Sort((a, b) => a.StrandInTheGroup.ResNumStart.CompareTo(b.StrandInTheGroup.ResNumStart));
             }
-
-            Strand selectStrand = strands.Where(strand => (strand.angle > 60 && strand.angle < 130)).First();
-            Vector3 selectStrandDirection = centroidCalculate(selectStrand) - centroid;
-            Vector3 refCrossP = Vector3.Cross(reference, selectStrandDirection);
-
-            var ctr = 0;
-            foreach (var strand in group.StrandSet)
+            else
             {
-                Vector3 strandCentroid = centroidCalculate(strand.StrandInTheGroup);
-                Vector3 strandDirection = strandCentroid - centroid;
-                Vector3 CrossP = Vector3.Cross(reference, strandDirection);
-                var refAngle = SharedFunctions.AngleBetween(CrossP, refCrossP);
-                if (refAngle > 90)
+                Vector3 centroid = new Vector3((float)group.Centroid.X, (float)group.Centroid.Y, (float)group.Centroid.Z);
+                List<Strand> strands = new List<Strand>();
+                Strand firstStrand = group.StrandSet.OrderBy(s => s.StrandInTheGroup.ResNumStart).FirstOrDefault().StrandInTheGroup;
+                Vector3 firstCentroid = centroidCalculate(firstStrand);
+                Vector3 reference = firstCentroid - centroid;
+
+                //Calculate angle based on the first strand as reference
+                foreach (var strand in group.StrandSet)
                 {
-                    strand.StrandInTheGroup.angle = 360 - strand.StrandInTheGroup.angle;
+                    Vector3 strandCentroid = centroidCalculate(strand.StrandInTheGroup);
+                    Vector3 strandDirection = strandCentroid - centroid;
+                    strand.StrandInTheGroup.angle = SharedFunctions.AngleBetween(reference, strandDirection);
+
+                    //Creates a copy of the strands
+                    strands.Add(strand.StrandInTheGroup);
                 }
 
-                //Console.WriteLine($"pseudoatom strand{ctr}, pos=[{strandCentroid.X}, {strandCentroid.Y}, {strandCentroid.Z}]" +
-                //    $"\nshow spheres, strand{ctr}" +
-                //    $"\nlabel strand{ctr}, \"                    {strand.StrandInTheGroup.angle:000.##}\"" +
-                //    $"");
-                //ctr++;
-            }
+                //Find reference axis
+                Strand selectStrand = strands.Where(strand => (strand.angle > 60 && strand.angle < 130)).First();
+                Vector3 selectStrandDirection = centroidCalculate(selectStrand) - centroid;
+                Vector3 refCrossP = Vector3.Cross(reference, selectStrandDirection);
 
-            //        Console.WriteLine($"pseudoatom centroid, pos=[{centroid.X}, {centroid.Y}, {centroid.Z}]" +
-            //$"\nshow spheres, centroid");
-
-            group.StrandSet.Sort((a, b) => a.StrandInTheGroup.angle.CompareTo(b.StrandInTheGroup.angle));
-
-            //foreach (var item in strands)
-            //{
-            //    Console.WriteLine(item.angle);
-            //}
-            
-
-            int i = 0;
-            foreach (var strand in group.StrandSet)
-            {
-                //Console.WriteLine($"{item.betaStrandNum} angle is {item.angle}");
-                strand.StrandInTheGroup.StrandNum = i;
-                i++;
-            }
-
-            Vector3 centroidCalculate(Strand Strand)
-            {
-                var caList = Strand.Select(residue => residue.BackboneCoords["CA"]).ToList();
-                Vector3 strandCentroid = new Vector3
+                //Change angle to 0-360 based on the reference axis
+                var ctr = 0;
+                foreach (var strand in group.StrandSet)
                 {
-                    X = caList.Sum(ca => ca.X) / caList.Count,
-                    Y = caList.Sum(ca => ca.Y) / caList.Count,
-                    Z = caList.Sum(ca => ca.Z) / caList.Count
-                };
-                return strandCentroid;
+                    Vector3 strandCentroid = centroidCalculate(strand.StrandInTheGroup);
+                    Vector3 strandDirection = strandCentroid - centroid;
+                    Vector3 CrossP = Vector3.Cross(reference, strandDirection);
+                    var refAngle = SharedFunctions.AngleBetween(CrossP, refCrossP);
+                    if (refAngle > 90)
+                    {
+                        strand.StrandInTheGroup.angle = 360 - strand.StrandInTheGroup.angle;
+                    }
+
+                    //Console.WriteLine($"pseudoatom strand{ctr}, pos=[{strandCentroid.X}, {strandCentroid.Y}, {strandCentroid.Z}]" +
+                    //    $"\nshow spheres, strand{ctr}" +
+                    //    $"\nlabel strand{ctr}, \"                    {strand.StrandInTheGroup.angle:000.##}\"" +
+                    //    $"");
+                    //ctr++;
+                }
+
+        //        foreach (var item in group.StrandSet)
+        //        {
+        //            Console.WriteLine($"Strand {item.StrandInTheGroup.StrandNum}: { item.StrandInTheGroup.angle}");
+        //        }
+
+        //        Console.WriteLine($"pseudoatom centroid, pos=[{centroid.X}, {centroid.Y}, {centroid.Z}]" +
+        //$"\nshow spheres, centroid");
+
+                group.StrandSet.Sort((a, b) => a.StrandInTheGroup.angle.CompareTo(b.StrandInTheGroup.angle));
+
+                //foreach (var item in group.StrandSet)
+                //{
+                //    Console.WriteLine($"Strand {item.StrandInTheGroup.StrandNum}: { item.StrandInTheGroup.angle}");
+                //}
+
+                //foreach (var item in this.GroupOfGroup[0].StrandSet)
+                //{
+                //    Console.WriteLine($"Strand {item.StrandInTheGroup.StrandNum}: { item.StrandInTheGroup.angle}");
+                //}
+
+
+                int i = 0;
+                foreach (var strand in group.StrandSet)
+                {
+                    //Console.WriteLine($"{item.betaStrandNum} angle is {item.angle}");
+                    strand.StrandInTheGroup.StrandNum = i;
+                    i++;
+                }
+
+                Vector3 centroidCalculate(Strand Strand)
+                {
+                    var caList = Strand.Select(residue => residue.BackboneCoords["CA"]).ToList();
+                    Vector3 strandCentroid = new Vector3
+                    {
+                        X = caList.Sum(ca => ca.X) / caList.Count,
+                        Y = caList.Sum(ca => ca.Y) / caList.Count,
+                        Z = caList.Sum(ca => ca.Z) / caList.Count
+                    };
+                    return strandCentroid;
+                }
+                //return strands;
             }
-            //return strands;
+
         }
 
         private void CheckIfBarrel(GroupOfStrands group)
@@ -386,6 +409,7 @@ namespace betaBarrelProgram
 
                 }
             }
+
         }
 
         private bool CheckIfNear(OneStrand strand1, OneStrand strand2)
