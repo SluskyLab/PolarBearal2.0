@@ -334,6 +334,15 @@ namespace betaBarrelProgram
                 modifySSType(ref newProt, Add, Remove);
             }
 
+            if (PdbName == "1Y0G")
+            {
+                var Add = new List<int>() { 28, 29, 30, 31, 32, 33, 53, 54, 77, 78, 79, 80, 81 }; //manually add DSSP
+                foreach (var SeqID in Add)
+                {
+                    newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "E";
+                }
+            }
+
             if (PdbName == "2A13")
             {
                 var Add = new List<int>() { 119, 120 }; //manually add DSSP
@@ -367,6 +376,15 @@ namespace betaBarrelProgram
                 }
             }
 
+            if (PdbName == "2FR2")
+            {
+                var Add = new List<int>() { 110, 111, 112, 113, 114 }; //manually add DSSP
+                foreach (var SeqID in Add)
+                {
+                    newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "E";
+                }
+            }
+
             if (PdbName == "2ICR")
             {
                 var Add = new List<int>() { 146, 147 }; //manually add DSSP
@@ -390,6 +408,14 @@ namespace betaBarrelProgram
                 var Add = new List<int>() { 33, 99 };
                 var Remove = new List<int>() { 28, 29, 30, 31, 32, 89, 90, 93 };
                 modifySSType(ref newProt, Add, Remove);
+            }
+
+            if (new List<string>() { "2RD7" }.Contains(this.PdbName))
+            {
+                foreach (var res in newProt.Chains[0].Residues)
+                {
+                    res.DSSP = ""; //Remove strands from chain A
+                }
             }
 
             if (PdbName == "2ZO6")
@@ -435,13 +461,16 @@ namespace betaBarrelProgram
                 modifySSType(ref newProt, Add, Remove);
             }
 
-            if (new List<string>() { "5IXG", "2RD7" }.Contains(this.PdbName))
+            if (PdbName == "5IXG")
             {
-                foreach (var res in newProt.Chains[0].Residues)
+                var Add = new List<int>() { 12, 13, 14, 15, 16, 36, 37, 59, 60, 61, 62, 63, 64 }; //manually add DSSP
+                foreach (var SeqID in Add)
                 {
-                    res.DSSP = ""; //Remove strands from chain A
+                    newProt.Chains[0].Residues.Single(res => res.SeqID == SeqID).DSSP = "E";
                 }
             }
+
+
 
             #endregion
 
