@@ -264,7 +264,7 @@ namespace betaBarrelProgram
 	            SharedFunctions.setInOut(this.Strands, outputDirectory, this.PdbName, this.Axis, this.Ccentroid, this.Ncentroid);
 	            SharedFunctions.writePymolScriptForStrands(this.Strands, outputDirectory, Global.DB_DIR, this.PdbName);
 	            //writeAminoAcidsTypesToFile(ref _myProtein, outputDirectory);
-	            //this.AvgTilt = SharedFunctions.getTiltsByAA(this.Strands, outputDirectory, this.PdbName, this.Axis, ref Program.AADict);
+	            this.AvgTilt = SharedFunctions.getTiltsByAA(this.Strands, outputDirectory, this.PdbName, this.Axis, ref Global.AADict);
             
 	            //Check definitions for loops using strand lists
 	            //checkStrandDefnsDSSP(this.Strands, ref _myProtein); //SO MANY PROBLEMS. I can hand-edit these loops.
